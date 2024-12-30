@@ -95,8 +95,8 @@ activation = { env = { COAL_HAS_QHULL = "ON" } }
 [feature.octomap]
 dependencies = { octomap = ">=1.10" }
 
-[feature.py312.dependencies]
-python = "3.12.*"
+[feature.py313.dependencies]
+python = "3.13.*"
 
 [feature.py39.dependencies]
 python = "3.9.*"
@@ -117,24 +117,24 @@ activation = { scripts = ["development/scripts/pixi/activation_clang.sh"] }
 dependencies = { clangxx = "*" }
 
 [environments]
-default = { features = ["py312"], solve-group = "py312" }
-clang = { features = ["clang", "py312"] }
-lint = { features = ["lint"], solve-group = "py312" }
-qhull = { features = ["qhull", "py312"], solve-group = "py312" }
-octomap = { features = ["octomap", "py312"], solve-group = "py312" }
+default = { features = ["py313"], solve-group = "py313" }
+clang = { features = ["clang", "py313"] }
+lint = { features = ["lint"], solve-group = "py313" }
+qhull = { features = ["qhull", "py313"], solve-group = "py313" }
+octomap = { features = ["octomap", "py313"], solve-group = "py313" }
 py39 = { features = ["py39"], solve-group = "py39" }
-all = { features = ["qhull", "octomap", "py312"], solve-group = "py312" }
+all = { features = ["qhull", "octomap", "py313"], solve-group = "py313" }
 all-py39 = { features = ["qhull", "octomap", "py39"], solve-group = "py39" }
 all-clang-cl = { features = [
   "qhull",
   "octomap",
   "clang-cl",
-  "py312",
-], solve-group = "py312" }
+  "py313",
+], solve-group = "py313" }
 # Release a new software version
 new-version = { features = [
   "new-version",
   "qhull",
   "octomap",
-  "py312",
-], solve-group = "py312" }
+  "py313",
+], solve-group = "py313" }
