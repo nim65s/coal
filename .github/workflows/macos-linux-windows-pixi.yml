@@ -87,7 +87,12 @@ jobs:
         COAL_BUILD_TYPE: ${{ matrix.build_type }}
         COAL_CXX_FLAGS: ${{ matrix.cxx_options }}
       run: |
-        pixi run -e ${{ matrix.environment }} test
+        pixi run -e ${{ matrix.environment }} build
+
+    - name: Test Coal [MacOS/Linux/Windows]
+      if: ${{ ! contains(matrix.os, 'windows') }} && matrix.build_type != 'Debug'
+      run: |
+        ctest --test-dir build --output-on-failure
 
   check:
     if: always()
