@@ -92,7 +92,7 @@ jobs:
     - name: Test Coal [MacOS/Linux/Windows]
       if: ${{ ! contains(matrix.os, 'windows') }} && matrix.build_type != 'Debug'
       run: |
-        ctest --test-dir build --output-on-failure
+        pixi run -e ${{ matrix.environment }} ctest --test-dir build --output-on-failure
 
   check:
     if: always()
