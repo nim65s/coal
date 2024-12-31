@@ -97,9 +97,11 @@ dependencies = { octomap = ">=1.10" }
 
 [feature.py313.dependencies]
 python = "3.13.*"
+scipy = ">=1.14.1"
 
 [feature.py39.dependencies]
 python = "3.9.*"
+scipy = "<1.14.0"
 
 # Use clang-cl on Windows.
 # We must use scripts instead of env to setup CC and CXX
