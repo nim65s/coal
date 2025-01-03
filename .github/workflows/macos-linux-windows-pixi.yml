@@ -59,6 +59,10 @@ jobs:
             environment: all-clang-cl
             cxx_options: ''
             build_type: Release
+          - os: windows-latest
+            environment: default
+            cxx_options: ''
+            build_type: Debug
 
     steps:
     - uses: actions/checkout@v4
@@ -83,7 +87,12 @@ jobs:
         COAL_BUILD_TYPE: ${{ matrix.build_type }}
         COAL_CXX_FLAGS: ${{ matrix.cxx_options }}
       run: |
-        pixi run -e ${{ matrix.environment }} test
+        pixi run -e ${{ matrix.environment }} build
+
+    - name: Test Coal [MacOS/Linux/Windows]
+      if: ${{ ! (contains(matrix.os, 'windows') && matrix.build_type == 'Debug') }}
+      run: |
+        pixi run -e ${{ matrix.environment }} ctest --test-dir build --output-on-failure
 
   check:
     if: always()
