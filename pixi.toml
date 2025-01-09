@@ -95,10 +95,10 @@ activation = { env = { COAL_HAS_QHULL = "ON" } }
 [feature.octomap]
 dependencies = { octomap = ">=1.10" }
 
-[feature.py312.dependencies]
-python = "3.12.*"
+[feature.python-latest.dependencies]
+python = "3.13.*"
 
-[feature.py39.dependencies]
+[feature.python-oldest.dependencies]
 python = "3.9.*"
 
 # Use clang-cl on Windows.
@@ -117,24 +117,35 @@ activation = { scripts = ["development/scripts/pixi/activation_clang.sh"] }
 dependencies = { clangxx = "*" }
 
 [environments]
-default = { features = ["py312"], solve-group = "py312" }
-clang = { features = ["clang", "py312"] }
-lint = { features = ["lint"], solve-group = "py312" }
-qhull = { features = ["qhull", "py312"], solve-group = "py312" }
-octomap = { features = ["octomap", "py312"], solve-group = "py312" }
-py39 = { features = ["py39"], solve-group = "py39" }
-all = { features = ["qhull", "octomap", "py312"], solve-group = "py312" }
-all-py39 = { features = ["qhull", "octomap", "py39"], solve-group = "py39" }
+default = { features = ["python-latest"], solve-group = "python-latest" }
+clang = { features = ["clang", "python-latest"] }
+lint = { features = ["lint"], solve-group = "python-latest" }
+qhull = { features = ["qhull", "python-latest"], solve-group = "python-latest" }
+octomap = { features = [
+  "octomap",
+  "python-latest",
+], solve-group = "python-latest" }
+python-oldest = { features = ["python-oldest"], solve-group = "python-oldest" }
+all = { features = [
+  "qhull",
+  "octomap",
+  "python-latest",
+], solve-group = "python-latest" }
+all-python-oldest = { features = [
+  "qhull",
+  "octomap",
+  "python-oldest",
+], solve-group = "python-oldest" }
 all-clang-cl = { features = [
   "qhull",
   "octomap",
   "clang-cl",
-  "py312",
-], solve-group = "py312" }
+  "python-latest",
+], solve-group = "python-latest" }
 # Release a new software version
 new-version = { features = [
   "new-version",
   "qhull",
   "octomap",
-  "py312",
-], solve-group = "py312" }
+  "python-latest",
+], solve-group = "python-latest" }
