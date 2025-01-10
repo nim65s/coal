@@ -1,7 +1,7 @@
 #
 # Software License Agreement (BSD License)
 #
-#  Copyright (c) 2014-2023 CNRS-LAAS, INRIA
+#  Copyright (c) 2014-2025 CNRS-LAAS, INRIA
 #  Author: Florent Lamiraux, Joseph Mirabel
 #  All rights reserved.
 #
@@ -40,6 +40,7 @@ set(PROJECT_ORG "coal-library")
 set(PROJECT_DESCRIPTION
   "Coal, The Collision Detection Library. Previously known as HPP-FCL, fork of FCL -- The Flexible Collision Library"
   )
+set(PROJECT_URL "http://github.com/coal-library/coal")
 SET(PROJECT_USE_CMAKE_EXPORT TRUE)
 SET(PROJECT_COMPATIBILITY_VERSION AnyNewerVersion)
 # To enable jrl-cmakemodules compatibility with workspace we must define the two
@@ -102,9 +103,12 @@ IF(NOT WIN32 OR NOT ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
   ENDIF()
 ENDIF()
 
+include("${JRL_CMAKE_MODULES}/base.cmake")
+COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
+PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
+
 include("${JRL_CMAKE_MODULES}/boost.cmake")
 include("${JRL_CMAKE_MODULES}/python.cmake")
-include("${JRL_CMAKE_MODULES}/hpp.cmake")
 include("${JRL_CMAKE_MODULES}/apple.cmake")
 include("${JRL_CMAKE_MODULES}/ide.cmake")
 include(CMakeDependentOption)
@@ -127,9 +131,6 @@ set_default_cmake_build_type("RelWithDebInfo")
 
 # If needed, fix CMake policy for APPLE systems
 APPLY_DEFAULT_APPLE_CONFIGURATION()
-
-COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
-PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
 
 OPTION(BUILD_PYTHON_INTERFACE "Build the python bindings" ON)
 CMAKE_DEPENDENT_OPTION(GENERATE_PYTHON_STUBS "Generate the Python stubs associated to the Python library" OFF BUILD_PYTHON_INTERFACE OFF)
