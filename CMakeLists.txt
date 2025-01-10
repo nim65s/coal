@@ -40,7 +40,7 @@ set(PROJECT_ORG "coal-library")
 set(PROJECT_DESCRIPTION
   "Coal, The Collision Detection Library. Previously known as HPP-FCL, fork of FCL -- The Flexible Collision Library"
   )
-set(PROJECT_URL "http://github.com/coal-library/coal")
+set(PROJECT_URL "https://github.com/coal-library/coal")
 SET(PROJECT_USE_CMAKE_EXPORT TRUE)
 SET(PROJECT_COMPATIBILITY_VERSION AnyNewerVersion)
 # To enable jrl-cmakemodules compatibility with workspace we must define the two
