@@ -199,6 +199,7 @@ if(UNIX)
   get_relative_rpath(${CMAKE_INSTALL_LIBDIR} ${PROJECT_NAME}_INSTALL_RPATH)
   set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "${${PROJECT_NAME}_INSTALL_RPATH}")
 endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 
 cxx_flags_by_compiler_frontend(
   MSVC "/bigobj"
