@@ -23,7 +23,8 @@ assimp = ">=5.4"
 numpy = ">=1.22.0"
 python = ">=3.9.0"
 eigenpy = ">=3.7.0"
-doxygen = "<1.9.8|>=1.11"
+# XML generation seem to be broken in some doxygen version
+doxygen = "<1.9.8|>=1.11,<1.13"
 lxml = ">=5.3"
 pylatexenc = ">=2.10"
 
@@ -50,9 +51,9 @@ configure = { cmd = [
   "-DGENERATE_PYTHON_STUBS=$COAL_PYTHON_STUBS",
   "-DCOAL_HAS_QHULL=$COAL_HAS_QHULL",
 ] }
-build = { cmd = "cmake --build build --target all", depends_on = ["configure"] }
+build = { cmd = "cmake --build build --target all", depends-on = ["configure"] }
 clean = { cmd = "rm -rf build" }
-test = { cmd = "ctest --test-dir build --output-on-failure", depends_on = [
+test = { cmd = "ctest --test-dir build --output-on-failure", depends-on = [
   "build",
 ] }
 
