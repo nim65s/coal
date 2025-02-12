@@ -168,6 +168,13 @@ cmake_dependent_option(
   BUILD_PYTHON_INTERFACE
   OFF
 )
+cmake_dependent_option(
+  COAL_PYTHON_NANOBIND
+  "Build the nanobind-based bindings."
+  OFF
+  BUILD_PYTHON_INTERFACE
+  OFF
+)
 
 ADD_PROJECT_DEPENDENCY(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.0")
 
@@ -180,12 +187,6 @@ if(COAL_BUILD_WITH_TRACY)
     PROPERTIES POSITION_INDEPENDENT_CODE True
   )
 endif(COAL_BUILD_WITH_TRACY)
-
-if(BUILD_PYTHON_INTERFACE)
-  set(PYTHON_COMPONENTS Interpreter Development NumPy)
-  FINDPYTHON(REQUIRED)
-  ADD_PROJECT_PRIVATE_DEPENDENCY(eigenpy 2.9.2 REQUIRED)
-endif()
 
 # Required dependencies
 SET_BOOST_DEFAULT_OPTIONS()
@@ -202,9 +203,6 @@ ADD_PROJECT_DEPENDENCY(
 if(COAL_ENABLE_LOGGING)
   ADD_PROJECT_DEPENDENCY(Boost REQUIRED log)
 endif()
-if(BUILD_PYTHON_INTERFACE)
-  find_package(Boost REQUIRED COMPONENTS system)
-endif(BUILD_PYTHON_INTERFACE)
 
 if(Boost_VERSION_STRING VERSION_LESS 1.81)
   # Default C++ version should be C++11
@@ -513,6 +511,9 @@ add_subdirectory(doc)
 add_subdirectory(src)
 if(BUILD_PYTHON_INTERFACE)
   add_subdirectory(python)
+  if(COAL_PYTHON_NANOBIND)
+    add_subdirectory(python-nb)
+  endif()
 endif()
 if(BUILD_TESTING)
   add_subdirectory(test)
