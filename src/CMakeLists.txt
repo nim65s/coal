@@ -33,7 +33,8 @@
 #  POSSIBILITY OF SUCH DAMAGE.
 
 set(LIBRARY_NAME ${PROJECT_NAME})
-set(${LIBRARY_NAME}_SOURCES
+set(
+  ${LIBRARY_NAME}_SOURCES
   collision.cpp
   contact_patch.cpp
   contact_patch/contact_patch_solver.cpp
@@ -108,7 +109,7 @@ set(${LIBRARY_NAME}_SOURCES
   mesh_loader/loader.cpp
   hfield.cpp
   serialization/serialization.cpp
-  )
+)
 
 if(COAL_HAS_OCTOMAP)
   list(APPEND ${LIBRARY_NAME}_SOURCES octree.cpp)
@@ -141,7 +142,7 @@ if(COAL_HAS_QHULL AND NOT COAL_USE_SYSTEM_QHULL)
     ${Qhullcpp_PREFIX}/libqhullcpp/RboxPoints.h
     ${Qhullcpp_PREFIX}/libqhullcpp/RoadError.h
     ${Qhullcpp_PREFIX}/libqhullcpp/RoadLogEvent.h
-    )
+  )
 
   set(
     libqhullcpp_SOURCES
@@ -165,7 +166,7 @@ if(COAL_HAS_QHULL AND NOT COAL_USE_SYSTEM_QHULL)
     ${Qhullcpp_PREFIX}/libqhullcpp/RoadError.cpp
     ${Qhullcpp_PREFIX}/libqhullcpp/RoadLogEvent.cpp
     ${libqhullcpp_HEADERS}
-    )
+  )
 
   # TODO We compile qhullcpp because it is not provided in the binary package while
   # the other parts of Qhull are released.
@@ -175,20 +176,33 @@ if(COAL_HAS_QHULL AND NOT COAL_USE_SYSTEM_QHULL)
   list(APPEND ${LIBRARY_NAME}_SOURCES ${libqhullcpp_SOURCES})
 endif()
 
-SET(PROJECT_HEADERS_FULL_PATH)
-FOREACH(header ${${PROJECT_NAME}_HEADERS})
-  LIST(APPEND PROJECT_HEADERS_FULL_PATH ${PROJECT_SOURCE_DIR}/${header})
-ENDFOREACH()
-LIST(APPEND PROJECT_HEADERS_FULL_PATH ${PROJECT_BINARY_DIR}/include/coal/config.hh)
-LIST(APPEND PROJECT_HEADERS_FULL_PATH ${PROJECT_BINARY_DIR}/include/coal/deprecated.hh)
-LIST(APPEND PROJECT_HEADERS_FULL_PATH ${PROJECT_BINARY_DIR}/include/coal/warning.hh)
-add_library(${LIBRARY_NAME}
+set(PROJECT_HEADERS_FULL_PATH)
+foreach(header ${${PROJECT_NAME}_HEADERS})
+  list(APPEND PROJECT_HEADERS_FULL_PATH ${PROJECT_SOURCE_DIR}/${header})
+endforeach()
+list(
+  APPEND
+  PROJECT_HEADERS_FULL_PATH
+  ${PROJECT_BINARY_DIR}/include/coal/config.hh
+)
+list(
+  APPEND
+  PROJECT_HEADERS_FULL_PATH
+  ${PROJECT_BINARY_DIR}/include/coal/deprecated.hh
+)
+list(
+  APPEND
+  PROJECT_HEADERS_FULL_PATH
+  ${PROJECT_BINARY_DIR}/include/coal/warning.hh
+)
+add_library(
+  ${LIBRARY_NAME}
   SHARED
   ${PROJECT_HEADERS_FULL_PATH}
   ${${LIBRARY_NAME}_SOURCES}
-  )
+)
 add_library(${LIBRARY_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
-SET_STANDARD_OUTPUT_DIRECTORY(${LIBRARY_NAME})
+set_standard_output_directory(${LIBRARY_NAME})
 
 if(COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
   add_library(hpp-fcl ALIAS ${LIBRARY_NAME})
@@ -196,100 +210,130 @@ if(COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
 endif()
 
 if(UNIX)
-  get_relative_rpath(${CMAKE_INSTALL_LIBDIR} ${PROJECT_NAME}_INSTALL_RPATH)
-  set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "${${PROJECT_NAME}_INSTALL_RPATH}")
+  GET_RELATIVE_RPATH(${CMAKE_INSTALL_LIBDIR} ${PROJECT_NAME}_INSTALL_RPATH)
+  set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES INSTALL_RPATH "${${PROJECT_NAME}_INSTALL_RPATH}"
+  )
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 
-cxx_flags_by_compiler_frontend(
-  MSVC "/bigobj"
-  OUTPUT PUBLIC_OPTIONS
-  FILTER)
+CXX_FLAGS_BY_COMPILER_FRONTEND(MSVC "/bigobj" OUTPUT PUBLIC_OPTIONS FILTER)
 target_compile_options(${PROJECT_NAME} PUBLIC ${PUBLIC_OPTIONS})
 
-cxx_flags_by_compiler_frontend(MSVC "NOMINMAX" OUTPUT PUBLIC_DEFINITIONS)
+CXX_FLAGS_BY_COMPILER_FRONTEND(MSVC "NOMINMAX" OUTPUT PUBLIC_DEFINITIONS)
 target_compile_definitions(${PROJECT_NAME} INTERFACE ${PUBLIC_DEFINITIONS})
 
 # IDE sources and headers sorting
 ADD_SOURCE_GROUP(${LIBRARY_NAME}_SOURCES)
 ADD_HEADER_GROUP(PROJECT_HEADERS_FULL_PATH)
 
-MODERNIZE_TARGET_LINK_LIBRARIES(${LIBRARY_NAME} SCOPE PRIVATE
+MODERNIZE_TARGET_LINK_LIBRARIES(
+  ${LIBRARY_NAME}
+  SCOPE PRIVATE
   TARGETS assimp::assimp
   LIBRARIES ${assimp_LIBRARIES}
-  INCLUDE_DIRS ${assimp_INCLUDE_DIR})
-
-TARGET_LINK_LIBRARIES(${LIBRARY_NAME}
-  PUBLIC
-  Boost::serialization
-  Boost::chrono
-  Boost::filesystem
+  INCLUDE_DIRS ${assimp_INCLUDE_DIR}
 )
 
-if (COAL_ENABLE_LOGGING)
-  TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PUBLIC Boost::log)
+target_link_libraries(
+  ${LIBRARY_NAME}
+  PUBLIC Boost::serialization Boost::chrono Boost::filesystem
+)
+
+if(COAL_ENABLE_LOGGING)
+  target_link_libraries(${LIBRARY_NAME} PUBLIC Boost::log)
   # The compile flag `BOOST_LOG_DYN_LINK` is required here.
-  target_compile_definitions(${LIBRARY_NAME} PUBLIC COAL_ENABLE_LOGGING BOOST_LOG_DYN_LINK)
+  target_compile_definitions(
+    ${LIBRARY_NAME}
+    PUBLIC COAL_ENABLE_LOGGING BOOST_LOG_DYN_LINK
+  )
 endif()
 
-IF(WIN32)
-  TARGET_LINK_LIBRARIES(${LIBRARY_NAME}
-    INTERFACE
-    Boost::thread
-    Boost::date_time
+if(WIN32)
+  target_link_libraries(
+    ${LIBRARY_NAME}
+    INTERFACE Boost::thread Boost::date_time
   )
   # There is an issue with MSVC 2017 and Eigen (due to std::aligned_storage).
   # See https://github.com/ceres-solver/ceres-solver/issues/481
-  target_compile_definitions(${LIBRARY_NAME} PRIVATE _ENABLE_EXTENDED_ALIGNED_STORAGE)
-ENDIF(WIN32)
+  target_compile_definitions(
+    ${LIBRARY_NAME}
+    PRIVATE _ENABLE_EXTENDED_ALIGNED_STORAGE
+  )
+endif(WIN32)
 
-if (COAL_TURN_ASSERT_INTO_EXCEPTION)
-  target_compile_definitions(${LIBRARY_NAME} PUBLIC -DCOAL_TURN_ASSERT_INTO_EXCEPTION)
+if(COAL_TURN_ASSERT_INTO_EXCEPTION)
+  target_compile_definitions(
+    ${LIBRARY_NAME}
+    PUBLIC -DCOAL_TURN_ASSERT_INTO_EXCEPTION
+  )
 endif()
 
-if (COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
-  target_compile_definitions(${LIBRARY_NAME} PUBLIC -DCOAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
+if(COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
+  target_compile_definitions(
+    ${LIBRARY_NAME}
+    PUBLIC -DCOAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL
+  )
 endif()
 
 if(COAL_HAS_QHULL)
   target_compile_definitions(${LIBRARY_NAME} PRIVATE -DCOAL_HAS_QHULL)
-  if (COAL_USE_SYSTEM_QHULL)
-    target_link_libraries(${LIBRARY_NAME} PRIVATE Qhull::qhull_r Qhull::qhullcpp)
+  if(COAL_USE_SYSTEM_QHULL)
+    target_link_libraries(
+      ${LIBRARY_NAME}
+      PRIVATE Qhull::qhull_r Qhull::qhullcpp
+    )
   else()
-    target_include_directories(${LIBRARY_NAME} SYSTEM PRIVATE
-      ${Qhull_r_INCLUDE_DIR} ${Qhullcpp_PREFIX})
+    target_include_directories(
+      ${LIBRARY_NAME}
+      SYSTEM
+      PRIVATE ${Qhull_r_INCLUDE_DIR} ${Qhullcpp_PREFIX}
+    )
     target_link_libraries(${LIBRARY_NAME} PRIVATE "${Qhull_r_LIBRARY}")
   endif()
 endif()
 
-MODERNIZE_TARGET_LINK_LIBRARIES(${PROJECT_NAME} SCOPE PUBLIC
+MODERNIZE_TARGET_LINK_LIBRARIES(
+  ${PROJECT_NAME}
+  SCOPE PUBLIC
   TARGETS Eigen3::Eigen
-  INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+  INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR}
+)
 
-target_include_directories(${LIBRARY_NAME}
+target_include_directories(
+  ${LIBRARY_NAME}
   PUBLIC
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  )
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
 
-IF(octomap_FOUND)
-  MODERNIZE_TARGET_LINK_LIBRARIES(${PROJECT_NAME} SCOPE PUBLIC
+if(octomap_FOUND)
+  MODERNIZE_TARGET_LINK_LIBRARIES(
+    ${PROJECT_NAME}
+    SCOPE PUBLIC
     TARGETS octomap
     LIBRARIES ${OCTOMAP_LIBRARIES}
-    INCLUDE_DIRS ${OCTOMAP_INCLUDE_DIRS})
-  target_compile_definitions (${LIBRARY_NAME} PUBLIC
-    -DCOAL_HAS_OCTOMAP
-    -DCOAL_HAVE_OCTOMAP
-    -DOCTOMAP_MAJOR_VERSION=${OCTOMAP_MAJOR_VERSION}
-    -DOCTOMAP_MINOR_VERSION=${OCTOMAP_MINOR_VERSION}
-    -DOCTOMAP_PATCH_VERSION=${OCTOMAP_PATCH_VERSION})
-ENDIF(octomap_FOUND)
+    INCLUDE_DIRS ${OCTOMAP_INCLUDE_DIRS}
+  )
+  target_compile_definitions(
+    ${LIBRARY_NAME}
+    PUBLIC
+      -DCOAL_HAS_OCTOMAP
+      -DCOAL_HAVE_OCTOMAP
+      -DOCTOMAP_MAJOR_VERSION=${OCTOMAP_MAJOR_VERSION}
+      -DOCTOMAP_MINOR_VERSION=${OCTOMAP_MINOR_VERSION}
+      -DOCTOMAP_PATCH_VERSION=${OCTOMAP_PATCH_VERSION}
+  )
+endif(octomap_FOUND)
 
-install(TARGETS ${LIBRARY_NAME}
+install(
+  TARGETS ${LIBRARY_NAME}
   EXPORT ${TARGETS_EXPORT_NAME}
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
