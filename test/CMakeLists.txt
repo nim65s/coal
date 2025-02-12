@@ -1,19 +1,20 @@
 # Find Boost.UnitTestFramework
-FIND_PACKAGE(Boost REQUIRED COMPONENTS unit_test_framework filesystem)
+find_package(Boost REQUIRED COMPONENTS unit_test_framework filesystem)
 
-config_files(fcl_resources/config.h)
+CONFIG_FILES(fcl_resources/config.h)
 
 function(add_coal_test test_name source)
   set(target_name ${PROJECT_NAME}-${test_name})
   ADD_UNIT_TEST(${target_name} ${source})
-  SET_STANDARD_OUTPUT_DIRECTORY(${target_name})
-  target_link_libraries(${target_name}
-    PUBLIC
-    ${LIBRARY_NAME}
-    Boost::filesystem
-    ${utility_target}
-    )
-  cxx_flags_by_compiler_frontend(GNU "-Wno-c99-extensions" OUTPUT PRIVATE_OPTIONS)
+  set_standard_output_directory(${target_name})
+  target_link_libraries(
+    ${target_name}
+    PUBLIC ${LIBRARY_NAME} Boost::filesystem ${utility_target}
+  )
+  CXX_FLAGS_BY_COMPILER_FRONTEND(
+    GNU "-Wno-c99-extensions"
+    OUTPUT PRIVATE_OPTIONS
+  )
   target_compile_options(${target_name} PRIVATE ${PRIVATE_OPTIONS})
   if(COAL_HAS_QHULL)
     target_compile_options(${target_name} PRIVATE -DCOAL_HAS_QHULL)
@@ -24,7 +25,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(utility_target ${PROJECT_NAME}-utility)
 add_library(${utility_target} STATIC utility.cpp)
-SET_STANDARD_OUTPUT_DIRECTORY(${utility_target})
+set_standard_output_directory(${utility_target})
 target_link_libraries(${utility_target} PUBLIC ${PROJECT_NAME})
 
 add_coal_test(math math.cpp)
@@ -41,7 +42,7 @@ add_coal_test(shape_inflation shape_inflation.cpp)
 #add_coal_test(shape_mesh_consistency shape_mesh_consistency.cpp)
 add_coal_test(gjk_asserts gjk_asserts.cpp)
 add_coal_test(frontlist frontlist.cpp)
-SET_TESTS_PROPERTIES(${PROJECT_NAME}-frontlist PROPERTIES TIMEOUT 7200)
+set_tests_properties(${PROJECT_NAME}-frontlist PROPERTIES TIMEOUT 7200)
 
 # add_coal_test(sphere_capsule sphere_capsule.cpp)
 add_coal_test(capsule_capsule capsule_capsule.cpp)
@@ -78,15 +79,13 @@ add_coal_test(broadphase_collision_2 broadphase_collision_2.cpp)
 ## Benchmark
 set(test_benchmark_target ${PROJECT_NAME}-test-benchmark)
 add_executable(${test_benchmark_target} benchmark.cpp)
-SET_STANDARD_OUTPUT_DIRECTORY(${test_benchmark_target})
-target_link_libraries(${test_benchmark_target}
-  PUBLIC
-  ${utility_target}
-  Boost::filesystem
-  ${PROJECT_NAME}
-  )
+set_standard_output_directory(${test_benchmark_target})
+target_link_libraries(
+  ${test_benchmark_target}
+  PUBLIC ${utility_target} Boost::filesystem ${PROJECT_NAME}
+)
 
 ## Python tests
-IF(BUILD_PYTHON_INTERFACE)
-  ADD_SUBDIRECTORY(python_unit)
-ENDIF(BUILD_PYTHON_INTERFACE)
+if(BUILD_PYTHON_INTERFACE)
+  add_subdirectory(python_unit)
+endif(BUILD_PYTHON_INTERFACE)

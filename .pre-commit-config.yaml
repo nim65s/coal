@@ -2,6 +2,7 @@ ci:
   autoupdate_branch: devel
   autofix_prs: false
   autoupdate_schedule: quarterly
+  submodules: true
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.8.6
@@ -21,3 +22,7 @@ repos:
   rev: v5.0.0
   hooks:
   - id: trailing-whitespace
+- repo: https://github.com/BlankSpruce/gersemi
+  rev: 0.19.0
+  hooks:
+    - id: gersemi
