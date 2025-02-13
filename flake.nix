@@ -3,9 +3,7 @@
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
-    # TODO: switch back to nixos-unstable after
-    # https://github.com/NixOS/nixpkgs/pull/357705
-    nixpkgs.url = "github:NixOS/nixpkgs/refs/pull/357705/head";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs =
@@ -19,7 +17,20 @@
             type = "app";
             program = pkgs.python3.withPackages (_: [ self'.packages.default ]);
           };
-          devShells.default = pkgs.mkShell { inputsFrom = [ self'.packages.default ]; };
+          devShells.default = with pkgs; mkShell {
+            inputsFrom = [ self'.packages.default ];
+            packages = let
+              py = p: [
+                p.boost
+                p.eigenpy
+                p.numpy
+                p.scipy
+              ];
+            in [
+              (python312.withPackages py)
+              (python313.withPackages py)
+            ];
+          };
           packages = {
             default = self'.packages.coal;
             coal = pkgs.python3Packages.coal.overrideAttrs (_: {
