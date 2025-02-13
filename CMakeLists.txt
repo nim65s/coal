@@ -150,6 +150,7 @@ SET_DEFAULT_CMAKE_BUILD_TYPE("RelWithDebInfo")
 APPLY_DEFAULT_APPLE_CONFIGURATION()
 
 option(BUILD_PYTHON_INTERFACE "Build the python bindings" ON)
+option(BUILD_ONLY_PYTHON_INTERFACE "Build only the python bindings" OFF)
 cmake_dependent_option(
   GENERATE_PYTHON_STUBS
   "Generate the Python stubs associated to the Python library"
@@ -161,6 +162,9 @@ cmake_dependent_option(
 ADD_PROJECT_DEPENDENCY(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.0")
 
 if(BUILD_PYTHON_INTERFACE)
+  if(BUILD_ONLY_PYTHON_INTERFACE)
+      ADD_PROJECT_DEPENDENCY(coal REQUIRED CONFIG)
+  endif()
   set(PYTHON_COMPONENTS Interpreter Development NumPy)
   FINDPYTHON(REQUIRED)
   ADD_PROJECT_PRIVATE_DEPENDENCY(eigenpy 2.9.2 REQUIRED)
@@ -512,7 +516,9 @@ if(COAL_HAS_OCTOMAP)
 endif(COAL_HAS_OCTOMAP)
 
 add_subdirectory(doc)
-add_subdirectory(src)
+if(NOT BUILD_ONLY_PYTHON_INTERFACE)
+  add_subdirectory(src)
+endif()
 if(BUILD_PYTHON_INTERFACE)
   add_subdirectory(python)
 endif()
@@ -529,9 +535,11 @@ if(COAL_HAS_OCTOMAP)
 endif(COAL_HAS_OCTOMAP)
 
 # Install catkin package.xml
-install(FILES package.xml DESTINATION share/${PROJECT_NAME})
+if(NOT BUILD_ONLY_PYTHON_INTERFACE)
+  install(FILES package.xml DESTINATION share/${PROJECT_NAME})
+endif()
 
-if(COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
+if(COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL AND NOT BUILD_ONLY_PYTHON_INTERFACE)
   include(CMakePackageConfigHelpers)
   write_basic_package_version_file(
     hpp-fclConfigVersion.cmake

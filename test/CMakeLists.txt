@@ -1,4 +1,5 @@
 # Find Boost.UnitTestFramework
+if(NOT BUILD_ONLY_PYTHON_INTERFACE)
 find_package(Boost REQUIRED COMPONENTS unit_test_framework filesystem)
 
 CONFIG_FILES(fcl_resources/config.h)
@@ -84,6 +85,7 @@ target_link_libraries(
   ${test_benchmark_target}
   PUBLIC ${utility_target} Boost::filesystem ${PROJECT_NAME}
 )
+endif()
 
 ## Python tests
 if(BUILD_PYTHON_INTERFACE)
