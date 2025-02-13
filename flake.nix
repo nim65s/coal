@@ -17,10 +17,27 @@
             type = "app";
             program = pkgs.python3.withPackages (_: [ self'.packages.default ]);
           };
-          devShells.default = pkgs.mkShell { inputsFrom = [ self'.packages.default ]; };
+          devShells.default =
+            with pkgs;
+            mkShell {
+              inputsFrom = [ pkgs.python3Packages.coal ];
+              packages =
+                let
+                  py = p: [
+                    p.boost
+                    p.eigenpy
+                    p.numpy
+                    p.scipy
+                  ];
+                in
+                [
+                  (python312.withPackages py)
+                  (python313.withPackages py)
+                ];
+            };
           packages = {
             default = self'.packages.coal;
-            coal = pkgs.python3Packages.coal.overrideAttrs (super: {
+            coal = pkgs.coal.overrideAttrs (super: {
               cmakeFlags = super.cmakeFlags ++ [ "-DCOAL_DISABLE_HPP_FCL_WARNINGS=ON" ];
               src = pkgs.lib.fileset.toSource {
                 root = ./.;
@@ -36,6 +53,25 @@
                 ];
               };
             });
+            py-coal =
+              (self'.packages.coal.override {
+                inherit (pkgs) python3Packages;
+                pythonSupport = true;
+              }).overrideAttrs
+                (super: {
+                  cmakeFlags = super.cmakeFlags ++ [
+                    "-DBUILD_ONLY_PYTHON_PYTHON_INTERFACE=ON"
+                  ];
+                  propagatedBuildInputs = super.propagatedBuildInputs ++ [
+                    self'.packages.coal
+                  ];
+                });
+            py312-coal = self'.packages.py-coal.override {
+              python3Packages = pkgs.python312Packages;
+            };
+            py313-coal = self'.packages.py-coal.override {
+              python3Packages = pkgs.python313Packages;
+            };
           };
         };
     };
