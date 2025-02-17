@@ -1,8 +1,7 @@
 /// Copyright 2025 INRIA
-#include <nanobind/nanobind.h>
+#include "fwd.h"
 #include "coal/config.hh"
 
-namespace nb = nanobind;
 using namespace nb::literals;
 
 inline constexpr bool checkVersionAtLeast(int major, int minor, int patch) {
@@ -44,4 +43,19 @@ void exposeVersion(nb::module_ &m) {
         "by the input arguments.");
 }
 
-NB_MODULE(COAL_PYTHON_LIBNAME, m) { exposeVersion(m); }
+void exposeMaths(nb::module_ &m);
+
+void exposeCollisionGeometries(nb::module_ &m);
+
+void exposeGJK(nb::module_ &m);
+
+#ifdef COAL_HAS_OCTOMAP
+void exposeOctree(nb::module_ &m);
+#endif
+
+void exposeBroadPhase(nb::module_ &m);
+
+NB_MODULE(COAL_PYTHON_LIBNAME, m) {
+  exposeVersion(m);
+  exposeMaths(m);
+}

@@ -2,7 +2,7 @@ find_package(Python REQUIRED COMPONENTS Interpreter Development)
 find_package(nanobind CONFIG REQUIRED)
 
 set(PYTHON_LIB_NAME_V2 coal_pywrap_v2)
-set(coal_pywrap_v2_SOURCES module.cc)
+set(coal_pywrap_v2_SOURCES math.cc module.cc)
 
 nanobind_add_module(${PYTHON_LIB_NAME_V2} NB_STATIC LTO NB_SUPPRESS_WARNINGS ${coal_pywrap_v2_SOURCES})
 target_link_libraries(
