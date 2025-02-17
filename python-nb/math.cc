@@ -1,7 +1,10 @@
 /// Copyright 2025 INRIA
 #include "coal/math/transform.h"
+#include "coal/serialization/transform.h"
 
 #include "fwd.h"
+#include "serializable.hh"
+
 #include <nanobind/eigen/dense.h>
 #include <nanobind/stl/bind_vector.h>
 #include <nanobind/operators.h>
@@ -50,7 +53,8 @@ void exposeMaths(nb::module_ &m) {
       .def(nb::self * nb::self)
       .def(nb::self *= nb::self)
       .def(nb::self == nb::self)
-      .def(nb::self != nb::self);
+      .def(nb::self != nb::self)
+      .def(python::v2::SerializableVisitor<Transform3s>());
 
   nb::class_<Triangle>(m, "Triangle")
       .def(nb::init<>())
