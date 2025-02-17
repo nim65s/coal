@@ -31,7 +31,7 @@ endforeach(pyfile)
 
 nanobind_add_stub(
   coal_pywrap_v2_stub
-  MODULE ${MODULE_NAME}
-  OUTPUT ${MODULE_NAME}.pyi
+  MODULE ${MODULE_NAME}.${PYTHON_LIB_NAME_V2}
+  OUTPUT ${MODULE_DIR}/__init__.pyi
   DEPENDS ${PYTHON_LIB_NAME_V2}
 )
