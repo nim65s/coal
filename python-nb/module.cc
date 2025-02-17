@@ -85,5 +85,6 @@ NB_MODULE(COAL_PYTHON_LIBNAME, m) {
   exposeMaths(m);
   // this one goes first, exposes NODE_TYPE enum
   exposeCollisionGeometries(m);
+  exposeCollisionObject(m);
   exposeMeshLoader(m);
 }

@@ -1,5 +1,6 @@
 #include "fwd.h"
 #include "serializable.hh"
+#include <nanobind/operators.h>
 
 #include "coal/fwd.hh"
 #include "coal/shape/geometric_shapes.h"
@@ -10,9 +11,10 @@
 #include "coal/serialization/memory.h"
 
 using namespace coal;
+using namespace nb::literals;
 using Triangles = std::vector<Triangle>;
 
-void exposeCollisionGeometries(nb::module_ &m) {
+void exposeCollisionGeometries(nb::module_& m) {
   nb::enum_<BVHModelType>(m, "BVHModelType")
       .value("BVH_MODEL_UNKNOWN", BVH_MODEL_UNKNOWN)
       .value("BVH_MODEL_TRIANGLES", BVH_MODEL_TRIANGLES)
@@ -60,4 +62,43 @@ void exposeCollisionGeometries(nb::module_ &m) {
       .value("HF_AABB", HF_AABB)
       .value("HF_OBBRSS", HF_OBBRSS)
       .export_values();
+}
+
+void exposeCollisionObject(nb::module_& m) {
+  nb::class_<CollisionObject>(m, "CollisionObject")
+      .def(nb::init<const CollisionGeometryPtr_t&, bool>(), "cgeom"_a,
+           "compute_local_aabb"_a = true)
+      .def(nb::init<const CollisionGeometryPtr_t&, const Transform3s&, bool>(),
+           "cgeom"_a, "tf"_a, "compute_local_aabb"_a = true)
+      .def(nb::init<const CollisionGeometryPtr_t&, const Matrix3s&,
+                    const Vec3s&, bool>(),
+           "cgeom"_a, "R"_a, "t"_a, "compute_local_aabb"_a = true)
+      .def(nb::self == nb::self)
+      .def(nb::self != nb::self)
+      .def("getObjectType", &CollisionObject::getObjectType)
+      .def("getNodeType", &CollisionObject::getNodeType)
+
+      // properties
+      .def_prop_rw("translation", &CollisionObject::getTranslation,
+                   &CollisionObject::setTranslation)
+      .def_prop_rw("rotation", &CollisionObject::getRotation,
+                   &CollisionObject::setRotation)
+      .def("getTransform", &CollisionObject::getTransform)
+      .def("setTransform", [](CollisionObject& o,
+                              const Transform3s& tf) { o.setTransform(tf); })
+      .def("setTransform", [](CollisionObject& o, const Matrix3s& R,
+                              const Vec3s& t) { o.setTransform(R, t); })
+
+      .def("isIdentityTransform", &CollisionObject::isIdentityTransform)
+      .def("setIdentityTransform", &CollisionObject::setIdentityTransform)
+
+      .def(
+          "getAABB", [](CollisionObject& o) -> AABB& { return o.getAABB(); },
+          nb::rv_policy::automatic_reference)
+      .def("computeAABB", &CollisionObject::computeAABB)
+
+      .def("setCollisionGeometry", &CollisionObject::setCollisionGeometry,
+           "cgeom"_a, "compute_local_aabb"_a = true)
+      .def("collisionGeometry",
+           [](CollisionObject& o) { return o.collisionGeometry(); });
 }
