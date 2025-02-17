@@ -1,6 +1,9 @@
 /// Copyright 2025 INRIA
 #include "fwd.h"
 #include "coal/config.hh"
+#include "coal/mesh_loader/loader.h"
+
+#include <nanobind/eigen/dense.h>
 
 using namespace nb::literals;
 
@@ -43,9 +46,31 @@ void exposeVersion(nb::module_ &m) {
         "by the input arguments.");
 }
 
+void exposeMeshLoader(nb::module_ &m) {
+  using namespace coal;
+  nb::handle cl_cur = nb::type<MeshLoader>();
+  if (cl_cur.is_valid()) {
+    return;
+  }
+
+  if (!nb::type<MeshLoader>().is_valid()) {
+    nb::class_<MeshLoader>(m, "MeshLoader")
+        .def(nb::init<NODE_TYPE>(), "node_type"_a = BV_OBBRSS)
+        .def("load", &MeshLoader::load, "filename"_a, "scale"_a = Vec3s::Ones())
+        .def("loadOctree", &MeshLoader::loadOctree, "filename"_a);
+  }
+
+  if (!nb::type<CachedMeshLoader>().is_valid()) {
+    nb::class_<CachedMeshLoader, MeshLoader>(m, "CachedMeshLoader")
+        .def(nb::init<NODE_TYPE>(), "node_type"_a = BV_OBBRSS);
+  }
+}
+
 void exposeMaths(nb::module_ &m);
 
 void exposeCollisionGeometries(nb::module_ &m);
+
+void exposeCollisionObject(nb::module_ &m);
 
 void exposeGJK(nb::module_ &m);
 
@@ -58,4 +83,7 @@ void exposeBroadPhase(nb::module_ &m);
 NB_MODULE(COAL_PYTHON_LIBNAME, m) {
   exposeVersion(m);
   exposeMaths(m);
+  // this one goes first, exposes NODE_TYPE enum
+  exposeCollisionGeometries(m);
+  exposeMeshLoader(m);
 }
