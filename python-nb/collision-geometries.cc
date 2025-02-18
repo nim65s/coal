@@ -1,11 +1,11 @@
 #include "fwd.h"
 #include "serializable.hh"
+#include <nanobind/eigen/dense.h>
 #include <nanobind/operators.h>
 
 #include "coal/fwd.hh"
 #include "coal/shape/geometric_shapes.h"
 #include "coal/shape/convex.h"
-#include "coal/BVH/BVH_model.h"
 #include "coal/hfield.h"
 
 #include "coal/serialization/memory.h"
@@ -13,6 +13,8 @@
 using namespace coal;
 using namespace nb::literals;
 using Triangles = std::vector<Triangle>;
+
+void exposeBVHModels(nb::module_& m);
 
 void exposeCollisionGeometries(nb::module_& m) {
   nb::enum_<BVHModelType>(m, "BVHModelType")
@@ -62,6 +64,21 @@ void exposeCollisionGeometries(nb::module_& m) {
       .value("HF_AABB", HF_AABB)
       .value("HF_OBBRSS", HF_OBBRSS)
       .export_values();
+
+  nb::class_<CollisionGeometry>(m, "CollisionGeometry")
+      .DEF_CLASS_FUNC(CollisionGeometry, getObjectType)
+      .DEF_CLASS_FUNC(CollisionGeometry, getNodeType)
+
+      .DEF_CLASS_FUNC(CollisionGeometry, computeLocalAABB)
+      .DEF_CLASS_FUNC(CollisionGeometry, computeCOM)
+      .DEF_CLASS_FUNC(CollisionGeometry, computeMomentofInertia)
+      .DEF_CLASS_FUNC(CollisionGeometry, computeVolume)
+      .DEF_CLASS_FUNC(CollisionGeometry, computeMomentofInertiaRelatedToCOM)
+
+      .def(nb::self == nb::self)
+      .def(nb::self != nb::self);
+
+  exposeBVHModels(m);
 }
 
 void exposeCollisionObject(nb::module_& m) {
@@ -75,8 +92,9 @@ void exposeCollisionObject(nb::module_& m) {
            "cgeom"_a, "R"_a, "t"_a, "compute_local_aabb"_a = true)
       .def(nb::self == nb::self)
       .def(nb::self != nb::self)
-      .def("getObjectType", &CollisionObject::getObjectType)
-      .def("getNodeType", &CollisionObject::getNodeType)
+
+      .DEF_CLASS_FUNC(CollisionObject, getObjectType)
+      .DEF_CLASS_FUNC(CollisionObject, getNodeType)
 
       // properties
       .def_prop_rw("translation", &CollisionObject::getTranslation,
@@ -95,7 +113,7 @@ void exposeCollisionObject(nb::module_& m) {
       .def(
           "getAABB", [](CollisionObject& o) -> AABB& { return o.getAABB(); },
           nb::rv_policy::automatic_reference)
-      .def("computeAABB", &CollisionObject::computeAABB)
+      .DEF_CLASS_FUNC(CollisionObject, computeAABB)
 
       .def("setCollisionGeometry", &CollisionObject::setCollisionGeometry,
            "cgeom"_a, "compute_local_aabb"_a = true)
