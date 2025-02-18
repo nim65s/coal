@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Remove constraints on supported doxygen version to generate the python documentation ([#681](https://github.com/coal-library/coal/pull/681))
 - Remove useless COAL_WITH_CXX11_SUPPORT guard ([#688](https://github.com/coal-library/coal/pull/688))
 
+### Added
+- Added a second set of Python bindings based on nanobind ([#659](https://github.com/coal-library/coal/pull/659))
+
 ### Changed
 - Formatted all CMake listfiles using gersemi, add gersemi to pre-commit configuration ([#657](https://github.com/coal-library/coal/pull/657/files))
 - Float precision ([#665](https://github.com/coal-library/coal/pull/665))
