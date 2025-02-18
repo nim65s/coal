@@ -4,6 +4,7 @@
 
 #include "fwd.h"
 #include "serializable.hh"
+#include "pickle.hh"
 
 #include <nanobind/eigen/dense.h>
 #include <nanobind/stl/bind_vector.h>
@@ -54,6 +55,7 @@ void exposeMaths(nb::module_ &m) {
       .def(nb::self *= nb::self)
       .def(nb::self == nb::self)
       .def(nb::self != nb::self)
+      .def(python::v2::PickleVisitor<Transform3s>())
       .def(python::v2::SerializableVisitor<Transform3s>());
 
   nb::class_<Triangle>(m, "Triangle")
