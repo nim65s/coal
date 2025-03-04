@@ -59,7 +59,7 @@ On the other hand, why do we care about dedicated collision detection solvers li
 
 One can observe that GJK-based approaches largely outperform solutions based on classic optimization solvers (e.g., QP solver like [ProxQP](https://github.com/Simple-Robotics/proxsuite)), notably for large geometries composed of tens or hundreds of vertices.
 
-## Open-source projects relying on Pinocchio
+## Open-source projects relying on Coal
 
 - [Pinocchio](https://github.com/stack-of-tasks/pinocchio) A fast and flexible implementation of Rigid Body Dynamics algorithms and their analytical derivatives.
 - [IfcOpenShell](https://github.com/IfcOpenShell/IfcOpenShell) Open source IFC library and geometry engine.
