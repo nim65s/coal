@@ -83,7 +83,8 @@ typedef std::vector<Vec3s> Vec3ss;
 typedef std::vector<Triangle> Triangles;
 
 struct BVHModelBaseWrapper {
-  typedef Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor> RowMatrixX3;
+  typedef Eigen::Matrix<CoalScalar, Eigen::Dynamic, 3, Eigen::RowMajor>
+      RowMatrixX3;
   typedef Eigen::Map<RowMatrixX3> MapRowMatrixX3;
   typedef Eigen::Ref<RowMatrixX3> RefRowMatrixX3;
 
@@ -173,12 +174,12 @@ void exposeHeightField(const std::string& bvname) {
 }
 
 struct ConvexBaseWrapper {
-  typedef Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor> RowMatrixX3;
+  typedef Eigen::Matrix<CoalScalar, Eigen::Dynamic, 3, Eigen::RowMajor>
+      RowMatrixX3;
   typedef Eigen::Map<RowMatrixX3> MapRowMatrixX3;
   typedef Eigen::Ref<RowMatrixX3> RefRowMatrixX3;
-  typedef Eigen::VectorXd VecOfDoubles;
-  typedef Eigen::Map<VecOfDoubles> MapVecOfDoubles;
-  typedef Eigen::Ref<VecOfDoubles> RefVecOfDoubles;
+  typedef Eigen::Map<VecXs> MapVecXs;
+  typedef Eigen::Ref<VecXs> RefVecXs;
 
   static Vec3s& point(const ConvexBase& convex, unsigned int i) {
     if (i >= convex.num_points)
@@ -201,15 +202,14 @@ struct ConvexBaseWrapper {
                           convex.num_normals_and_offsets, 3);
   }
 
-  static double offset(const ConvexBase& convex, unsigned int i) {
+  static CoalScalar offset(const ConvexBase& convex, unsigned int i) {
     if (i >= convex.num_normals_and_offsets)
       throw std::out_of_range("index is out of range");
     return (*(convex.offsets))[i];
   }
 
-  static RefVecOfDoubles offsets(const ConvexBase& convex) {
-    return MapVecOfDoubles(convex.offsets->data(),
-                           convex.num_normals_and_offsets, 1);
+  static RefVecXs offsets(const ConvexBase& convex) {
+    return MapVecXs(convex.offsets->data(), convex.num_normals_and_offsets, 1);
   }
 
   static list neighbors(const ConvexBase& convex, unsigned int i) {

@@ -232,8 +232,8 @@ void ConvexBase::buildDoubleDescriptionFromQHullResult(const Qhull& qh) {
   num_normals_and_offsets = static_cast<unsigned int>(qh.facetCount());
   normals.reset(new std::vector<Vec3s>(num_normals_and_offsets));
   std::vector<Vec3s>& normals_ = *normals;
-  offsets.reset(new std::vector<double>(num_normals_and_offsets));
-  std::vector<double>& offsets_ = *offsets;
+  offsets.reset(new std::vector<CoalScalar>(num_normals_and_offsets));
+  std::vector<CoalScalar>& offsets_ = *offsets;
   unsigned int i_normal = 0;
   for (QhullFacet facet = qh.beginFacet(); facet != qh.endFacet();
        facet = facet.next()) {

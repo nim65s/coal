@@ -310,7 +310,7 @@ void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
 
   // Use warm start if current support direction is distant from last support
   // direction.
-  const double use_warm_start_threshold = 0.9;
+  const CoalScalar use_warm_start_threshold = 0.9;
   Vec3s dir_normalized = dir.normalized();
   if (!support_data.last_dir.isZero() &&
       !convex->support_warm_starts.points.empty() &&

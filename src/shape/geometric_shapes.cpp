@@ -98,7 +98,7 @@ ConvexBase::ConvexBase(const ConvexBase& other)
     normals.reset();
 
   if (other.offsets.get() && other.offsets->size() > 0) {
-    offsets.reset(new std::vector<double>(*(other.offsets)));
+    offsets.reset(new std::vector<CoalScalar>(*(other.offsets)));
   } else
     offsets.reset();
 

@@ -54,7 +54,7 @@
 using namespace coal;
 
 BOOST_AUTO_TEST_CASE(collision_capsule_capsule_trivial) {
-  const double radius = 1.;
+  const CoalScalar radius = 1.;
 
   CollisionGeometryPtr_t c1(new Capsule(radius, 0.));
   CollisionGeometryPtr_t c2(new Capsule(radius, 0.));
@@ -110,8 +110,8 @@ BOOST_AUTO_TEST_CASE(collision_capsule_capsule_trivial) {
 }
 
 BOOST_AUTO_TEST_CASE(collision_capsule_capsule_aligned) {
-  const double radius = 0.01;
-  const double length = 0.2;
+  const CoalScalar radius = 0.01;
+  const CoalScalar length = 0.2;
 
   CollisionGeometryPtr_t c1(new Capsule(radius, length));
   CollisionGeometryPtr_t c2(new Capsule(radius, length));

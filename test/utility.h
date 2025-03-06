@@ -164,7 +164,7 @@ void generateRandomTransforms(CoalScalar extents[6], CoalScalar delta_trans[3],
 /// @ brief Structure for minimum distance between two meshes and the
 /// corresponding nearest point pair
 struct DistanceRes {
-  double distance;
+  CoalScalar distance;
   Vec3s p1;
   Vec3s p2;
 };

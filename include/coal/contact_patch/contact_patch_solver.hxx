@@ -411,12 +411,12 @@ inline Vec2s ContactPatchSolver::computeLineSegmentIntersection(
   const Vec2s ab = b - a;
   const Vec2s n(-ab(1), ab(0));
   const CoalScalar denominator = n.dot(c - d);
-  if (std::abs(denominator) < std::numeric_limits<double>::epsilon()) {
+  if (std::abs(denominator) < std::numeric_limits<CoalScalar>::epsilon()) {
     return d;
   }
   const CoalScalar nominator = n.dot(a - d);
   CoalScalar alpha = nominator / denominator;
-  alpha = std::min<double>(1.0, std::max<CoalScalar>(0.0, alpha));
+  alpha = std::min<CoalScalar>(1.0, std::max<CoalScalar>(0.0, alpha));
   return alpha * c + (1 - alpha) * d;
 }
 

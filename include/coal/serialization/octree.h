@@ -29,7 +29,7 @@ struct OcTreeAccessor : coal::OcTree {
 template <class Archive>
 void save_construct_data(Archive &ar, const coal::OcTree *octree_ptr,
                          const unsigned int /*version*/) {
-  const double resolution = octree_ptr->getResolution();
+  const coal::CoalScalar resolution = octree_ptr->getResolution();
   ar << make_nvp("resolution", resolution);
 }
 
@@ -58,7 +58,7 @@ void save(Archive &ar, const coal::OcTree &octree,
 template <class Archive>
 void load_construct_data(Archive &ar, coal::OcTree *octree_ptr,
                          const unsigned int /*version*/) {
-  double resolution;
+  coal::CoalScalar resolution;
   ar >> make_nvp("resolution", resolution);
   new (octree_ptr) coal::OcTree(resolution);
 }

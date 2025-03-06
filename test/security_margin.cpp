@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(aabb_aabb) {
   const Transform3s tf2_collision(Vec3s(0, 1, 1));
   coal::Box s1(1, 1, 1);
   coal::Box s2(1, 1, 1);
-  const double tol = 1e-8;
+  const CoalScalar tol = 1e-8;
 
   AABB bv1, bv2;
   computeBV(s1, Transform3s(), bv1);
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(aabb_aabb) {
   // No security margin - no collision
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     Transform3s tf2_no_collision(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, 0, distance)));
     AABB bv2_transformed;
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(aabb_aabb) {
   // Security margin - collision
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     collisionRequest.security_margin = distance;
     Transform3s tf2_no_collision(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, 0, distance)));
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(aabb_aabb) {
   // Negative security margin - collion because the two boxes are in contact
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = -0.01;
+    const CoalScalar distance = -0.01;
     collisionRequest.security_margin = distance;
     const Transform3s tf2(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, distance, distance)));
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(aabb_aabb) {
   // Negative security margin - no collision
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = -0.01;
+    const CoalScalar distance = -0.01;
     collisionRequest.security_margin = distance;
     AABB bv2_transformed;
     computeBV(s2, tf2_collision, bv2_transformed);
@@ -165,7 +165,7 @@ BOOST_AUTO_TEST_CASE(aabb_aabb_degenerated_cases) {
   // The two AABB are collocated
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = -2.;
+    const CoalScalar distance = -2.;
     collisionRequest.security_margin = distance;
     AABB bv2_transformed;
     computeBV(s2, tf2_collision, bv2_transformed);
@@ -205,7 +205,7 @@ BOOST_AUTO_TEST_CASE(sphere_sphere) {
   {
     CollisionRequest collisionRequest(CONTACT, 1);
     CollisionResult collisionResult;
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     Transform3s tf2_no_collision(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, 0, distance)));
     collide(s1.get(), tf1, s2.get(), tf2_no_collision, collisionRequest,
@@ -218,7 +218,7 @@ BOOST_AUTO_TEST_CASE(sphere_sphere) {
   {
     CollisionRequest collisionRequest(CONTACT, 1);
     CollisionResult collisionResult;
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     collisionRequest.security_margin = distance;
     Transform3s tf2(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, 0, distance)));
@@ -233,7 +233,7 @@ BOOST_AUTO_TEST_CASE(sphere_sphere) {
   {
     CollisionRequest collisionRequest(CONTACT, 1);
     CollisionResult collisionResult;
-    const double distance = -0.01;
+    const CoalScalar distance = -0.01;
     collisionRequest.security_margin = distance;
     Transform3s tf2(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, 0, distance)));
@@ -279,7 +279,7 @@ BOOST_AUTO_TEST_CASE(capsule_capsule) {
   {
     CollisionRequest collisionRequest(CONTACT, 1);
     CollisionResult collisionResult;
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     Transform3s tf2_no_collision(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, distance, 0)));
     collide(c1.get(), tf1, c2.get(), tf2_no_collision, collisionRequest,
@@ -292,7 +292,7 @@ BOOST_AUTO_TEST_CASE(capsule_capsule) {
   {
     CollisionRequest collisionRequest(CONTACT, 1);
     CollisionResult collisionResult;
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     collisionRequest.security_margin = distance;
     Transform3s tf2_no_collision(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, distance, 0)));
@@ -308,7 +308,7 @@ BOOST_AUTO_TEST_CASE(capsule_capsule) {
   {
     CollisionRequest collisionRequest(CONTACT, 1);
     CollisionResult collisionResult;
-    const double distance = -0.01;
+    const CoalScalar distance = -0.01;
     collisionRequest.security_margin = distance;
     Transform3s tf2(
         Vec3s(tf2_collision.getTranslation() + Vec3s(0, distance, 0)));
@@ -338,7 +338,7 @@ BOOST_AUTO_TEST_CASE(box_box) {
   const Transform3s tf1;
   const Transform3s tf2_collision(Vec3s(0, 1, 1));
 
-  const double tol = 1e-3;
+  const CoalScalar tol = 1e-3;
 
   // No security margin - collision
   {
@@ -354,7 +354,7 @@ BOOST_AUTO_TEST_CASE(box_box) {
   // No security margin - no collision
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     const Transform3s tf2_no_collision(
         (tf2_collision.getTranslation() + Vec3s(0, 0, distance)).eval());
 
@@ -368,7 +368,7 @@ BOOST_AUTO_TEST_CASE(box_box) {
   // Positive security margin - collision
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     collisionRequest.security_margin = distance;
     CollisionResult collisionResult;
     collide(b1.get(), tf1, b2.get(), tf2_collision, collisionRequest,
@@ -428,7 +428,7 @@ void test_shape_shape(const ShapeType1& shape1, const Transform3s& tf1,
   // No security margin - no collision
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     const Transform3s tf2_no_collision(
         (tf2_collision.getTranslation() + Vec3s(0, 0, distance)).eval());
 
@@ -442,7 +442,7 @@ void test_shape_shape(const ShapeType1& shape1, const Transform3s& tf1,
   // Positive security margin - collision
   {
     CollisionRequest collisionRequest(CONTACT, 1);
-    const double distance = 0.01;
+    const CoalScalar distance = 0.01;
     collisionRequest.security_margin = distance;
     CollisionResult collisionResult;
     collide(&shape1, tf1, &shape2, tf2_collision, collisionRequest,
@@ -499,7 +499,7 @@ BOOST_AUTO_TEST_CASE(sphere_box) {
   const Transform3s tf1;
   const Transform3s tf2_collision(Vec3s(0, 0, 1));
 
-  const double tol = 1e-6;
+  const CoalScalar tol = 1e-6;
 
   test_shape_shape(*b1.get(), tf1, *s2.get(), tf2_collision, tol);
   test_shape_shape(box_convex, tf1, *s2.get(), tf2_collision, tol);

@@ -60,19 +60,19 @@ using namespace coal::detail;
 /// @brief Generate environment with 3 * n objects for self distance, so we try
 /// to make sure none of them collide with each other.
 void generateSelfDistanceEnvironments(std::vector<CollisionObject*>& env,
-                                      double env_scale, std::size_t n);
+                                      CoalScalar env_scale, std::size_t n);
 
 /// @brief Generate environment with 3 * n objects for self distance, but all in
 /// meshes.
 void generateSelfDistanceEnvironmentsMesh(std::vector<CollisionObject*>& env,
-                                          double env_scale, std::size_t n);
+                                          CoalScalar env_scale, std::size_t n);
 
 /// @brief test for broad phase distance
-void broad_phase_distance_test(double env_scale, std::size_t env_size,
+void broad_phase_distance_test(CoalScalar env_scale, std::size_t env_size,
                                std::size_t query_size, bool use_mesh = false);
 
 /// @brief test for broad phase self distance
-void broad_phase_self_distance_test(double env_scale, std::size_t env_size,
+void broad_phase_self_distance_test(CoalScalar env_scale, std::size_t env_size,
                                     bool use_mesh = false);
 
 CoalScalar DELTA = 0.01;
@@ -143,7 +143,7 @@ BOOST_AUTO_TEST_CASE(test_core_mesh_bf_broad_phase_self_distance_mesh) {
 }
 
 void generateSelfDistanceEnvironments(std::vector<CollisionObject*>& env,
-                                      double env_scale, std::size_t n) {
+                                      CoalScalar env_scale, std::size_t n) {
   int n_edge = static_cast<int>(std::floor(std::pow(n, 1 / 3.0)));
 
   CoalScalar step_size = env_scale * 2 / n_edge;
@@ -213,7 +213,7 @@ void generateSelfDistanceEnvironments(std::vector<CollisionObject*>& env,
 }
 
 void generateSelfDistanceEnvironmentsMesh(std::vector<CollisionObject*>& env,
-                                          double env_scale, std::size_t n) {
+                                          CoalScalar env_scale, std::size_t n) {
   int n_edge = static_cast<int>(std::floor(std::pow(n, 1 / 3.0)));
 
   CoalScalar step_size = env_scale * 2 / n_edge;
@@ -290,7 +290,7 @@ void generateSelfDistanceEnvironmentsMesh(std::vector<CollisionObject*>& env,
   }
 }
 
-void broad_phase_self_distance_test(double env_scale, std::size_t env_size,
+void broad_phase_self_distance_test(CoalScalar env_scale, std::size_t env_size,
                                     bool use_mesh) {
   std::vector<TStruct> ts;
   std::vector<BenchTimer> timers;
@@ -412,7 +412,7 @@ void broad_phase_self_distance_test(double env_scale, std::size_t env_size,
   std::cout << std::endl;
 }
 
-void broad_phase_distance_test(double env_scale, std::size_t env_size,
+void broad_phase_distance_test(CoalScalar env_scale, std::size_t env_size,
                                std::size_t query_size, bool use_mesh) {
   std::vector<TStruct> ts;
   std::vector<BenchTimer> timers;

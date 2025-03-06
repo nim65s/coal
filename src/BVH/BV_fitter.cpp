@@ -43,9 +43,9 @@
 
 namespace coal {
 
-static const double kIOS_RATIO = 1.5;
-static const double invSinA = 2;
-static const double cosA = sqrt(3.0) / 2.0;
+static const CoalScalar kIOS_RATIO = 1.5;
+static const CoalScalar invSinA = 2;
+static const CoalScalar cosA = sqrt(3.0) / 2.0;
 
 static inline void axisFromEigen(Vec3s eigenV[3], CoalScalar eigenS[3],
                                  Matrix3s& axes) {

@@ -52,6 +52,7 @@
 
 #include "utility.h"
 
+using coal::CoalScalar;
 using coal::CollisionGeometryPtr_t;
 using coal::CollisionObject;
 using coal::DistanceRequest;
@@ -83,9 +84,9 @@ BOOST_AUTO_TEST_CASE(distance_box_box_1) {
   std::cerr << "Closest points: p1 = " << distanceResult.nearest_points[0]
             << ", p2 = " << distanceResult.nearest_points[1]
             << ", distance = " << distanceResult.min_distance << std::endl;
-  double dx = 25 - 3 - 1;
-  double dy = 20 - 5 - 1;
-  double dz = 5 - 1 - 1;
+  CoalScalar dx = 25 - 3 - 1;
+  CoalScalar dy = 20 - 5 - 1;
+  CoalScalar dz = 5 - 1 - 1;
 
   const Vec3s& p1 = distanceResult.nearest_points[0];
   const Vec3s& p2 = distanceResult.nearest_points[1];
@@ -103,7 +104,7 @@ BOOST_AUTO_TEST_CASE(distance_box_box_1) {
 BOOST_AUTO_TEST_CASE(distance_box_box_2) {
   CollisionGeometryPtr_t s1(new coal::Box(6, 10, 2));
   CollisionGeometryPtr_t s2(new coal::Box(2, 2, 2));
-  static double pi = M_PI;
+  static CoalScalar pi = M_PI;
   Transform3s tf1;
   Transform3s tf2(coal::makeQuat(cos(pi / 8), sin(pi / 8) / sqrt(3),
                                  sin(pi / 8) / sqrt(3), sin(pi / 8) / sqrt(3)),
@@ -129,7 +130,7 @@ BOOST_AUTO_TEST_CASE(distance_box_box_2) {
 
   const Vec3s& p1 = distanceResult.nearest_points[0];
   const Vec3s& p2 = distanceResult.nearest_points[1];
-  double distance = -1.62123444 + 10 - 1;
+  CoalScalar distance = -1.62123444 + 10 - 1;
   BOOST_CHECK_CLOSE(distanceResult.min_distance, distance, 1e-4);
 
   BOOST_CHECK_CLOSE(p1[0], 0.60947571, 1e-4);
@@ -143,7 +144,7 @@ BOOST_AUTO_TEST_CASE(distance_box_box_2) {
 BOOST_AUTO_TEST_CASE(distance_box_box_3) {
   CollisionGeometryPtr_t s1(new coal::Box(1, 1, 1));
   CollisionGeometryPtr_t s2(new coal::Box(1, 1, 1));
-  static double pi = M_PI;
+  static CoalScalar pi = M_PI;
   Transform3s tf1(coal::makeQuat(cos(pi / 8), 0, 0, sin(pi / 8)),
                   Vec3s(-2, 1, .5));
   Transform3s tf2(coal::makeQuat(cos(pi / 8), 0, sin(pi / 8), 0),
@@ -169,7 +170,7 @@ BOOST_AUTO_TEST_CASE(distance_box_box_3) {
 
   const Vec3s& p1 = distanceResult.nearest_points[0];
   const Vec3s& p2 = distanceResult.nearest_points[1];
-  double distance = 4 - sqrt(2);
+  CoalScalar distance = 4 - sqrt(2);
   BOOST_CHECK_CLOSE(distanceResult.min_distance, distance, 1e-4);
 
   const Vec3s p1Ref(sqrt(2) / 2 - 2, 1, .5);
@@ -221,7 +222,7 @@ BOOST_AUTO_TEST_CASE(distance_box_box_4) {
   // Enable computation of nearest points
   DistanceRequest distanceRequest(true, true, 0, 0);
   DistanceResult distanceResult;
-  double distance;
+  CoalScalar distance;
 
   Transform3s tf1(Vec3s(2, 0, 0));
   Transform3s tf2;

@@ -57,9 +57,9 @@ using namespace coal;
 template <typename BV>
 void testBVHModelPointCloud() {
   Box box(Vec3s::Ones());
-  double a = box.halfSide[0];
-  double b = box.halfSide[1];
-  double c = box.halfSide[2];
+  CoalScalar a = box.halfSide[0];
+  CoalScalar b = box.halfSide[1];
+  CoalScalar c = box.halfSide[2];
   std::vector<Vec3s> points(8);
   points[0] << a, -b, c;
   points[1] << a, b, c;
@@ -142,9 +142,9 @@ void testBVHModelTriangles() {
   Box box(Vec3s::Ones());
   AABB aabb(Vec3s(-1, 0, -1), Vec3s(1, 1, 1));
 
-  double a = box.halfSide[0];
-  double b = box.halfSide[1];
-  double c = box.halfSide[2];
+  CoalScalar a = box.halfSide[0];
+  CoalScalar b = box.halfSide[1];
+  CoalScalar c = box.halfSide[2];
   std::vector<Vec3s> points(8);
   std::vector<Triangle> tri_indices(12);
   points[0] << a, -b, c;
@@ -231,9 +231,9 @@ void testBVHModelSubModel() {
   shared_ptr<BVHModel<BV> > model(new BVHModel<BV>);
   Box box(Vec3s::Ones());
 
-  double a = box.halfSide[0];
-  double b = box.halfSide[1];
-  double c = box.halfSide[2];
+  CoalScalar a = box.halfSide[0];
+  CoalScalar b = box.halfSide[1];
+  CoalScalar c = box.halfSide[2];
   std::vector<Vec3s> points(8);
   std::vector<Triangle> tri_indices(12);
   points[0] << a, -b, c;

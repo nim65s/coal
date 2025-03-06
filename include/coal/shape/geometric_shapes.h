@@ -723,7 +723,7 @@ class COAL_DLLAPI ConvexBase : public ShapeBase {
   std::shared_ptr<std::vector<Vec3s>> normals;
   /// @brief An array of the offsets to the normals of the polygon.
   /// Note: there are as many offsets as normals.
-  std::shared_ptr<std::vector<double>> offsets;
+  std::shared_ptr<std::vector<CoalScalar>> offsets;
   unsigned int num_normals_and_offsets;
 
   /// @brief Neighbors of each vertex.
@@ -847,8 +847,8 @@ class COAL_DLLAPI ConvexBase : public ShapeBase {
         (offsets.get() && !(other.offsets.get())))
       return false;
     if (offsets.get() && other.offsets.get()) {
-      const std::vector<double>& offsets_ = *offsets;
-      const std::vector<double>& other_offsets_ = *(other.offsets);
+      const std::vector<CoalScalar>& offsets_ = *offsets;
+      const std::vector<CoalScalar>& other_offsets_ = *(other.offsets);
       for (unsigned int i = 0; i < num_normals_and_offsets; ++i) {
         if (offsets_[i] != other_offsets_[i]) return false;
       }

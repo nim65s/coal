@@ -425,7 +425,7 @@ BOOST_AUTO_TEST_CASE(hfield_with_square_hole) {
       (X.array().abs() < dim_square) && (Y.array().abs() < dim_square);
 
   const MatrixXs heights =
-      MatrixXs::Ones(ny, nx) - hole.cast<double>().matrix();
+      MatrixXs::Ones(ny, nx) - hole.cast<CoalScalar>().matrix();
 
   const HeightField<BV> hfield(2., 2., heights, -10.);
 
@@ -469,7 +469,7 @@ BOOST_AUTO_TEST_CASE(hfield_with_circular_hole) {
       (X.array().square() + Y.array().square() <= dim_hole);
 
   const MatrixXs heights =
-      MatrixXs::Ones(ny, nx) - hole.cast<double>().matrix();
+      MatrixXs::Ones(ny, nx) - hole.cast<CoalScalar>().matrix();
 
   const HeightField<BV> hfield(2., 2., heights, -10.);
 

@@ -335,7 +335,7 @@ BOOST_AUTO_TEST_CASE(distance_triangle_triangle_nesterov) {
 }
 
 void test_gjk_unit_sphere(CoalScalar center_distance, Vec3s ray,
-                          double swept_sphere_radius,
+                          CoalScalar swept_sphere_radius,
                           bool use_gjk_nesterov_acceleration) {
   using namespace coal;
   const CoalScalar r = 1.0;
@@ -386,9 +386,9 @@ void test_gjk_unit_sphere(CoalScalar center_distance, Vec3s ray,
 
 BOOST_AUTO_TEST_CASE(sphere_sphere) {
   std::array<bool, 2> use_nesterov_acceleration = {false, true};
-  std::array<double, 5> swept_sphere_radius = {0., 0.1, 1., 10., 100.};
+  std::array<CoalScalar, 5> swept_sphere_radius = {0., 0.1, 1., 10., 100.};
   for (bool nesterov_acceleration : use_nesterov_acceleration) {
-    for (double ssr : swept_sphere_radius) {
+    for (CoalScalar ssr : swept_sphere_radius) {
       test_gjk_unit_sphere(3, Vec3s(1, 0, 0), ssr, nesterov_acceleration);
 
       test_gjk_unit_sphere(2.01, Vec3s(1, 0, 0), ssr, nesterov_acceleration);

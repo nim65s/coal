@@ -4045,7 +4045,7 @@ void testReversibleShapeDistance(const S1& s1, const S2& s2,
   Vec3s normalA, normalB;
   bool compute_penetration = true;
 
-  const double tol = 1e-6;
+  const CoalScalar tol = 1e-6;
 
   distA = solver1.shapeDistance(s1, tf1, s2, tf2, compute_penetration, p1A, p2A,
                                 normalA);

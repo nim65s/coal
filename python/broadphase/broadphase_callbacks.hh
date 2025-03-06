@@ -80,7 +80,7 @@ struct DistanceCallBackBaseWrapper : DistanceCallBackBase,
 
   void init() { this->get_override("init")(); }
   bool distance(CollisionObject* o1, CollisionObject* o2,
-                Eigen::Matrix<double, 1, 1>& dist) {
+                Eigen::Matrix<CoalScalar, 1, 1>& dist) {
     return distance(o1, o2, dist.coeffRef(0, 0));
   }
 
@@ -100,7 +100,7 @@ struct DistanceCallBackBaseWrapper : DistanceCallBackBase,
              bp::pure_virtual(
                  static_cast<bool (Self::*)(
                      CollisionObject* o1, CollisionObject* o2,
-                     Eigen::Matrix<double, 1, 1>& dist)>(&Self::distance)),
+                     Eigen::Matrix<CoalScalar, 1, 1>& dist)>(&Self::distance)),
              doxygen::member_func_doc(&Base::distance))
         .def("__call__", &Base::operator(),
              doxygen::member_func_doc(&Base::operator()));
