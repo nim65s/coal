@@ -45,7 +45,7 @@ namespace coal {
 
 static const CoalScalar kIOS_RATIO = 1.5;
 static const CoalScalar invSinA = 2;
-static const CoalScalar cosA = sqrt(3.0) / 2.0;
+static const CoalScalar cosA = sqrt(CoalScalar(3)) / CoalScalar(2);
 
 static inline void axisFromEigen(Vec3s eigenV[3], CoalScalar eigenS[3],
                                  Matrix3s& axes) {
@@ -93,7 +93,7 @@ void fit2(Vec3s* ps, OBB& bv) {
   bv.axes.col(0).noalias() = p1p2;
   generateCoordinateSystem(bv.axes.col(0), bv.axes.col(1), bv.axes.col(2));
 
-  bv.extent << len_p1p2 * 0.5, 0, 0;
+  bv.extent << len_p1p2 * CoalScalar(0.5), 0, 0;
   bv.To.noalias() = (p1 + p2) / 2;
 }
 
@@ -240,7 +240,7 @@ void fit2(Vec3s* ps, kIOS& bv) {
   axes.col(0).noalias() = p1p2;
   generateCoordinateSystem(axes.col(0), axes.col(1), axes.col(2));
 
-  CoalScalar r0 = len_p1p2 * 0.5;
+  CoalScalar r0 = len_p1p2 * CoalScalar(0.5);
   bv.obb.extent << r0, 0, 0;
   bv.obb.To = (p1 + p2) * 0.5;
 

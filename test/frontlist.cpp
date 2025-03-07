@@ -96,8 +96,8 @@ BOOST_AUTO_TEST_CASE(front_list) {
   n = getNbRun(utf::master_test_suite().argc, utf::master_test_suite().argv, n);
   bool verbose = false;
 
-  generateRandomTransforms(extents, delta_trans, 0.005 * 2 * 3.1415, transforms,
-                           transforms2, n);
+  generateRandomTransforms(extents, delta_trans, CoalScalar(0.005 * 2 * 3.1415),
+                           transforms, transforms2, n);
 
   bool res, res2;
 

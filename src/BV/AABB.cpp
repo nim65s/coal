@@ -96,11 +96,11 @@ CoalScalar AABB::distance(const AABB& other, Vec3s* P, Vec3s* Q) const {
     } else {
       if (P && Q) {
         if (bmin >= amin) {
-          CoalScalar t = 0.5 * (amax + bmin);
+          CoalScalar t = CoalScalar(0.5) * (amax + bmin);
           (*P)[i] = t;
           (*Q)[i] = t;
         } else {
-          CoalScalar t = 0.5 * (amin + bmax);
+          CoalScalar t = CoalScalar(0.5) * (amin + bmax);
           (*P)[i] = t;
           (*Q)[i] = t;
         }

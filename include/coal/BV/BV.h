@@ -65,7 +65,7 @@ template <>
 struct Converter<AABB, AABB> {
   static void convert(const AABB& bv1, const Transform3s& tf1, AABB& bv2) {
     const Vec3s& center = bv1.center();
-    CoalScalar r = (bv1.max_ - bv1.min_).norm() * 0.5;
+    CoalScalar r = (bv1.max_ - bv1.min_).norm() * CoalScalar(0.5);
     const Vec3s center2 = tf1.transform(center);
     bv2.min_ = center2 - Vec3s::Constant(r);
     bv2.max_ = center2 + Vec3s::Constant(r);
@@ -114,15 +114,17 @@ struct Converter<OBBRSS, OBB> {
 template <>
 struct Converter<RSS, OBB> {
   static void convert(const RSS& bv1, const Transform3s& tf1, OBB& bv2) {
-    bv2.extent = Vec3s(bv1.length[0] * 0.5 + bv1.radius,
-                       bv1.length[1] * 0.5 + bv1.radius, bv1.radius);
+    const CoalScalar half = CoalScalar(0.5);
+    bv2.extent = Vec3s(bv1.length[0] * half + bv1.radius,
+                       bv1.length[1] * half + bv1.radius, bv1.radius);
     bv2.To = tf1.transform(bv1.Tr);
     bv2.axes.noalias() = tf1.getRotation() * bv1.axes;
   }
 
   static void convert(const RSS& bv1, OBB& bv2) {
-    bv2.extent = Vec3s(bv1.length[0] * 0.5 + bv1.radius,
-                       bv1.length[1] * 0.5 + bv1.radius, bv1.radius);
+    const CoalScalar half = CoalScalar(0.5);
+    bv2.extent = Vec3s(bv1.length[0] * half + bv1.radius,
+                       bv1.length[1] * half + bv1.radius, bv1.radius);
     bv2.To = bv1.Tr;
     bv2.axes = bv1.axes;
   }
@@ -132,7 +134,8 @@ template <typename BV1>
 struct Converter<BV1, AABB> {
   static void convert(const BV1& bv1, const Transform3s& tf1, AABB& bv2) {
     const Vec3s& center = bv1.center();
-    CoalScalar r = Vec3s(bv1.width(), bv1.height(), bv1.depth()).norm() * 0.5;
+    const CoalScalar half = CoalScalar(0.5);
+    CoalScalar r = Vec3s(bv1.width(), bv1.height(), bv1.depth()).norm() * half;
     const Vec3s center2 = tf1.transform(center);
     bv2.min_ = center2 - Vec3s::Constant(r);
     bv2.max_ = center2 + Vec3s::Constant(r);
@@ -140,7 +143,8 @@ struct Converter<BV1, AABB> {
 
   static void convert(const BV1& bv1, AABB& bv2) {
     const Vec3s& center = bv1.center();
-    CoalScalar r = Vec3s(bv1.width(), bv1.height(), bv1.depth()).norm() * 0.5;
+    const CoalScalar half = CoalScalar(0.5);
+    CoalScalar r = Vec3s(bv1.width(), bv1.height(), bv1.depth()).norm() * half;
     bv2.min_ = center - Vec3s::Constant(r);
     bv2.max_ = center + Vec3s::Constant(r);
   }

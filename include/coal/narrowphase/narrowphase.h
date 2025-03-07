@@ -108,7 +108,7 @@ struct COAL_DLLAPI GJKSolver {
 
  private:
   // Used internally for assertion checks.
-  static constexpr CoalScalar m_dummy_precision = 1e-6;
+  static constexpr CoalScalar m_dummy_precision = CoalScalar(1e-6);
 
  public:
   COAL_COMPILER_DIAGNOSTIC_PUSH
@@ -225,7 +225,8 @@ struct COAL_DLLAPI GJKSolver {
     // The distance upper bound should be at least greater to the requested
     // security margin. Otherwise, we will likely miss some collisions.
     this->distance_upper_bound = (std::max)(
-        0., (std::max)(request.distance_upper_bound, request.security_margin));
+        CoalScalar(0),
+        (std::max)(request.distance_upper_bound, request.security_margin));
     this->gjk_variant = request.gjk_variant;
     this->gjk_convergence_criterion = request.gjk_convergence_criterion;
     this->gjk_convergence_criterion_type =
@@ -661,7 +662,7 @@ struct COAL_DLLAPI GJKSolver {
     // This caching allows to warm-start the next GJK call.
     this->cached_guess = -(this->epa.depth * this->epa.normal);
     this->support_func_cached_guess = this->epa.support_hint;
-    distance = (std::min)(0., -this->epa.depth);
+    distance = (std::min)(CoalScalar(0), -this->epa.depth);
     this->epa.getWitnessPointsAndNormal(this->minkowski_difference, p1, p2,
                                         normal);
     // The following is very important to understand why EPA can sometimes

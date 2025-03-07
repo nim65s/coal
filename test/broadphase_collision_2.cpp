@@ -365,7 +365,7 @@ void broad_phase_collision_test(CoalScalar env_scale, std::size_t env_size,
 
   std::cout << "collision time" << std::endl;
   for (size_t i = 0; i < ts.size(); ++i) {
-    CoalScalar tmp = 0;
+    double tmp = 0;
     for (size_t j = 3; j < ts[i].records.size(); ++j) tmp += ts[i].records[j];
     std::cout << std::setw(w) << tmp << " ";
   }

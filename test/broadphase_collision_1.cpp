@@ -266,26 +266,34 @@ void broad_phase_duplicate_check_test(CoalScalar env_scale,
   }
 
   // update the environment
-  CoalScalar delta_angle_max =
-      10 / 360.0 * 2 * boost::math::constants::pi<CoalScalar>();
-  CoalScalar delta_trans_max = 0.01 * env_scale;
+  CoalScalar delta_angle_max = CoalScalar(10) / CoalScalar(360 * 2) *
+                               boost::math::constants::pi<CoalScalar>();
+  CoalScalar delta_trans_max = CoalScalar(0.01) * env_scale;
+  const CoalScalar half = CoalScalar(0.5);
   for (size_t i = 0; i < env.size(); ++i) {
     CoalScalar rand_angle_x =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_angle_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_angle_max;
     CoalScalar rand_trans_x =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_trans_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_trans_max;
     CoalScalar rand_angle_y =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_angle_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_angle_max;
     CoalScalar rand_trans_y =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_trans_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_trans_max;
     CoalScalar rand_angle_z =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_angle_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_angle_max;
     CoalScalar rand_trans_z =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_trans_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_trans_max;
 
-    Matrix3s dR(Eigen::AngleAxisd(rand_angle_x, Vec3s::UnitX()) *
-                Eigen::AngleAxisd(rand_angle_y, Vec3s::UnitY()) *
-                Eigen::AngleAxisd(rand_angle_z, Vec3s::UnitZ()));
+    using AngleAxis = Eigen::AngleAxis<CoalScalar>;
+    Matrix3s dR(AngleAxis(rand_angle_x, Vec3s::UnitX()) *
+                AngleAxis(rand_angle_y, Vec3s::UnitY()) *
+                AngleAxis(rand_angle_z, Vec3s::UnitZ()));
     Vec3s dT(rand_trans_x, rand_trans_y, rand_trans_z);
 
     Matrix3s R = env[i]->getRotation();
@@ -342,7 +350,7 @@ void broad_phase_duplicate_check_test(CoalScalar env_scale,
 
   std::cout << "collision time" << std::endl;
   for (size_t i = 0; i < ts.size(); ++i) {
-    CoalScalar tmp = 0;
+    double tmp = 0;
     for (size_t j = 4; j < ts[i].records.size(); ++j) tmp += ts[i].records[j];
     std::cout << std::setw(w) << tmp << " ";
   }
@@ -439,26 +447,34 @@ void broad_phase_update_collision_test(CoalScalar env_scale,
   }
 
   // update the environment
-  CoalScalar delta_angle_max =
-      10 / 360.0 * 2 * boost::math::constants::pi<CoalScalar>();
-  CoalScalar delta_trans_max = 0.01 * env_scale;
+  CoalScalar delta_angle_max = CoalScalar(10) / CoalScalar(360 * 2) *
+                               boost::math::constants::pi<CoalScalar>();
+  CoalScalar delta_trans_max = CoalScalar(0.01) * env_scale;
+  const CoalScalar half = CoalScalar(0.5);
   for (size_t i = 0; i < env.size(); ++i) {
     CoalScalar rand_angle_x =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_angle_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_angle_max;
     CoalScalar rand_trans_x =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_trans_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_trans_max;
     CoalScalar rand_angle_y =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_angle_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_angle_max;
     CoalScalar rand_trans_y =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_trans_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_trans_max;
     CoalScalar rand_angle_z =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_angle_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_angle_max;
     CoalScalar rand_trans_z =
-        2 * (rand() / (CoalScalar)RAND_MAX - 0.5) * delta_trans_max;
+        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
+        delta_trans_max;
 
-    Matrix3s dR(Eigen::AngleAxisd(rand_angle_x, Vec3s::UnitX()) *
-                Eigen::AngleAxisd(rand_angle_y, Vec3s::UnitY()) *
-                Eigen::AngleAxisd(rand_angle_z, Vec3s::UnitZ()));
+    using AngleAxis = Eigen::AngleAxis<CoalScalar>;
+    Matrix3s dR(AngleAxis(rand_angle_x, Vec3s::UnitX()) *
+                AngleAxis(rand_angle_y, Vec3s::UnitY()) *
+                AngleAxis(rand_angle_z, Vec3s::UnitZ()));
     Vec3s dT(rand_trans_x, rand_trans_y, rand_trans_z);
 
     Matrix3s R = env[i]->getRotation();
@@ -581,7 +597,7 @@ void broad_phase_update_collision_test(CoalScalar env_scale,
 
   std::cout << "collision time" << std::endl;
   for (size_t i = 0; i < ts.size(); ++i) {
-    CoalScalar tmp = 0;
+    double tmp = 0;
     for (size_t j = 4; j < ts[i].records.size(); ++j) tmp += ts[i].records[j];
     std::cout << std::setw(w) << tmp << " ";
   }

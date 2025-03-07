@@ -205,7 +205,7 @@ void testBVHModelTriangles() {
   BOOST_CHECK_EQUAL(cropped->num_tris, model->num_tris - 2);
 
   pose.setTranslation(Vec3s(0, 0, 0));
-  CoalScalar sqrt2_2 = std::sqrt(2) / 2;
+  CoalScalar sqrt2_2 = std::sqrt(CoalScalar(2)) / 2;
   pose.setQuatRotation(Quatf(sqrt2_2, sqrt2_2, 0, 0));
   cropped.reset(BVHExtract(*model, pose, aabb));
   BOOST_REQUIRE(cropped);
@@ -218,7 +218,8 @@ void testBVHModelTriangles() {
   cropped.reset(BVHExtract(*model, pose, aabb));
   BOOST_CHECK(!cropped);
 
-  aabb = AABB(Vec3s(-0.1, -0.1, -0.1), Vec3s(0.1, 0.1, 0.1));
+  aabb = AABB(Vec3s(CoalScalar(-0.1), CoalScalar(-0.1), CoalScalar(-0.1)),
+              Vec3s(CoalScalar(0.1), CoalScalar(0.1), CoalScalar(0.1)));
   pose.setTranslation(Vec3s(-0.5, -0.5, 0));
   cropped.reset(BVHExtract(*model, pose, aabb));
   BOOST_REQUIRE(cropped);
@@ -334,8 +335,9 @@ void testLoadGerardBauzil() {
   Vec3s scale;
   scale.setConstant(1);
   loadPolyhedronFromResource(env, scale, P1);
-  CollisionGeometryPtr_t cylinder(new Cylinder(.27, .27));
-  Transform3s pos(Vec3s(-1.33, 1.36, .14));
+  CollisionGeometryPtr_t cylinder(
+      new Cylinder(CoalScalar(.27), CoalScalar(.27)));
+  Transform3s pos(Vec3s(CoalScalar(-1.33), CoalScalar(1.36), CoalScalar(.14)));
   CollisionObject obj(cylinder, pos);
   CollisionObject stairs(P1);
 

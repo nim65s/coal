@@ -147,7 +147,7 @@ void test_normal_and_nearest_points(
 
       // Separate the shapes
       Transform3s new_tf1 = tf1;
-      CoalScalar eps = 1e-2;
+      CoalScalar eps = CoalScalar(1e-2);
       new_tf1.setTranslation(tf1.getTranslation() + separation_vector -
                              eps * contact.normal);
       CollisionResult new_colres;
@@ -199,7 +199,7 @@ void test_normal_and_nearest_points(
       // If you translate one of the cones by the separation vector and it
       // happens to be parallel to the axis of the cone, the two shapes will
       // still be disjoint.
-      CoalScalar eps = 1e-2;
+      CoalScalar eps = CoalScalar(1e-2);
       Transform3s new_tf1 = tf1;
       new_tf1.setTranslation(tf1.getTranslation() + separation_vector +
                              eps * distres.normal);
@@ -253,13 +253,14 @@ Eigen::Matrix<CoalScalar, VecSize, 1> generateRandomVector(CoalScalar min,
 CoalScalar generateRandomNumber(CoalScalar min, CoalScalar max) {
   CoalScalar r =
       static_cast<CoalScalar>(rand()) / static_cast<CoalScalar>(RAND_MAX);
-  r = 2 * r - 1.0;
-  return r * (max - min) * 0.5 + (max + min) * 0.5;
+  r = 2 * r - 1;
+  const CoalScalar half(0.5);
+  return r * (max - min) * half + (max + min) * half;
 }
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_sphere) {
   for (size_t i = 0; i < 10; ++i) {
-    Vec2d radii = generateRandomVector<2>(0.05, 1.0);
+    Vec2s radii = generateRandomVector<2>(CoalScalar(0.05), 1);
     shared_ptr<Sphere> o1(new Sphere(radii(0)));
     shared_ptr<Sphere> o2(new Sphere(radii(1)));
 
@@ -269,8 +270,8 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_sphere) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_capsule) {
   for (size_t i = 0; i < 10; ++i) {
-    Vec2d radii = generateRandomVector<2>(0.05, 1.0);
-    CoalScalar h = generateRandomNumber(0.15, 1.0);
+    Vec2s radii = generateRandomVector<2>(CoalScalar(0.05), 1);
+    CoalScalar h = generateRandomNumber(CoalScalar(0.15), 1);
     shared_ptr<Sphere> o1(new Sphere(radii(0)));
     shared_ptr<Capsule> o2(new Capsule(radii(1), h));
 
@@ -281,8 +282,9 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_capsule) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_box) {
   for (size_t i = 0; i < 10; ++i) {
-    shared_ptr<Box> o1(new Box(generateRandomVector<3>(0.05, 1.0)));
-    shared_ptr<Sphere> o2(new Sphere(generateRandomNumber(0.05, 1.0)));
+    shared_ptr<Box> o1(new Box(generateRandomVector<3>(CoalScalar(0.05), 1)));
+    shared_ptr<Sphere> o2(
+        new Sphere(generateRandomNumber(CoalScalar(0.05), 1)));
 
     test_normal_and_nearest_points(*o1.get(), *o2.get());
     test_normal_and_nearest_points(*o2.get(), *o1.get());
@@ -292,11 +294,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_box) {
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_mesh_mesh) {
   for (size_t i = 0; i < 10; ++i) {
     Convex<Triangle> o1_ = constructPolytopeFromEllipsoid(
-        Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+        Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
     shared_ptr<Convex<Triangle>> o1(new Convex<Triangle>(
         o1_.points, o1_.num_points, o1_.polygons, o1_.num_polygons));
     Convex<Triangle> o2_ = constructPolytopeFromEllipsoid(
-        Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+        Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
     shared_ptr<Convex<Triangle>> o2(new Convex<Triangle>(
         o2_.points, o2_.num_points, o2_.polygons, o2_.num_polygons));
 
@@ -312,10 +314,10 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_mesh_mesh) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_mesh_box) {
   Convex<Triangle> o1_ = constructPolytopeFromEllipsoid(
-      Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+      Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
   shared_ptr<Convex<Triangle>> o1(new Convex<Triangle>(
       o1_.points, o1_.num_points, o1_.polygons, o1_.num_polygons));
-  shared_ptr<Box> o2(new Box(generateRandomVector<3>(0.05, 1.0)));
+  shared_ptr<Box> o2(new Box(generateRandomVector<3>(CoalScalar(0.05), 1)));
 
   test_normal_and_nearest_points(*o1.get(), *o2.get());
   test_normal_and_nearest_points(*o2.get(), *o1.get());
@@ -324,17 +326,18 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_mesh_box) {
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_mesh_ellipsoid) {
   for (size_t i = 0; i < 10; ++i) {
     Convex<Triangle> o1_ = constructPolytopeFromEllipsoid(
-        Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+        Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
     shared_ptr<Convex<Triangle>> o1(new Convex<Triangle>(
         o1_.points, o1_.num_points, o1_.polygons, o1_.num_polygons));
-    shared_ptr<Ellipsoid> o2(new Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+    shared_ptr<Ellipsoid> o2(
+        new Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
 
-    CoalScalar gjk_tolerance = 1e-6;
+    CoalScalar gjk_tolerance = CoalScalar(1e-6);
     // With EPA's tolerance set at 1e-3, the precision on the normal, contact
     // points and penetration depth is on the order of the milimeter. However,
     // EPA (currently) cannot converge to lower tolerances on strictly convex
     // shapes in a reasonable amount of iterations.
-    CoalScalar epa_tolerance = 1e-3;
+    CoalScalar epa_tolerance = CoalScalar(1e-3);
     test_normal_and_nearest_points(*o1.get(), *o2.get(),
                                    GJK_DEFAULT_MAX_ITERATIONS, gjk_tolerance,
                                    EPA_DEFAULT_MAX_ITERATIONS, epa_tolerance);
@@ -346,17 +349,19 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_mesh_ellipsoid) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_ellipsoid_ellipsoid) {
   for (size_t i = 0; i < 10; ++i) {
-    shared_ptr<Ellipsoid> o1(new Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
-    shared_ptr<Ellipsoid> o2(new Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+    shared_ptr<Ellipsoid> o1(
+        new Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1.0)));
+    shared_ptr<Ellipsoid> o2(
+        new Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1.0)));
 
     size_t gjk_max_iterations = GJK_DEFAULT_MAX_ITERATIONS;
-    CoalScalar gjk_tolerance = 1e-6;
+    CoalScalar gjk_tolerance = CoalScalar(1e-6);
     // With EPA's tolerance set at 1e-3, the precision on the normal, contact
     // points and penetration depth is on the order of the milimeter. However,
     // EPA (currently) cannot converge to lower tolerances on strictly convex
     // shapes in a reasonable amount of iterations.
     size_t epa_max_iterations = 250;
-    CoalScalar epa_tolerance = 1e-3;
+    CoalScalar epa_tolerance = CoalScalar(1e-3);
     // For EPA on ellipsoids, we need to increase the number of iterations in
     // this test. This is simply because this test checks **a lot** of cases and
     // it can generate some of the worst cases for EPA. We don't want to
@@ -370,8 +375,9 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_ellipsoid_ellipsoid) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_box_plane) {
   for (size_t i = 0; i < 10; ++i) {
-    shared_ptr<Box> o1(new Box(generateRandomVector<3>(0.05, 1.0)));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    shared_ptr<Box> o1(new Box(generateRandomVector<3>(CoalScalar(0.05), 1)));
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Plane> o2(new Plane(n, offset));
@@ -383,8 +389,8 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_box_plane) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_box_halfspace) {
   for (size_t i = 0; i < 10; ++i) {
-    shared_ptr<Box> o1(new Box(generateRandomVector<3>(0.05, 1.0)));
-    CoalScalar offset = 0.1;
+    shared_ptr<Box> o1(new Box(generateRandomVector<3>(CoalScalar(0.05), 1)));
+    CoalScalar offset = CoalScalar(0.1);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Halfspace> o2(new Halfspace(n, offset));
@@ -396,10 +402,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_box_halfspace) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_capsule_halfspace) {
   for (size_t i = 0; i < 10; ++i) {
-    CoalScalar r = generateRandomNumber(0.05, 1.0);
-    CoalScalar h = generateRandomNumber(0.15, 1.0);
+    CoalScalar r = generateRandomNumber(CoalScalar(0.05), 1);
+    CoalScalar h = generateRandomNumber(CoalScalar(0.15), 1);
     shared_ptr<Capsule> o1(new Capsule(r, h));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Halfspace> o2(new Halfspace(n, offset));
@@ -411,8 +418,10 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_capsule_halfspace) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_halfspace) {
   for (size_t i = 0; i < 10; ++i) {
-    shared_ptr<Sphere> o1(new Sphere(generateRandomNumber(0.05, 1.0)));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    shared_ptr<Sphere> o1(
+        new Sphere(generateRandomNumber(CoalScalar(0.05), 1)));
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Halfspace> o2(new Halfspace(n, offset));
@@ -424,8 +433,10 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_halfspace) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_plane) {
   for (size_t i = 0; i < 10; ++i) {
-    shared_ptr<Sphere> o1(new Sphere(generateRandomNumber(0.05, 1.0)));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    shared_ptr<Sphere> o1(
+        new Sphere(generateRandomNumber(CoalScalar(0.05), 1)));
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Plane> o2(new Plane(n, offset));
@@ -438,10 +449,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_plane) {
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_mesh_halfspace) {
   for (size_t i = 0; i < 10; ++i) {
     Convex<Triangle> o1_ = constructPolytopeFromEllipsoid(
-        Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+        Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
     shared_ptr<Convex<Triangle>> o1(new Convex<Triangle>(
         o1_.points, o1_.num_points, o1_.polygons, o1_.num_polygons));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Halfspace> o2(new Halfspace(n, offset));
@@ -453,15 +465,15 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_mesh_halfspace) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cone_cylinder) {
   for (size_t i = 0; i < 10; ++i) {
-    Vec2d r = generateRandomVector<2>(0.05, 1.0);
-    Vec2d h = generateRandomVector<2>(0.15, 1.0);
+    Vec2s r = generateRandomVector<2>(CoalScalar(0.05), 1);
+    Vec2s h = generateRandomVector<2>(CoalScalar(0.15), 1);
     shared_ptr<Cone> o1(new Cone(r(0), h(0)));
     shared_ptr<Cylinder> o2(new Cylinder(r(1), h(1)));
 
     size_t gjk_max_iterations = GJK_DEFAULT_MAX_ITERATIONS;
-    CoalScalar gjk_tolerance = 1e-6;
+    CoalScalar gjk_tolerance = CoalScalar(1e-6);
     size_t epa_max_iterations = 250;
-    CoalScalar epa_tolerance = 1e-3;
+    CoalScalar epa_tolerance = CoalScalar(1e-3);
     test_normal_and_nearest_points(*o1.get(), *o2.get(), gjk_max_iterations,
                                    gjk_tolerance, epa_max_iterations,
                                    epa_tolerance);
@@ -473,15 +485,16 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cone_cylinder) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cylinder_ellipsoid) {
   for (size_t i = 0; i < 10; ++i) {
-    shared_ptr<Ellipsoid> o1(new Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
-    Vec2d r = generateRandomVector<2>(0.05, 1.0);
-    Vec2d h = generateRandomVector<2>(0.15, 1.0);
+    shared_ptr<Ellipsoid> o1(
+        new Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
+    Vec2s r = generateRandomVector<2>(CoalScalar(0.05), 1);
+    Vec2s h = generateRandomVector<2>(CoalScalar(0.15), 1);
     shared_ptr<Cylinder> o2(new Cylinder(r(1), h(1)));
 
     size_t gjk_max_iterations = GJK_DEFAULT_MAX_ITERATIONS;
-    CoalScalar gjk_tolerance = 1e-6;
+    CoalScalar gjk_tolerance = CoalScalar(1e-6);
     size_t epa_max_iterations = 250;
-    CoalScalar epa_tolerance = 1e-3;
+    CoalScalar epa_tolerance = CoalScalar(1e-3);
     test_normal_and_nearest_points(*o1.get(), *o2.get(), gjk_max_iterations,
                                    gjk_tolerance, epa_max_iterations,
                                    epa_tolerance);
@@ -493,10 +506,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cylinder_ellipsoid) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cone_halfspace) {
   for (size_t i = 0; i < 10; ++i) {
-    CoalScalar r = generateRandomNumber(0.05, 1.0);
-    CoalScalar h = generateRandomNumber(0.15, 1.0);
+    CoalScalar r = generateRandomNumber(CoalScalar(0.05), 1);
+    CoalScalar h = generateRandomNumber(CoalScalar(0.15), 1);
     shared_ptr<Cone> o1(new Cone(r, h));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Halfspace> o2(new Halfspace(n, offset));
@@ -508,10 +522,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cone_halfspace) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cylinder_halfspace) {
   for (size_t i = 0; i < 10; ++i) {
-    CoalScalar r = generateRandomNumber(0.05, 1.0);
-    CoalScalar h = generateRandomNumber(0.15, 1.0);
+    CoalScalar r = generateRandomNumber(CoalScalar(0.05), 1);
+    CoalScalar h = generateRandomNumber(CoalScalar(0.15), 1);
     shared_ptr<Cylinder> o1(new Cylinder(r, h));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Halfspace> o2(new Halfspace(n, offset));
@@ -523,10 +538,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cylinder_halfspace) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cone_plane) {
   for (size_t i = 0; i < 10; ++i) {
-    CoalScalar r = generateRandomNumber(0.05, 1.0);
-    CoalScalar h = generateRandomNumber(0.15, 1.0);
+    CoalScalar r = generateRandomNumber(CoalScalar(0.05), 1);
+    CoalScalar h = generateRandomNumber(CoalScalar(0.15), 1);
     shared_ptr<Cone> o1(new Cone(r, h));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Plane> o2(new Plane(n, offset));
@@ -538,10 +554,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cone_plane) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cylinder_plane) {
   for (size_t i = 0; i < 10; ++i) {
-    CoalScalar r = generateRandomNumber(0.05, 1.0);
-    CoalScalar h = generateRandomNumber(0.15, 1.0);
+    CoalScalar r = generateRandomNumber(CoalScalar(0.05), 1);
+    CoalScalar h = generateRandomNumber(CoalScalar(0.15), 1);
     shared_ptr<Cylinder> o1(new Cylinder(r, h));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Plane> o2(new Plane(n, offset));
@@ -553,10 +570,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_cylinder_plane) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_capsule_plane) {
   for (size_t i = 0; i < 10; ++i) {
-    CoalScalar r = generateRandomNumber(0.05, 1.0);
-    CoalScalar h = generateRandomNumber(0.15, 1.0);
+    CoalScalar r = generateRandomNumber(CoalScalar(0.05), 1);
+    CoalScalar h = generateRandomNumber(CoalScalar(0.15), 1);
     shared_ptr<Capsule> o1(new Capsule(r, h));
-    CoalScalar offset = generateRandomNumber(-0.5, 0.5);
+    const CoalScalar half(0.5);
+    CoalScalar offset = generateRandomNumber(-half, half);
     Vec3s n = Vec3s::Random();
     n.normalize();
     shared_ptr<Plane> o2(new Plane(n, offset));
@@ -568,8 +586,8 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_capsule_plane) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_capsule_capsule) {
   for (size_t i = 0; i < 10; ++i) {
-    Vec2d r = generateRandomVector<2>(0.05, 1.0);
-    Vec2d h = generateRandomVector<2>(0.15, 1.0);
+    Vec2s r = generateRandomVector<2>(CoalScalar(0.05), 1);
+    Vec2s h = generateRandomVector<2>(CoalScalar(0.15), 1);
     shared_ptr<Capsule> o1(new Capsule(r(0), h(0)));
     shared_ptr<Capsule> o2(new Capsule(r(1), h(1)));
 
@@ -580,8 +598,8 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_capsule_capsule) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_cylinder) {
   for (size_t i = 0; i < 10; ++i) {
-    Vec2d r = generateRandomVector<2>(0.05, 1.0);
-    CoalScalar h = generateRandomNumber(0.15, 1.0);
+    Vec2s r = generateRandomVector<2>(CoalScalar(0.05), 1);
+    CoalScalar h = generateRandomNumber(CoalScalar(0.15), 1);
     shared_ptr<Sphere> o1(new Sphere(r(0)));
     shared_ptr<Cylinder> o2(new Cylinder(r(1), h));
 
@@ -592,10 +610,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_sphere_cylinder) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_ellipsoid_halfspace) {
   for (size_t i = 0; i < 10; ++i) {
-    CoalScalar offset = generateRandomNumber(0.15, 1.0);
+    CoalScalar offset = generateRandomNumber(CoalScalar(0.15), 1);
     Vec3s n = Vec3s::Random();
     n.normalize();
-    shared_ptr<Ellipsoid> o1(new Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+    shared_ptr<Ellipsoid> o1(
+        new Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
     shared_ptr<Halfspace> o2(new Halfspace(n, offset));
 
     test_normal_and_nearest_points(*o1.get(), *o2.get());
@@ -605,10 +624,11 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_ellipsoid_halfspace) {
 
 BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_ellipsoid_plane) {
   for (size_t i = 0; i < 10; ++i) {
-    CoalScalar offset = generateRandomNumber(0.15, 1.0);
+    CoalScalar offset = generateRandomNumber(CoalScalar(0.15), 1);
     Vec3s n = Vec3s::Random();
     n.normalize();
-    shared_ptr<Ellipsoid> o1(new Ellipsoid(generateRandomVector<3>(0.05, 1.0)));
+    shared_ptr<Ellipsoid> o1(
+        new Ellipsoid(generateRandomVector<3>(CoalScalar(0.05), 1)));
     shared_ptr<Plane> o2(new Plane(n, offset));
 
     test_normal_and_nearest_points(*o1.get(), *o2.get());
@@ -655,15 +675,16 @@ void test_normal_and_nearest_points(const BVHModel<OBBRSS>& o1,
         Vec3s cp1 = contact.nearest_points[0];
         Vec3s cp2 = contact.nearest_points[1];
         BOOST_CHECK_CLOSE(contact.penetration_depth, -(cp2 - cp1).norm(), 1e-6);
-        EIGEN_VECTOR_IS_APPROX(
-            cp1, cp2 - contact.penetration_depth * contact.normal, 1e-6);
+        EIGEN_VECTOR_IS_APPROX(cp1,
+                               cp2 - contact.penetration_depth * contact.normal,
+                               CoalScalar(1e-6));
 
         Vec3s separation_vector = contact.penetration_depth * contact.normal;
-        EIGEN_VECTOR_IS_APPROX(separation_vector, cp2 - cp1, 1e-6);
+        EIGEN_VECTOR_IS_APPROX(separation_vector, cp2 - cp1, CoalScalar(1e-6));
 
         if (dist < 0) {
           EIGEN_VECTOR_IS_APPROX(contact.normal, -(cp2 - cp1).normalized(),
-                                 1e-6);
+                                 CoalScalar(1e-6));
         }
       }
     } else {
@@ -686,7 +707,7 @@ BOOST_AUTO_TEST_CASE(test_normal_and_nearest_points_bvh_halfspace) {
   generateBVHModel(o1, *box_ptr, Transform3s());
   o1.buildConvexRepresentation(false);
 
-  CoalScalar offset = 0.1;
+  CoalScalar offset = CoalScalar(0.1);
   Vec3s n = Vec3s::Random();
   n.normalize();
   shared_ptr<Halfspace> o2(new Halfspace(n, offset));

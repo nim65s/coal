@@ -138,7 +138,7 @@ void test_gjksolver_swept_sphere_radius(S1& shape1, S2& shape2) {
   // The swept sphere radius is detrimental to the convergence of GJK
   // and EPA. This gets worse as the radius of the swept sphere increases.
   // So we need to increase the number of iterations to get a good result.
-  const CoalScalar tol = 1e-6;
+  const CoalScalar tol = CoalScalar(1e-6);
   solver.gjk_tolerance = tol;
   solver.epa_tolerance = tol;
   solver.epa_max_iterations = 1000;
@@ -150,7 +150,8 @@ void test_gjksolver_swept_sphere_radius(S1& shape1, S2& shape2) {
   std::vector<Transform3s> tf2s;
   generateRandomTransforms(extents, tf1s, n);
   generateRandomTransforms(extents, tf2s, n);
-  const std::array<CoalScalar, 4> swept_sphere_radius = {0, 0.1, 1., 10.};
+  const std::array<CoalScalar, 4> swept_sphere_radius = {0, CoalScalar(0.1), 1,
+                                                         10};
 
   for (const CoalScalar& ssr1 : swept_sphere_radius) {
     shape1.setSweptSphereRadius(ssr1);
@@ -184,8 +185,8 @@ void test_gjksolver_swept_sphere_radius(S1& shape1, S2& shape2) {
         // sphere radius into account in GJK/EPA iterations.
         const CoalScalar precision =
             3 * sqrt(tol) +
-            (1 / 100.0) * std::max(shape1.getSweptSphereRadius(),
-                                   shape2.getSweptSphereRadius());
+            (1 / CoalScalar(100)) * std::max(shape1.getSweptSphereRadius(),
+                                             shape2.getSweptSphereRadius());
 
         // Check that the distance is the same
         COAL_CHECK_REAL_CLOSE(distance[0], distance[1], precision);
@@ -203,8 +204,8 @@ void test_gjksolver_swept_sphere_radius(S1& shape1, S2& shape2) {
   }
 }
 
-static const CoalScalar min_shape_size = 0.1;
-static const CoalScalar max_shape_size = 0.5;
+static const CoalScalar min_shape_size = CoalScalar(0.1);
+static const CoalScalar max_shape_size = CoalScalar(0.5);
 
 BOOST_AUTO_TEST_CASE(ssr_mesh_mesh) {
   Convex<Triangle> shape1 = makeRandomConvex(min_shape_size, max_shape_size);
@@ -288,7 +289,8 @@ void test_collide_swept_sphere_radius(S1& shape1, S2& shape2) {
   generateRandomTransforms(extents, tf1s, n);
   generateRandomTransforms(extents, tf2s, n);
 
-  const std::array<CoalScalar, 4> swept_sphere_radius = {0, 0.1, 1., 10.};
+  const std::array<CoalScalar, 4> swept_sphere_radius = {0, CoalScalar(0.1), 1,
+                                                         10};
   for (const CoalScalar& ssr1 : swept_sphere_radius) {
     shape1.setSweptSphereRadius(ssr1);
     for (const CoalScalar& ssr2 : swept_sphere_radius) {
@@ -304,7 +306,7 @@ void test_collide_swept_sphere_radius(S1& shape1, S2& shape2) {
         // infinity. That way shape1 and shape2 will always be considered in
         // collision.
         request.security_margin = std::numeric_limits<CoalScalar>::max();
-        const CoalScalar tol = 1e-6;
+        const CoalScalar tol = CoalScalar(1e-6);
         request.gjk_tolerance = tol;
         request.epa_tolerance = tol;
 
@@ -334,7 +336,7 @@ void test_collide_swept_sphere_radius(S1& shape1, S2& shape2) {
           // coal, but from the result in which we manually take the swept
           // sphere radius into account in GJK/EPA iterations.
           const CoalScalar precision =
-              3 * sqrt(tol) + (1 / 100.0) * std::max(ssr1, ssr2);
+              3 * sqrt(tol) + (1 / CoalScalar(100)) * std::max(ssr1, ssr2);
           const CoalScalar ssr = ssr1 + ssr2;
 
           // Check that the distance is the same

@@ -97,18 +97,18 @@ void generateBVHModel(BVHModel<BV>& model, const Sphere& shape,
   CoalScalar r = shape.radius;
   CoalScalar phi, phid;
   const CoalScalar pi = boost::math::constants::pi<CoalScalar>();
-  phid = pi * 2 / seg;
+  phid = pi * 2 / CoalScalar(seg);
   phi = 0;
 
   CoalScalar theta, thetad;
-  thetad = pi / (ring + 1);
+  thetad = pi / CoalScalar(ring + 1);
   theta = 0;
 
   for (unsigned int i = 0; i < ring; ++i) {
-    CoalScalar theta_ = theta + thetad * (i + 1);
+    CoalScalar theta_ = theta + thetad * CoalScalar(i + 1);
     for (unsigned int j = 0; j < seg; ++j) {
-      points.push_back(Vec3s(r * sin(theta_) * cos(phi + j * phid),
-                             r * sin(theta_) * sin(phi + j * phid),
+      points.push_back(Vec3s(r * sin(theta_) * cos(phi + CoalScalar(j) * phid),
+                             r * sin(theta_) * sin(phi + CoalScalar(j) * phid),
                              r * cos(theta_)));
     }
   }
@@ -179,25 +179,26 @@ void generateBVHModel(BVHModel<BV>& model, const Cylinder& shape,
   CoalScalar h = shape.halfLength;
   CoalScalar phi, phid;
   const CoalScalar pi = boost::math::constants::pi<CoalScalar>();
-  phid = pi * 2 / tot;
+  phid = pi * 2 / CoalScalar(tot);
   phi = 0;
 
-  CoalScalar hd = 2 * h / h_num;
+  CoalScalar hd = 2 * h / CoalScalar(h_num);
 
   for (unsigned int i = 0; i < tot; ++i)
-    points.push_back(
-        Vec3s(r * cos(phi + phid * i), r * sin(phi + phid * i), h));
+    points.push_back(Vec3s(r * cos(phi + phid * CoalScalar(i)),
+                           r * sin(phi + phid * CoalScalar(i)), h));
 
   for (unsigned int i = 0; i < h_num - 1; ++i) {
     for (unsigned int j = 0; j < tot; ++j) {
-      points.push_back(Vec3s(r * cos(phi + phid * j), r * sin(phi + phid * j),
-                             h - (i + 1) * hd));
+      points.push_back(Vec3s(r * cos(phi + phid * CoalScalar(j)),
+                             r * sin(phi + phid * CoalScalar(j)),
+                             h - CoalScalar(i + 1) * hd));
     }
   }
 
   for (unsigned int i = 0; i < tot; ++i)
-    points.push_back(
-        Vec3s(r * cos(phi + phid * i), r * sin(phi + phid * i), -h));
+    points.push_back(Vec3s(r * cos(phi + phid * CoalScalar(i)),
+                           r * sin(phi + phid * CoalScalar(i)), -h));
 
   points.push_back(Vec3s(0, 0, h));
   points.push_back(Vec3s(0, 0, -h));
@@ -249,8 +250,8 @@ void generateBVHModel(BVHModel<BV>& model, const Cylinder& shape,
   CoalScalar h = 2 * shape.halfLength;
 
   const CoalScalar pi = boost::math::constants::pi<CoalScalar>();
-  unsigned int tot = (unsigned int)(tot_for_unit_cylinder * r);
-  CoalScalar phid = pi * 2 / tot;
+  unsigned int tot = (unsigned int)(CoalScalar(tot_for_unit_cylinder) * r);
+  CoalScalar phid = pi * 2 / CoalScalar(tot);
 
   CoalScalar circle_edge = phid * r;
   unsigned int h_num = (unsigned int)ceil(h / circle_edge);
@@ -272,23 +273,23 @@ void generateBVHModel(BVHModel<BV>& model, const Cone& shape,
 
   CoalScalar phi, phid;
   const CoalScalar pi = boost::math::constants::pi<CoalScalar>();
-  phid = pi * 2 / tot;
+  phid = pi * 2 / CoalScalar(tot);
   phi = 0;
 
-  CoalScalar hd = 2 * h / h_num;
+  CoalScalar hd = 2 * h / CoalScalar(h_num);
 
   for (unsigned int i = 0; i < h_num - 1; ++i) {
-    CoalScalar h_i = h - (i + 1) * hd;
-    CoalScalar rh = r * (0.5 - h_i / h / 2);
+    CoalScalar h_i = h - CoalScalar(i + 1) * hd;
+    CoalScalar rh = r * (CoalScalar(0.5) - h_i / h / 2);
     for (unsigned int j = 0; j < tot; ++j) {
-      points.push_back(
-          Vec3s(rh * cos(phi + phid * j), rh * sin(phi + phid * j), h_i));
+      points.push_back(Vec3s(rh * cos(phi + phid * CoalScalar(j)),
+                             rh * sin(phi + phid * CoalScalar(j)), h_i));
     }
   }
 
   for (unsigned int i = 0; i < tot; ++i)
-    points.push_back(
-        Vec3s(r * cos(phi + phid * i), r * sin(phi + phid * i), -h));
+    points.push_back(Vec3s(r * cos(phi + phid * CoalScalar(i)),
+                           r * sin(phi + phid * CoalScalar(i)), -h));
 
   points.push_back(Vec3s(0, 0, h));
   points.push_back(Vec3s(0, 0, -h));
@@ -340,8 +341,8 @@ void generateBVHModel(BVHModel<BV>& model, const Cone& shape,
   CoalScalar h = 2 * shape.halfLength;
 
   const CoalScalar pi = boost::math::constants::pi<CoalScalar>();
-  unsigned int tot = (unsigned int)(tot_for_unit_cone * r);
-  CoalScalar phid = pi * 2 / tot;
+  unsigned int tot = (unsigned int)(CoalScalar(tot_for_unit_cone) * r);
+  CoalScalar phid = pi * 2 / CoalScalar(tot);
 
   CoalScalar circle_edge = phid * r;
   unsigned int h_num = (unsigned int)ceil(h / circle_edge);

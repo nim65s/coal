@@ -259,7 +259,7 @@ class COAL_DLLAPI Sphere : public ShapeBase {
   NODE_TYPE getNodeType() const { return GEOM_SPHERE; }
 
   Matrix3s computeMomentofInertia() const {
-    CoalScalar I = 0.4 * radius * radius * computeVolume();
+    CoalScalar I = CoalScalar(0.4) * radius * radius * computeVolume();
     return I * Matrix3s::Identity();
   }
 
@@ -332,8 +332,9 @@ class COAL_DLLAPI Ellipsoid : public ShapeBase {
     CoalScalar a2 = V * radii[0] * radii[0];
     CoalScalar b2 = V * radii[1] * radii[1];
     CoalScalar c2 = V * radii[2] * radii[2];
-    return (Matrix3s() << 0.2 * (b2 + c2), 0, 0, 0, 0.2 * (a2 + c2), 0, 0, 0,
-            0.2 * (a2 + b2))
+    CoalScalar alpha = CoalScalar(0.2);
+    return (Matrix3s() << alpha * (b2 + c2), 0, 0, 0, alpha * (a2 + c2), 0, 0,
+            0, alpha * (a2 + b2))
         .finished();
   }
 
@@ -409,20 +410,23 @@ class COAL_DLLAPI Capsule : public ShapeBase {
 
   CoalScalar computeVolume() const {
     return boost::math::constants::pi<CoalScalar>() * radius * radius *
-           ((halfLength * 2) + radius * 4 / 3.0);
+           ((halfLength * 2) + radius * 4 / CoalScalar(3));
   }
 
   Matrix3s computeMomentofInertia() const {
     CoalScalar v_cyl = radius * radius * (halfLength * 2) *
                        boost::math::constants::pi<CoalScalar>();
     CoalScalar v_sph = radius * radius * radius *
-                       boost::math::constants::pi<CoalScalar>() * 4 / 3.0;
+                       boost::math::constants::pi<CoalScalar>() * 4 /
+                       CoalScalar(3);
 
     CoalScalar h2 = halfLength * halfLength;
     CoalScalar r2 = radius * radius;
-    CoalScalar ix = v_cyl * (h2 / 3. + r2 / 4.) +
-                    v_sph * (0.4 * r2 + h2 + 0.75 * radius * halfLength);
-    CoalScalar iz = (0.5 * v_cyl + 0.4 * v_sph) * radius * radius;
+    CoalScalar ix = v_cyl * (h2 / CoalScalar(3) + r2 / CoalScalar(4)) +
+                    v_sph * (CoalScalar(0.4) * r2 + h2 +
+                             CoalScalar(0.75) * radius * halfLength);
+    CoalScalar iz =
+        (CoalScalar(0.5) * v_cyl + CoalScalar(0.4) * v_sph) * radius * radius;
 
     return (Matrix3s() << ix, 0, 0, 0, ix, 0, 0, 0, iz).finished();
   }
@@ -498,14 +502,16 @@ class COAL_DLLAPI Cone : public ShapeBase {
 
   Matrix3s computeMomentofInertia() const {
     CoalScalar V = computeVolume();
-    CoalScalar ix =
-        V * (0.4 * halfLength * halfLength + 3 * radius * radius / 20);
-    CoalScalar iz = 0.3 * V * radius * radius;
+    CoalScalar ix = V * (CoalScalar(0.4) * halfLength * halfLength +
+                         3 * radius * radius / 20);
+    CoalScalar iz = CoalScalar(0.3) * V * radius * radius;
 
     return (Matrix3s() << ix, 0, 0, 0, ix, 0, 0, 0, iz).finished();
   }
 
-  Vec3s computeCOM() const { return Vec3s(0, 0, -0.5 * halfLength); }
+  Vec3s computeCOM() const {
+    return Vec3s(0, 0, -CoalScalar(0.5) * halfLength);
+  }
 
   CoalScalar minInflationValue() const {
     return -(std::min)(radius, halfLength);
@@ -534,7 +540,8 @@ class COAL_DLLAPI Cone : public ShapeBase {
     const CoalScalar bottom_inflation = value;
 
     const CoalScalar new_lz = 2 * halfLength + top_inflation + bottom_inflation;
-    const CoalScalar new_cz = (top_inflation + bottom_inflation) / 2.;
+    const CoalScalar new_cz =
+        (top_inflation + bottom_inflation) / CoalScalar(2);
     const CoalScalar new_radius = new_lz / tan_alpha;
 
     return std::make_pair(Cone(new_radius, new_lz),

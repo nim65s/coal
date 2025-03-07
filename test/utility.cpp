@@ -90,7 +90,7 @@ const Vec3s UnitY = Vec3s(0, 1, 0);
 const Vec3s UnitZ = Vec3s(0, 0, 1);
 
 CoalScalar rand_interval(CoalScalar rmin, CoalScalar rmax) {
-  CoalScalar t = rand() / ((CoalScalar)RAND_MAX + 1);
+  CoalScalar t = CoalScalar(rand()) / ((CoalScalar)RAND_MAX + 1);
   return (t * (rmax - rmin) + rmin);
 }
 
@@ -212,7 +212,7 @@ void generateRandomTransform(CoalScalar extents[6], Transform3s& transform) {
   CoalScalar y = rand_interval(extents[1], extents[4]);
   CoalScalar z = rand_interval(extents[2], extents[5]);
 
-  const CoalScalar pi = 3.1415926;
+  const CoalScalar pi = CoalScalar(3.1415926);
   CoalScalar a = rand_interval(0, 2 * pi);
   CoalScalar b = rand_interval(0, 2 * pi);
   CoalScalar c = rand_interval(0, 2 * pi);
@@ -232,7 +232,7 @@ void generateRandomTransforms(CoalScalar extents[6],
     CoalScalar y = rand_interval(extents[1], extents[4]);
     CoalScalar z = rand_interval(extents[2], extents[5]);
 
-    const CoalScalar pi = 3.1415926;
+    const CoalScalar pi = CoalScalar(3.1415926);
     CoalScalar a = rand_interval(0, 2 * pi);
     CoalScalar b = rand_interval(0, 2 * pi);
     CoalScalar c = rand_interval(0, 2 * pi);
@@ -258,7 +258,7 @@ void generateRandomTransforms(CoalScalar extents[6], CoalScalar delta_trans[3],
     CoalScalar y = rand_interval(extents[1], extents[4]);
     CoalScalar z = rand_interval(extents[2], extents[5]);
 
-    const CoalScalar pi = 3.1415926;
+    const CoalScalar pi = CoalScalar(3.1415926);
     CoalScalar a = rand_interval(0, 2 * pi);
     CoalScalar b = rand_interval(0, 2 * pi);
     CoalScalar c = rand_interval(0, 2 * pi);
@@ -499,7 +499,7 @@ void toEllipsoid(Vec3s& point, const Ellipsoid& ellipsoid) {
 }
 
 Convex<Triangle> constructPolytopeFromEllipsoid(const Ellipsoid& ellipsoid) {
-  CoalScalar PHI = (1 + std::sqrt(5)) / 2;
+  CoalScalar PHI = (1 + std::sqrt(CoalScalar(5))) / 2;
 
   // vertices
   std::shared_ptr<std::vector<Vec3s>> pts(new std::vector<Vec3s>({
@@ -613,33 +613,43 @@ std::shared_ptr<ShapeBase> makeRandomGeometry(NODE_TYPE node_type) {
                         std::invalid_argument);
       break;
     case GEOM_BOX:
-      return std::make_shared<Box>(makeRandomBox(0.1, 1.0));
+      return std::make_shared<Box>(
+          makeRandomBox(CoalScalar(0.1), CoalScalar(1)));
       break;
     case GEOM_SPHERE:
-      return std::make_shared<Sphere>(makeRandomSphere(0.1, 1.0));
+      return std::make_shared<Sphere>(
+          makeRandomSphere(CoalScalar(0.1), CoalScalar(1)));
       break;
     case GEOM_ELLIPSOID:
-      return std::make_shared<Ellipsoid>(makeRandomEllipsoid(0.1, 1.0));
+      return std::make_shared<Ellipsoid>(
+          makeRandomEllipsoid(CoalScalar(0.1), CoalScalar(1)));
       break;
     case GEOM_CAPSULE:
       return std::make_shared<Capsule>(
-          makeRandomCapsule({0.1, 0.2}, {0.8, 1.0}));
+          makeRandomCapsule({CoalScalar(0.1), CoalScalar(0.2)},
+                            {CoalScalar(0.8), CoalScalar(1)}));
       break;
     case GEOM_CONE:
-      return std::make_shared<Cone>(makeRandomCone({0.1, 0.2}, {0.8, 1.0}));
+      return std::make_shared<Cone>(
+          makeRandomCone({CoalScalar(0.1), CoalScalar(0.2)},
+                         {CoalScalar(0.8), CoalScalar(1.0)}));
       break;
     case GEOM_CYLINDER:
       return std::make_shared<Cylinder>(
-          makeRandomCylinder({0.1, 0.2}, {0.8, 1.0}));
+          makeRandomCylinder({CoalScalar(0.1), CoalScalar(0.2)},
+                             {CoalScalar(0.8), CoalScalar(1.0)}));
       break;
     case GEOM_CONVEX:
-      return std::make_shared<Convex<Triangle>>(makeRandomConvex(0.1, 1.0));
+      return std::make_shared<Convex<Triangle>>(
+          makeRandomConvex(CoalScalar(0.1), CoalScalar(1)));
       break;
     case GEOM_PLANE:
-      return std::make_shared<Plane>(makeRandomPlane(0.1, 1.0));
+      return std::make_shared<Plane>(
+          makeRandomPlane(CoalScalar(0.1), CoalScalar(1)));
       break;
     case GEOM_HALFSPACE:
-      return std::make_shared<Halfspace>(makeRandomHalfspace(0.1, 1.0));
+      return std::make_shared<Halfspace>(
+          makeRandomHalfspace(CoalScalar(0.1), CoalScalar(1)));
       break;
     default:
       COAL_THROW_PRETTY(std::string(get_node_type_name(node_type)) +

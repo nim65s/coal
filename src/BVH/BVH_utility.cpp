@@ -57,7 +57,7 @@ BVHModel<BV>* BVHExtract(const BVHModel<BV>& model, const Transform3s& pose,
 
   GJKSolver gjk;
   // Early-stop GJK as soon as a separating plane is found
-  gjk.gjk.setDistanceEarlyBreak(1e-3);
+  gjk.gjk.setDistanceEarlyBreak(CoalScalar(1e-3));
 
   // Check what triangles should be kept.
   // TODO use the BV hierarchy
@@ -246,12 +246,12 @@ void getCovariance(Vec3s* ps, Vec3s* ps2, Triangle* ts, unsigned int* indices,
 
   unsigned int n_points = ((ps2) ? 2 : 1) * ((ts) ? 3 : 1) * n;
 
-  M(0, 0) = S2[0][0] - S1[0] * S1[0] / n_points;
-  M(1, 1) = S2[1][1] - S1[1] * S1[1] / n_points;
-  M(2, 2) = S2[2][2] - S1[2] * S1[2] / n_points;
-  M(0, 1) = S2[0][1] - S1[0] * S1[1] / n_points;
-  M(1, 2) = S2[1][2] - S1[1] * S1[2] / n_points;
-  M(0, 2) = S2[0][2] - S1[0] * S1[2] / n_points;
+  M(0, 0) = S2[0][0] - S1[0] * S1[0] / CoalScalar(n_points);
+  M(1, 1) = S2[1][1] - S1[1] * S1[1] / CoalScalar(n_points);
+  M(2, 2) = S2[2][2] - S1[2] * S1[2] / CoalScalar(n_points);
+  M(0, 1) = S2[0][1] - S1[0] * S1[1] / CoalScalar(n_points);
+  M(1, 2) = S2[1][2] - S1[1] * S1[2] / CoalScalar(n_points);
+  M(0, 2) = S2[0][2] - S1[0] * S1[2] / CoalScalar(n_points);
   M(1, 0) = M(0, 1);
   M(2, 0) = M(0, 2);
   M(2, 1) = M(1, 2);
@@ -591,7 +591,7 @@ void circumCircleComputation(const Vec3s& a, const Vec3s& b, const Vec3s& c,
   Vec3s e3 = e1.cross(e2);
   CoalScalar e3_len2 = e3.squaredNorm();
   radius = e1_len2 * e2_len2 * (e1 - e2).squaredNorm() / e3_len2;
-  radius = std::sqrt(radius) * 0.5;
+  radius = std::sqrt(radius) * CoalScalar(0.5);
 
   center = (e2 * e1_len2 - e1 * e2_len2).cross(e3) * (0.5 * 1 / e3_len2) + c;
 }

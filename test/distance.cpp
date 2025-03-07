@@ -53,7 +53,7 @@ using namespace coal;
 namespace utf = boost::unit_test::framework;
 
 bool verbose = false;
-CoalScalar DELTA = 0.001;
+CoalScalar DELTA = CoalScalar(0.001);
 
 template <typename BV>
 void distance_Test(const Transform3s& tf, const std::vector<Vec3s>& vertices1,

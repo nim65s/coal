@@ -109,7 +109,7 @@ bool isApprox(const Halfspace &s1, const Halfspace &s2, const CoalScalar tol) {
 
 template <typename Shape>
 void test(const Shape &original_shape, const CoalScalar inflation,
-          const CoalScalar tol = 1e-8) {
+          const CoalScalar tol = CoalScalar(1e-8)) {
   // Zero inflation
   {
     const CoalScalar inflation = 0.;
@@ -166,32 +166,32 @@ void test_no_throw(const Shape &shape, const CoalScalar inflation) {
 
 BOOST_AUTO_TEST_CASE(test_inflate) {
   const coal::Sphere sphere(1);
-  test(sphere, 0.01, 1e-8);
-  test_throw(sphere, -1.1);
+  test(sphere, CoalScalar(0.01), CoalScalar(1e-8));
+  test_throw(sphere, CoalScalar(-1.1));
   test_no_throw(sphere, 1.);
 
   const coal::Box box(1, 1, 1);
-  test(box, 0.01, 1e-8);
-  test_throw(box, -0.6);
+  test(box, CoalScalar(0.01), CoalScalar(1e-8));
+  test_throw(box, CoalScalar(-0.6));
 
   const coal::Ellipsoid ellipsoid(1, 2, 3);
-  test(ellipsoid, 0.01, 1e-8);
-  test_throw(ellipsoid, -1.1);
+  test(ellipsoid, CoalScalar(0.01), CoalScalar(1e-8));
+  test_throw(ellipsoid, CoalScalar(-1.1));
 
-  const coal::Capsule capsule(1., 2.);
-  test(capsule, 0.01, 1e-8);
-  test_throw(capsule, -1.1);
+  const coal::Capsule capsule(1, 2);
+  test(capsule, CoalScalar(0.01), CoalScalar(1e-8));
+  test_throw(capsule, CoalScalar(-1.1));
 
-  const coal::Cylinder cylinder(1., 2.);
-  test(cylinder, 0.01, 1e-8);
-  test_throw(cylinder, -1.1);
+  const coal::Cylinder cylinder(1, 2);
+  test(cylinder, CoalScalar(0.01), CoalScalar(1e-8));
+  test_throw(cylinder, CoalScalar(-1.1));
 
-  const coal::Cone cone(1., 4.);
-  test(cone, 0.01, 1e-8);
-  test_throw(cone, -1.1);
+  const coal::Cone cone(1, 4);
+  test(cone, CoalScalar(0.01), CoalScalar(1e-8));
+  test_throw(cone, CoalScalar(-1.1));
 
-  const coal::Halfspace halfspace(Vec3s::UnitZ(), 0.);
-  test(halfspace, 0.01, 1e-8);
+  const coal::Halfspace halfspace(Vec3s::UnitZ(), 0);
+  test(halfspace, CoalScalar(0.01), CoalScalar(1e-8));
 
   //  const coal::TriangleP triangle(Vec3s::UnitX(), Vec3s::UnitY(),
   //                                     Vec3s::UnitZ());

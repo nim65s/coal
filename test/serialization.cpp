@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE(test_collision_data) {
   CollisionResult collision_result;
   collision_result.addContact(contact);
   collision_result.addContact(contact);
-  collision_result.distance_lower_bound = 0.1;
+  collision_result.distance_lower_bound = CoalScalar(0.1);
   collision_result.normal.setOnes();
   collision_result.nearest_points[0].setRandom();
   collision_result.nearest_points[1].setRandom();
@@ -289,7 +289,7 @@ BOOST_AUTO_TEST_CASE(test_collision_data) {
     const Transform3s tf1;
     Transform3s tf2;
     // set translation to have a collision
-    const CoalScalar offset = 0.001;
+    const CoalScalar offset = CoalScalar(0.001);
     tf2.setTranslation(Vec3s(0, 0, height / 2 - offset));
 
     const size_t num_max_contact = 1;
@@ -533,7 +533,7 @@ BOOST_AUTO_TEST_CASE(test_shapes) {
 
 #ifdef COAL_HAS_OCTOMAP
 BOOST_AUTO_TEST_CASE(test_octree) {
-  const CoalScalar resolution = 1e-2;
+  const CoalScalar resolution = CoalScalar(1e-2);
   const MatrixX3s points = MatrixX3s::Random(1000, 3);
   OcTreePtr_t octree_ptr = makeOctree(points, resolution);
   const OcTree& octree = *octree_ptr.get();

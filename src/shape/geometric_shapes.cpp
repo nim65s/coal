@@ -114,13 +114,13 @@ void ConvexBase::computeCenter() {
   const std::vector<Vec3s>& points_ = *points;
   for (std::size_t i = 0; i < num_points; ++i)
     center += points_[i];  // TODO(jcarpent): vectorization
-  center /= num_points;
+  center /= CoalScalar(num_points);
 }
 
 void Halfspace::unitNormalTest() {
   CoalScalar l = n.norm();
   if (l > 0) {
-    CoalScalar inv_l = 1.0 / l;
+    CoalScalar inv_l = CoalScalar(1) / l;
     n *= inv_l;
     d *= inv_l;
   } else {
@@ -132,7 +132,7 @@ void Halfspace::unitNormalTest() {
 void Plane::unitNormalTest() {
   CoalScalar l = n.norm();
   if (l > 0) {
-    CoalScalar inv_l = 1.0 / l;
+    CoalScalar inv_l = CoalScalar(1) / l;
     n *= inv_l;
     d *= inv_l;
   } else {

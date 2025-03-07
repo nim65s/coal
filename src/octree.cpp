@@ -59,7 +59,7 @@ void computeNeighbors(const std::vector<Vec6s>& boxes,
                       std::vector<Neighbors>& neighbors) {
   typedef std::vector<Vec6s> VectorVec6s;
   CoalScalar fixedSize = -1;
-  CoalScalar e(1e-8);
+  CoalScalar e = CoalScalar(1e-8);
   for (std::size_t i = 0; i < boxes.size(); ++i) {
     const Vec6s& box(boxes[i]);
     Neighbors& n(neighbors[i]);
@@ -127,14 +127,23 @@ void OcTree::exportAsObjFile(const std::string& filename) const {
     CoalScalar z(box[2]);
     CoalScalar size(box[3]);
 
-    vertices.push_back(Vec3s(x - .5 * size, y - .5 * size, z - .5 * size));
-    vertices.push_back(Vec3s(x + .5 * size, y - .5 * size, z - .5 * size));
-    vertices.push_back(Vec3s(x - .5 * size, y + .5 * size, z - .5 * size));
-    vertices.push_back(Vec3s(x + .5 * size, y + .5 * size, z - .5 * size));
-    vertices.push_back(Vec3s(x - .5 * size, y - .5 * size, z + .5 * size));
-    vertices.push_back(Vec3s(x + .5 * size, y - .5 * size, z + .5 * size));
-    vertices.push_back(Vec3s(x - .5 * size, y + .5 * size, z + .5 * size));
-    vertices.push_back(Vec3s(x + .5 * size, y + .5 * size, z + .5 * size));
+    const CoalScalar half = CoalScalar(0.5);
+    vertices.push_back(
+        Vec3s(x - half * size, y - half * size, z - half * size));
+    vertices.push_back(
+        Vec3s(x + half * size, y - half * size, z - half * size));
+    vertices.push_back(
+        Vec3s(x - half * size, y + half * size, z - half * size));
+    vertices.push_back(
+        Vec3s(x + half * size, y + half * size, z - half * size));
+    vertices.push_back(
+        Vec3s(x - half * size, y - half * size, z + half * size));
+    vertices.push_back(
+        Vec3s(x + half * size, y - half * size, z + half * size));
+    vertices.push_back(
+        Vec3s(x - half * size, y + half * size, z + half * size));
+    vertices.push_back(
+        Vec3s(x + half * size, y + half * size, z + half * size));
 
     // Add face only if box has no neighbor with the same face
     if (!n.minusX()) {

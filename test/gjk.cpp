@@ -81,11 +81,11 @@ void test_gjk_distance_triangle_triangle(
   Transform3s tf1, tf2;
   Vec3s p1, p2, a1, a2;
   Matrix3s M;
-  CoalScalar distance(sqrt(-1));
+  CoalScalar distance(sqrt(-CoalScalar(1)));
   clock_t start, end;
 
   std::size_t nCol = 0, nDiff = 0;
-  CoalScalar eps = 1e-7;
+  CoalScalar eps = CoalScalar(1e-7);
   Results_t results(N);
   for (std::size_t i = 0; i < N; ++i) {
     Vec3s P1_loc(Vec3s::Random()), P2_loc(Vec3s::Random()),
@@ -93,41 +93,58 @@ void test_gjk_distance_triangle_triangle(
     Vec3s Q1_loc(Vec3s::Random()), Q2_loc(Vec3s::Random()),
         Q3_loc(Vec3s::Random());
     if (i == 0) {
-      P1_loc = Vec3s(0.063996093749999997, -0.15320971679687501,
-                     -0.42799999999999999);
-      P2_loc =
-          Vec3s(0.069105957031249998, -0.150722900390625, -0.42999999999999999);
-      P3_loc = Vec3s(0.063996093749999997, -0.15320971679687501,
-                     -0.42999999999999999);
-      Q1_loc =
-          Vec3s(-25.655000000000001, -1.2858199462890625, 3.7249809570312502);
-      Q2_loc = Vec3s(-10.926, -1.284259033203125, 3.7281499023437501);
-      Q3_loc = Vec3s(-10.926, -1.2866180419921875, 3.72335400390625);
-      Transform3s tf(
-          Quatf(-0.42437287410898855, -0.26862477561450587,
-                -0.46249645019513175, 0.73064726592483387),
-          Vec3s(-12.824601270753471, -1.6840516940066426, 3.8914453043793844));
+      P1_loc = Vec3s(CoalScalar(0.063996093749999997),
+                     CoalScalar(00.15320971679687501),
+                     CoalScalar(-0.42799999999999999));
+      P2_loc = Vec3s(CoalScalar(0.069105957031249998),
+                     CoalScalar(-0.150722900390625),
+                     CoalScalar(-0.42999999999999999));
+      P3_loc = Vec3s(CoalScalar(0.063996093749999997),
+                     CoalScalar(-0.15320971679687501),
+                     CoalScalar(-0.42999999999999999));
+      Q1_loc = Vec3s(CoalScalar(-25.655000000000001),
+                     CoalScalar(-1.2858199462890625),
+                     CoalScalar(3.7249809570312502));
+      Q2_loc = Vec3s(CoalScalar(-10.926), CoalScalar(-1.284259033203125),
+                     CoalScalar(3.7281499023437501));
+      Q3_loc = Vec3s(CoalScalar(-10.926), CoalScalar(-1.2866180419921875),
+                     CoalScalar(3.72335400390625));
+      Transform3s tf(Quatf(CoalScalar(-0.42437287410898855),
+                           CoalScalar(-0.26862477561450587),
+                           CoalScalar(-0.46249645019513175),
+                           CoalScalar(0.73064726592483387)),
+                     Vec3s(CoalScalar(-12.824601270753471),
+                           CoalScalar(-1.6840516940066426),
+                           CoalScalar(3.8914453043793844)));
       tf1 = tf;
     } else if (i == 1) {
-      P1_loc =
-          Vec3s(-0.8027043342590332, -0.30276307463645935, -0.4372950792312622);
-      P2_loc =
-          Vec3s(-0.8027043342590332, 0.30276307463645935, -0.4372950792312622);
+      P1_loc = Vec3s(CoalScalar(-0.8027043342590332),
+                     CoalScalar(-0.30276307463645935),
+                     CoalScalar(-0.4372950792312622));
+      P2_loc = Vec3s(CoalScalar(-0.8027043342590332),
+                     CoalScalar(0.30276307463645935),
+                     CoalScalar(-0.4372950792312622));
       P3_loc =
-          Vec3s(0.8027043342590332, 0.30276307463645935, -0.4372950792312622);
+          Vec3s(CoalScalar(0.8027043342590332), CoalScalar(0.30276307463645935),
+                CoalScalar(-0.4372950792312622));
       Q1_loc =
-          Vec3s(-0.224713996052742, -0.7417119741439819, 0.19999997317790985);
-      Q2_loc =
-          Vec3s(-0.5247139930725098, -0.7417119741439819, 0.19999997317790985);
+          Vec3s(CoalScalar(-0.224713996052742), CoalScalar(-0.7417119741439819),
+                CoalScalar(0.19999997317790985));
+      Q2_loc = Vec3s(CoalScalar(-0.5247139930725098),
+                     CoalScalar(-0.7417119741439819),
+                     CoalScalar(0.19999997317790985));
       Q3_loc =
-          Vec3s(-0.224713996052742, -0.7417119741439819, 0.09999997168779373);
+          Vec3s(CoalScalar(-0.224713996052742), CoalScalar(-0.7417119741439819),
+                CoalScalar(0.09999997168779373));
       Matrix3s R;
       Vec3s T;
-      R << 0.9657787025454787, 0.09400415350535746, 0.24173273843919627,
-          -0.06713698817647556, 0.9908494114820345, -0.11709000206805695,
-          -0.25052768814676646, 0.09685382227587608, 0.9632524147814993;
+      R << CoalScalar(0.9657787025454787), CoalScalar(0.09400415350535746),
+          CoalScalar(0.24173273843919627), CoalScalar(-0.06713698817647556),
+          CoalScalar(0.9908494114820345), CoalScalar(-0.11709000206805695),
+          CoalScalar(-0.25052768814676646), CoalScalar(0.09685382227587608),
+          CoalScalar(0.9632524147814993);
 
-      T << -0.13491177905469953, -1, 0.6000449621843792;
+      T << CoalScalar(-0.13491177905469953), -1, CoalScalar(0.6000449621843792);
       tf1.setRotation(R);
       tf1.setTranslation(T);
     } else {
@@ -356,7 +373,7 @@ void test_gjk_unit_sphere(CoalScalar center_distance, Vec3s ray,
   BOOST_CHECK_EQUAL(shape.swept_sphere_radius[1],
                     sphere.radius + sphere.getSweptSphereRadius());
 
-  details::GJK gjk(2, 1e-6);
+  details::GJK gjk(2, CoalScalar(1e-6));
   if (use_gjk_nesterov_acceleration)
     gjk.gjk_variant = GJKVariant::NesterovAcceleration;
   details::GJK::Status status = gjk.evaluate(shape, Vec3s(1, 0, 0));
@@ -380,34 +397,36 @@ void test_gjk_unit_sphere(CoalScalar center_distance, Vec3s ray,
   Vec3s w1_expected(tf0.inverse().transform(tf1.getTranslation() - ray) -
                     swept_sphere_radius * normal);
 
-  EIGEN_VECTOR_IS_APPROX(w0, w0_expected, 1e-10);
-  EIGEN_VECTOR_IS_APPROX(w1, w1_expected, 1e-10);
+  EIGEN_VECTOR_IS_APPROX(w0, w0_expected, CoalScalar(1e-10));
+  EIGEN_VECTOR_IS_APPROX(w1, w1_expected, CoalScalar(1e-10));
 }
 
 BOOST_AUTO_TEST_CASE(sphere_sphere) {
   std::array<bool, 2> use_nesterov_acceleration = {false, true};
-  std::array<CoalScalar, 5> swept_sphere_radius = {0., 0.1, 1., 10., 100.};
+  std::array<CoalScalar, 5> swept_sphere_radius = {0., CoalScalar(0.1), 1, 10,
+                                                   100};
   for (bool nesterov_acceleration : use_nesterov_acceleration) {
     for (CoalScalar ssr : swept_sphere_radius) {
       test_gjk_unit_sphere(3, Vec3s(1, 0, 0), ssr, nesterov_acceleration);
 
-      test_gjk_unit_sphere(2.01, Vec3s(1, 0, 0), ssr, nesterov_acceleration);
+      test_gjk_unit_sphere(CoalScalar(2.01), Vec3s(1, 0, 0), ssr,
+                           nesterov_acceleration);
 
-      test_gjk_unit_sphere(2.0, Vec3s(1, 0, 0), ssr, nesterov_acceleration);
+      test_gjk_unit_sphere(2, Vec3s(1, 0, 0), ssr, nesterov_acceleration);
 
-      test_gjk_unit_sphere(1.0, Vec3s(1, 0, 0), ssr, nesterov_acceleration);
+      test_gjk_unit_sphere(1, Vec3s(1, 0, 0), ssr, nesterov_acceleration);
 
       // Random rotation
       test_gjk_unit_sphere(3, Vec3s::Random().normalized(), ssr,
                            nesterov_acceleration);
 
-      test_gjk_unit_sphere(2.01, Vec3s::Random().normalized(), ssr,
+      test_gjk_unit_sphere(CoalScalar(2.01), Vec3s::Random().normalized(), ssr,
                            nesterov_acceleration);
 
-      test_gjk_unit_sphere(2.0, Vec3s::Random().normalized(), ssr,
+      test_gjk_unit_sphere(2, Vec3s::Random().normalized(), ssr,
                            nesterov_acceleration);
 
-      test_gjk_unit_sphere(1.0, Vec3s::Random().normalized(), ssr,
+      test_gjk_unit_sphere(1, Vec3s::Random().normalized(), ssr,
                            nesterov_acceleration);
     }
   }
@@ -433,7 +452,7 @@ void test_gjk_triangle_capsule(Vec3s T, bool expect_collision,
   BOOST_CHECK_EQUAL(shape.swept_sphere_radius[0], capsule.radius);
   BOOST_CHECK_EQUAL(shape.swept_sphere_radius[1], 0.);
 
-  details::GJK gjk(10, 1e-6);
+  details::GJK gjk(10, CoalScalar(1e-6));
   if (use_gjk_nesterov_acceleration)
     gjk.gjk_variant = GJKVariant::NesterovAcceleration;
   details::GJK::Status status = gjk.evaluate(shape, Vec3s(1, 0, 0));
@@ -446,7 +465,7 @@ void test_gjk_triangle_capsule(Vec3s T, bool expect_collision,
 
     // Check that guess works as expected
     Vec3s guess = gjk.getGuessFromSimplex();
-    details::GJK gjk2(3, 1e-6);
+    details::GJK gjk2(3, CoalScalar(1e-6));
     details::GJK::Status status2 = gjk2.evaluate(shape, guess);
     BOOST_CHECK_EQUAL(status2, details::GJK::NoCollision);
   }
@@ -456,35 +475,36 @@ void test_gjk_triangle_capsule(Vec3s T, bool expect_collision,
       status == details::GJK::CollisionWithPenetrationInformation) {
     gjk.getWitnessPointsAndNormal(shape, w0, w1, normal);
   } else {
-    details::EPA epa(64, 1e-6);
+    details::EPA epa(64, CoalScalar(1e-6));
     details::EPA::Status epa_status = epa.evaluate(gjk, Vec3s(1, 0, 0));
     BOOST_CHECK_EQUAL(epa_status, details::EPA::AccuracyReached);
     epa.getWitnessPointsAndNormal(shape, w0, w1, normal);
   }
 
-  EIGEN_VECTOR_IS_APPROX(w0, w0_expected, 1e-10);
-  EIGEN_VECTOR_IS_APPROX(w1 - T, w1_expected, 1e-10);
+  EIGEN_VECTOR_IS_APPROX(w0, w0_expected, CoalScalar(1e-10));
+  EIGEN_VECTOR_IS_APPROX(w1 - T, w1_expected, CoalScalar(1e-10));
 }
 
 BOOST_AUTO_TEST_CASE(triangle_capsule) {
   // GJK -> no collision
-  test_gjk_triangle_capsule(Vec3s(1.01, 0, 0), false, false, Vec3s(1., 0, 0),
-                            Vec3s(0., 0, 0));
+  test_gjk_triangle_capsule(Vec3s(CoalScalar(1.01), 0, 0), false, false,
+                            Vec3s(1, 0, 0), Vec3s(0., 0, 0));
   // GJK + Nesterov acceleration -> no collision
-  test_gjk_triangle_capsule(Vec3s(1.01, 0, 0), false, true, Vec3s(1., 0, 0),
-                            Vec3s(0., 0, 0));
+  test_gjk_triangle_capsule(Vec3s(CoalScalar(1.01), 0, 0), false, true,
+                            Vec3s(1, 0, 0), Vec3s(0., 0, 0));
 
   // GJK -> collision
-  test_gjk_triangle_capsule(Vec3s(0.5, 0, 0), true, false, Vec3s(1., 0, 0),
-                            Vec3s(0., 0, 0));
+  test_gjk_triangle_capsule(Vec3s(CoalScalar(0.5), 0, 0), true, false,
+                            Vec3s(1, 0, 0), Vec3s(0., 0, 0));
   // GJK + Nesterov acceleration -> collision
   test_gjk_triangle_capsule(Vec3s(0.5, 0, 0), true, true, Vec3s(1., 0, 0),
                             Vec3s(0., 0, 0));
 
   // GJK + EPA -> collision
-  test_gjk_triangle_capsule(Vec3s(-0.5, -0.01, 0), true, false, Vec3s(0, 1, 0),
-                            Vec3s(0.5, 0, 0));
+  test_gjk_triangle_capsule(Vec3s(CoalScalar(-0.5), CoalScalar(-0.01), 0), true,
+                            false, Vec3s(0, 1, 0),
+                            Vec3s(CoalScalar(0.5), 0, 0));
   // GJK + Nesterov accleration + EPA -> collision
-  test_gjk_triangle_capsule(Vec3s(-0.5, -0.01, 0), true, true, Vec3s(0, 1, 0),
-                            Vec3s(0.5, 0, 0));
+  test_gjk_triangle_capsule(Vec3s(CoalScalar(-0.5), CoalScalar(-0.01), 0), true,
+                            true, Vec3s(0, 1, 0), Vec3s(CoalScalar(0.5), 0, 0));
 }

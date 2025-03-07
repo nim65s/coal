@@ -281,7 +281,7 @@ class COAL_DLLAPI HeightField : public CollisionGeometry {
                   max_height);
     const AABB aabb_(A, B);
 
-    aabb_radius = (A - B).norm() / 2.;
+    aabb_radius = (A - B).norm() / CoalScalar(2);
     aabb_local = aabb_;
     aabb_center = aabb_.center();
   }
@@ -317,8 +317,9 @@ class COAL_DLLAPI HeightField : public CollisionGeometry {
     assert(NX >= 2 && "The number of columns is too small.");
     assert(NY >= 2 && "The number of rows is too small.");
 
-    x_grid = VecXs::LinSpaced(NX, -0.5 * x_dim, 0.5 * x_dim);
-    y_grid = VecXs::LinSpaced(NY, 0.5 * y_dim, -0.5 * y_dim);
+    const CoalScalar half = CoalScalar(0.5);
+    x_grid = VecXs::LinSpaced(NX, -half * x_dim, half * x_dim);
+    y_grid = VecXs::LinSpaced(NY, half * y_dim, -half * y_dim);
 
     // Allocate BVS
     const size_t num_tot_bvs =

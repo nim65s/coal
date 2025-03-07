@@ -127,7 +127,7 @@ CoalScalar ShapeShapeDistance<Capsule, Capsule>(
     w2 = p2;
   } else {
     // Always non-negative, equal 0 if the segments are colinear
-    CoalScalar denom = fmax(a * e - b * b, 0);
+    CoalScalar denom = CoalScalar(fmax(a * e - b * b, 0));
 
     CoalScalar s;
     CoalScalar t;

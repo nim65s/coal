@@ -94,7 +94,7 @@ struct COAL_DLLAPI RSS {
   /// Not implemented
   bool overlap(const RSS& other, const CollisionRequest&,
                CoalScalar& sqrDistLowerBound) const {
-    sqrDistLowerBound = sqrt(-1);
+    sqrDistLowerBound = sqrt(CoalScalar(-1));
     return overlap(other);
   }
 

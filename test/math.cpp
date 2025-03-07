@@ -48,13 +48,13 @@
 using namespace coal;
 
 BOOST_AUTO_TEST_CASE(vec_test_eigen_vec64) {
-  Vec3s v1(1.0, 2.0, 3.0);
-  BOOST_CHECK(v1[0] == 1.0);
-  BOOST_CHECK(v1[1] == 2.0);
-  BOOST_CHECK(v1[2] == 3.0);
+  Vec3s v1(1, 2, 3);
+  BOOST_CHECK(v1[0] == CoalScalar(1));
+  BOOST_CHECK(v1[1] == CoalScalar(2));
+  BOOST_CHECK(v1[2] == CoalScalar(3));
 
   Vec3s v2 = v1;
-  Vec3s v3(3.3, 4.3, 5.3);
+  Vec3s v3(CoalScalar(3.3), CoalScalar(4.3), CoalScalar(5.3));
   v1 += v3;
   BOOST_CHECK(isEqual(v1, v2 + v3));
   v1 -= v3;
@@ -112,7 +112,7 @@ Vec3s rotate(Vec3s input, CoalScalar w, Vec3s vec) {
 
 BOOST_AUTO_TEST_CASE(quaternion) {
   Quatf q1(Quatf::Identity()), q2, q3;
-  q2 = fromAxisAngle(Vec3s(0, 0, 1), M_PI / 2);
+  q2 = fromAxisAngle(Vec3s(0, 0, 1), CoalScalar(M_PI / 2));
   q3 = q2.inverse();
 
   Vec3s v(1, -1, 0);
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(quaternion) {
 }
 
 BOOST_AUTO_TEST_CASE(transform) {
-  Quatf q = fromAxisAngle(Vec3s(0, 0, 1), M_PI / 2);
+  Quatf q = fromAxisAngle(Vec3s(0, 0, 1), CoalScalar(M_PI / 2));
   Vec3s T(0, 1, 2);
   Transform3s tf(q, T);
 

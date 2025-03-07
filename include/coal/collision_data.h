@@ -351,7 +351,7 @@ struct COAL_DLLAPI CollisionRequest : QueryRequest {
         enable_contact(flag & CONTACT),
         enable_distance_lower_bound(flag & DISTANCE_LOWER_BOUND),
         security_margin(0),
-        break_distance(1e-3),
+        break_distance(CoalScalar(1e-3)),
         distance_upper_bound((std::numeric_limits<CoalScalar>::max)()) {}
 
   /// @brief Default constructor.
@@ -360,7 +360,7 @@ struct COAL_DLLAPI CollisionRequest : QueryRequest {
         enable_contact(true),
         enable_distance_lower_bound(false),
         security_margin(0),
-        break_distance(1e-3),
+        break_distance(CoalScalar(1e-3)),
         distance_upper_bound((std::numeric_limits<CoalScalar>::max)()) {}
   COAL_COMPILER_DIAGNOSTIC_POP
 
@@ -761,7 +761,7 @@ struct COAL_DLLAPI ContactPatchRequest {
   explicit ContactPatchRequest(size_t max_num_patch = 1,
                                size_t num_samples_curved_shapes =
                                    ContactPatch::default_preallocated_size,
-                               CoalScalar patch_tolerance = 1e-3)
+                               CoalScalar patch_tolerance = CoalScalar(1e-3))
       : max_num_patch(max_num_patch) {
     this->setNumSamplesCurvedShapes(num_samples_curved_shapes);
     this->setPatchTolerance(patch_tolerance);
@@ -771,7 +771,7 @@ struct COAL_DLLAPI ContactPatchRequest {
   explicit ContactPatchRequest(const CollisionRequest& collision_request,
                                size_t num_samples_curved_shapes =
                                    ContactPatch::default_preallocated_size,
-                               CoalScalar patch_tolerance = 1e-3)
+                               CoalScalar patch_tolerance = CoalScalar(1e-3))
       : max_num_patch(collision_request.num_max_contacts) {
     this->setNumSamplesCurvedShapes(num_samples_curved_shapes);
     this->setPatchTolerance(patch_tolerance);
@@ -973,7 +973,7 @@ struct COAL_DLLAPI ContactPatchResult {
       patch.tf.rotation().col(2) *= -1.0;
 
       for (size_t j = 0; j < patch.size(); ++j) {
-        patch.point(i)(0) *= -1.0;  // only invert the x-axis
+        patch.point(i)(0) *= CoalScalar(-1);  // only invert the x-axis
       }
     }
   }

@@ -323,7 +323,7 @@ bool binCorrection(const Convex<Polygone>& convex,
                    const Transform3s& shape_pose, CoalScalar& distance,
                    Vec3s& contact_1, Vec3s& contact_2, Vec3s& normal,
                    Vec3s& face_normal, const bool is_collision) {
-  const CoalScalar prec = 1e-12;
+  const CoalScalar prec = CoalScalar(1e-12);
   const std::vector<Vec3s>& points = *(convex.points);
 
   bool hfield_witness_is_on_bin_side = true;

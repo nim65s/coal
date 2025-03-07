@@ -105,7 +105,7 @@ void computeSplitValue_mean(const BV&, Vec3s* vertices, Triangle* triangles,
 
       c += p1 + p2 + p3;
     }
-    split_value = c.dot(split_vector) / (3 * num_primitives);
+    split_value = c.dot(split_vector) / CoalScalar(3 * num_primitives);
   } else if (type == BVH_MODEL_POINTCLOUD) {
     CoalScalar sum = 0;
     for (unsigned int i = 0; i < num_primitives; ++i) {
@@ -113,7 +113,7 @@ void computeSplitValue_mean(const BV&, Vec3s* vertices, Triangle* triangles,
       sum += p.dot(split_vector);
     }
 
-    split_value = sum / num_primitives;
+    split_value = sum / CoalScalar(num_primitives);
   }
 }
 

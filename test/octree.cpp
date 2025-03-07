@@ -82,8 +82,9 @@ coal::OcTree makeOctree(const BVHModel<OBBRSS>& mesh,
          y += resolution) {
       for (CoalScalar z = resolution * floor(m[2] / resolution); z <= M[2];
            z += resolution) {
-        Vec3s center(x + .5 * resolution, y + .5 * resolution,
-                     z + .5 * resolution);
+        const CoalScalar half = CoalScalar(0.5);
+        Vec3s center(x + half * resolution, y + half * resolution,
+                     z + half * resolution);
         tfBox.setTranslation(center);
         coal::collide(&box, tfBox, &mesh, Transform3s(), request, result);
         if (result.isCollision()) {

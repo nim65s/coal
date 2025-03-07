@@ -64,8 +64,9 @@ std::vector<Vec3s> getBoundVertices(const Box& box, const Transform3s& tf) {
 std::vector<Vec3s> getBoundVertices(const Sphere& sphere,
                                     const Transform3s& tf) {
   std::vector<Vec3s> result(12);
-  const CoalScalar m = (1 + sqrt(5.0)) / 2.0;
-  CoalScalar edge_size = sphere.radius * 6 / (sqrt(27.0) + sqrt(15.0));
+  const CoalScalar m = (1 + sqrt(CoalScalar(5))) / CoalScalar(2);
+  CoalScalar edge_size =
+      sphere.radius * 6 / (sqrt(CoalScalar(27)) + sqrt(CoalScalar(15)));
 
   CoalScalar a = edge_size;
   CoalScalar b = m * edge_size;
@@ -89,9 +90,9 @@ std::vector<Vec3s> getBoundVertices(const Sphere& sphere,
 std::vector<Vec3s> getBoundVertices(const Ellipsoid& ellipsoid,
                                     const Transform3s& tf) {
   std::vector<Vec3s> result(12);
-  const CoalScalar phi = (1 + sqrt(5.0)) / 2.0;
+  const CoalScalar phi = (1 + sqrt(CoalScalar(5))) / CoalScalar(2);
 
-  const CoalScalar a = sqrt(3.0) / (phi * phi);
+  const CoalScalar a = sqrt(CoalScalar(3)) / (phi * phi);
   const CoalScalar b = phi * a;
 
   const CoalScalar& A = ellipsoid.radii[0];
@@ -123,13 +124,14 @@ std::vector<Vec3s> getBoundVertices(const Ellipsoid& ellipsoid,
 std::vector<Vec3s> getBoundVertices(const Capsule& capsule,
                                     const Transform3s& tf) {
   std::vector<Vec3s> result(36);
-  const CoalScalar m = (1 + sqrt(5.0)) / 2.0;
+  const CoalScalar m = (1 + sqrt(CoalScalar(5))) / CoalScalar(2);
 
   CoalScalar hl = capsule.halfLength;
-  CoalScalar edge_size = capsule.radius * 6 / (sqrt(27.0) + sqrt(15.0));
+  CoalScalar edge_size =
+      capsule.radius * 6 / (sqrt(CoalScalar(27)) + sqrt(CoalScalar(15)));
   CoalScalar a = edge_size;
   CoalScalar b = m * edge_size;
-  CoalScalar r2 = capsule.radius * 2 / sqrt(3.0);
+  CoalScalar r2 = capsule.radius * 2 / sqrt(CoalScalar(3));
 
   result[0] = tf.transform(Vec3s(0, a, b + hl));
   result[1] = tf.transform(Vec3s(0, -a, b + hl));
@@ -157,7 +159,7 @@ std::vector<Vec3s> getBoundVertices(const Capsule& capsule,
   result[22] = tf.transform(Vec3s(-b, 0, a - hl));
   result[23] = tf.transform(Vec3s(-b, 0, -a - hl));
 
-  CoalScalar c = 0.5 * r2;
+  CoalScalar c = CoalScalar(0.5) * r2;
   CoalScalar d = capsule.radius;
   result[24] = tf.transform(Vec3s(r2, 0, hl));
   result[25] = tf.transform(Vec3s(c, d, hl));
@@ -180,8 +182,8 @@ std::vector<Vec3s> getBoundVertices(const Cone& cone, const Transform3s& tf) {
   std::vector<Vec3s> result(7);
 
   CoalScalar hl = cone.halfLength;
-  CoalScalar r2 = cone.radius * 2 / sqrt(3.0);
-  CoalScalar a = 0.5 * r2;
+  CoalScalar r2 = cone.radius * 2 / sqrt(CoalScalar(3));
+  CoalScalar a = CoalScalar(0.5) * r2;
   CoalScalar b = cone.radius;
 
   result[0] = tf.transform(Vec3s(r2, 0, -hl));
@@ -201,8 +203,8 @@ std::vector<Vec3s> getBoundVertices(const Cylinder& cylinder,
   std::vector<Vec3s> result(12);
 
   CoalScalar hl = cylinder.halfLength;
-  CoalScalar r2 = cylinder.radius * 2 / sqrt(3.0);
-  CoalScalar a = 0.5 * r2;
+  CoalScalar r2 = cylinder.radius * 2 / sqrt(CoalScalar(3));
+  CoalScalar a = CoalScalar(0.5) * r2;
   CoalScalar b = cylinder.radius;
 
   result[0] = tf.transform(Vec3s(r2, 0, -hl));

@@ -133,13 +133,13 @@ void eigen(const Eigen::MatrixBase<Derived>& m,
     }
 
     if (i < 3)
-      tresh = 0.2 * sm / (n * n);
+      tresh = CoalScalar(0.2 * sm / (n * n));
     else
       tresh = 0.0;
 
     for (ip = 0; ip < n; ++ip) {
       for (iq = ip + 1; iq < n; ++iq) {
-        g = 100.0 * std::abs(R(ip, iq));
+        g = CoalScalar(100) * std::abs(R(ip, iq));
         if (i > 3 && std::abs(d[ip]) + g == std::abs(d[ip]) &&
             std::abs(d[iq]) + g == std::abs(d[iq]))
           R(ip, iq) = 0.0;
@@ -148,13 +148,13 @@ void eigen(const Eigen::MatrixBase<Derived>& m,
           if (std::abs(h) + g == std::abs(h))
             t = (R(ip, iq)) / h;
           else {
-            theta = 0.5 * h / (R(ip, iq));
-            t = 1.0 / (std::abs(theta) + std::sqrt(1.0 + theta * theta));
+            theta = CoalScalar(0.5) * h / (R(ip, iq));
+            t = 1 / (std::abs(theta) + std::sqrt(1 + theta * theta));
             if (theta < 0.0) t = -t;
           }
-          c = 1.0 / std::sqrt(1 + t * t);
+          c = 1 / std::sqrt(1 + t * t);
           s = t * c;
-          tau = s / (1.0 + c);
+          tau = s / (1 + c);
           h = t * R(ip, iq);
           z[ip] -= h;
           z[iq] += h;

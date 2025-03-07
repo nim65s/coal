@@ -1056,8 +1056,9 @@ bool EPA::getEdgeDist(SimplexFace* face, const SimplexVertex& a,
     else if (b_dot_ab < 0)
       dist = b.w.norm();
     else {
-      dist = std::sqrt(std::max(
-          a.w.squaredNorm() - a_dot_ab * a_dot_ab / ab.squaredNorm(), 0.));
+      dist = std::sqrt(
+          std::max(a.w.squaredNorm() - a_dot_ab * a_dot_ab / ab.squaredNorm(),
+                   CoalScalar(0)));
     }
 
     return true;

@@ -101,8 +101,8 @@ BOOST_AUTO_TEST_CASE(DynamicAABBTreeCollisionManager_class) {
   CollisionGeometryPtr_t sphere1 = make_shared<Sphere>(0.2);
   CollisionObject object0(sphere0);
   CollisionObject object1(sphere1);
-  const Eigen::Vector3d position0(0.1, 0.2, 0.3);
-  const Eigen::Vector3d position1(0.11, 0.21, 0.31);
+  const Vec3s position0(CoalScalar(0.1), CoalScalar(0.2), CoalScalar(0.3));
+  const Vec3s position1(CoalScalar(0.11), CoalScalar(0.21), CoalScalar(0.31));
 
   // We will use `objects` to check the order of the two collision objects in
   // our callback function.
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(DynamicAABBTreeCollisionManager_class) {
   objects.push_back(&object0);
   objects.push_back(&object1);
 
-  std::vector<Eigen::Vector3d> positions;
+  std::vector<Vec3s> positions;
   positions.push_back(position0);
   positions.push_back(position1);
 

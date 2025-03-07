@@ -44,14 +44,14 @@
 using namespace coal;
 
 BOOST_AUTO_TEST_CASE(box_box_no_collision) {
-  const CoalScalar halfside = 0.5;
+  const CoalScalar halfside = CoalScalar(0.5);
   const Box box1(2 * halfside, 2 * halfside, 2 * halfside);
   const Box box2(2 * halfside, 2 * halfside, 2 * halfside);
 
   const Transform3s tf1;
   Transform3s tf2;
   // set translation to separate the shapes
-  const CoalScalar offset = 0.001;
+  const CoalScalar offset = CoalScalar(0.001);
   tf2.setTranslation(Vec3s(0, 0, 2 * halfside + offset));
 
   const size_t num_max_contact = 1;
@@ -71,14 +71,14 @@ BOOST_AUTO_TEST_CASE(box_box_no_collision) {
 }
 
 BOOST_AUTO_TEST_CASE(box_sphere) {
-  const CoalScalar halfside = 0.5;
+  const CoalScalar halfside = CoalScalar(0.5);
   const Box box(2 * halfside, 2 * halfside, 2 * halfside);
   const Sphere sphere(halfside);
 
   const Transform3s tf1;
   Transform3s tf2;
   // set translation to have a collision
-  const CoalScalar offset = 0.001;
+  const CoalScalar offset = CoalScalar(0.001);
   tf2.setTranslation(Vec3s(0, 0, 2 * halfside - offset));
 
   const size_t num_max_contact = 1;
@@ -96,10 +96,10 @@ BOOST_AUTO_TEST_CASE(box_sphere) {
                             patch_res);
   BOOST_CHECK(patch_res.numContactPatches() == 1);
   if (patch_res.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+    const Contact &contact = col_res.getContact(0);
+    const ContactPatch &contact_patch = patch_res.getContactPatch(0);
     BOOST_CHECK(contact_patch.size() == 1);
-    const CoalScalar tol = 1e-8;
+    const CoalScalar tol = CoalScalar(1e-8);
     EIGEN_VECTOR_IS_APPROX(contact_patch.getPoint(0), contact.pos, tol);
     EIGEN_VECTOR_IS_APPROX(contact_patch.tf.translation(), contact.pos, tol);
     EIGEN_VECTOR_IS_APPROX(contact_patch.getNormal(), contact.normal, tol);
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE(box_box) {
   const Transform3s tf1;
   Transform3s tf2;
   // set translation to have a collision
-  const CoalScalar offset = 0.001;
+  const CoalScalar offset = CoalScalar(0.001);
   tf2.setTranslation(Vec3s(0, 0, 2 * halfside - offset));
 
   const size_t num_max_contact = 1;
@@ -140,8 +140,8 @@ BOOST_AUTO_TEST_CASE(box_box) {
 
   if (patch_res1.numContactPatches() > 0 &&
       patch_res2.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const CoalScalar tol = 1e-6;
+    const Contact &contact = col_res.getContact(0);
+    const CoalScalar tol = CoalScalar(1e-6);
     EIGEN_VECTOR_IS_APPROX(contact.normal, Vec3s(0, 0, 1), tol);
 
     const size_t expected_size = 4;
@@ -168,13 +168,13 @@ BOOST_AUTO_TEST_CASE(box_box) {
 
 BOOST_AUTO_TEST_CASE(halfspace_box) {
   const Halfspace hspace(0, 0, 1, 0);
-  const CoalScalar halfside = 0.5;
+  const CoalScalar halfside = CoalScalar(0.5);
   const Box box(2 * halfside, 2 * halfside, 2 * halfside);
 
   const Transform3s tf1;
   Transform3s tf2;
   // set translation to have a collision
-  const CoalScalar offset = 0.001;
+  const CoalScalar offset = CoalScalar(0.001);
   tf2.setTranslation(Vec3s(0, 0, halfside - offset));
 
   const size_t num_max_contact = 1;
@@ -198,8 +198,8 @@ BOOST_AUTO_TEST_CASE(halfspace_box) {
 
   if (patch_res1.numContactPatches() > 0 &&
       patch_res2.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const CoalScalar tol = 1e-6;
+    const Contact &contact = col_res.getContact(0);
+    const CoalScalar tol = CoalScalar(1e-6);
     EIGEN_VECTOR_IS_APPROX(contact.normal, hspace.n, tol);
     EIGEN_VECTOR_IS_APPROX(hspace.n, Vec3s(0, 0, 1), tol);
 
@@ -227,14 +227,14 @@ BOOST_AUTO_TEST_CASE(halfspace_box) {
 
 BOOST_AUTO_TEST_CASE(halfspace_capsule) {
   const Halfspace hspace(0, 0, 1, 0);
-  const CoalScalar radius = 0.25;
+  const CoalScalar radius = CoalScalar(0.25);
   const CoalScalar height = 1.;
   const Capsule capsule(radius, height);
 
   const Transform3s tf1;
   Transform3s tf2;
   // set translation to have a collision
-  const CoalScalar offset = 0.001;
+  const CoalScalar offset = CoalScalar(0.001);
   tf2.setTranslation(Vec3s(0, 0, height / 2 - offset));
 
   const size_t num_max_contact = 1;
@@ -253,8 +253,8 @@ BOOST_AUTO_TEST_CASE(halfspace_capsule) {
   BOOST_CHECK(patch_res.numContactPatches() == 1);
 
   if (patch_res.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const CoalScalar tol = 1e-6;
+    const Contact &contact = col_res.getContact(0);
+    const CoalScalar tol = CoalScalar(1e-6);
     EIGEN_VECTOR_IS_APPROX(contact.normal, hspace.n, tol);
 
     const size_t expected_size = 1;
@@ -266,7 +266,7 @@ BOOST_AUTO_TEST_CASE(halfspace_capsule) {
     const Vec3s capsule_end(0, 0, -capsule.halfLength);
     expected.addPoint(tf2.transform(capsule_end));
 
-    const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+    const ContactPatch &contact_patch = patch_res.getContactPatch(0);
     BOOST_CHECK(expected.tf == contact_patch.tf);
     BOOST_CHECK(expected.isSame(contact_patch, tol));
   }
@@ -284,8 +284,8 @@ BOOST_AUTO_TEST_CASE(halfspace_capsule) {
                             patch_res);
   BOOST_CHECK(patch_res.numContactPatches() == 1);
   if (patch_res.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const CoalScalar tol = 1e-6;
+    const Contact &contact = col_res.getContact(0);
+    const CoalScalar tol = CoalScalar(1e-6);
     EIGEN_VECTOR_IS_APPROX(contact.normal, hspace.n, tol);
 
     const size_t expected_size = 1;
@@ -297,7 +297,7 @@ BOOST_AUTO_TEST_CASE(halfspace_capsule) {
     const Vec3s capsule_end(0, 0, capsule.halfLength);
     expected.addPoint(tf2.transform(capsule_end));
 
-    const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+    const ContactPatch &contact_patch = patch_res.getContactPatch(0);
     BOOST_CHECK(expected.tf == contact_patch.tf);
     BOOST_CHECK(expected.isSame(contact_patch, tol));
   }
@@ -316,8 +316,8 @@ BOOST_AUTO_TEST_CASE(halfspace_capsule) {
                             patch_res);
   BOOST_CHECK(patch_res.numContactPatches() == 1);
   if (patch_res.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const CoalScalar tol = 1e-6;
+    const Contact &contact = col_res.getContact(0);
+    const CoalScalar tol = CoalScalar(1e-6);
     EIGEN_VECTOR_IS_APPROX(contact.normal, hspace.n, tol);
 
     const size_t expected_size = 2;
@@ -331,7 +331,7 @@ BOOST_AUTO_TEST_CASE(halfspace_capsule) {
     expected.addPoint(tf2.transform(p1));
     expected.addPoint(tf2.transform(p2));
 
-    const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+    const ContactPatch &contact_patch = patch_res.getContactPatch(0);
     BOOST_CHECK(expected.tf == contact_patch.tf);
     BOOST_CHECK(expected.isSame(contact_patch, tol));
   }
@@ -346,7 +346,7 @@ BOOST_AUTO_TEST_CASE(halfspace_cone) {
   const Transform3s tf1;
   Transform3s tf2;
   // set translation to have a collision
-  const CoalScalar offset = 0.001;
+  const CoalScalar offset = CoalScalar(0.001);
   tf2.setTranslation(Vec3s(0, 0, height / 2 - offset));
 
   const size_t num_max_contact = 1;
@@ -365,8 +365,8 @@ BOOST_AUTO_TEST_CASE(halfspace_cone) {
   BOOST_CHECK(patch_res.numContactPatches() == 1);
 
   if (patch_res.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const CoalScalar tol = 1e-6;
+    const Contact &contact = col_res.getContact(0);
+    const CoalScalar tol = CoalScalar(1e-6);
     EIGEN_VECTOR_IS_APPROX(contact.normal, hspace.n, tol);
 
     const size_t expected_size = ContactPatch::default_preallocated_size;
@@ -385,7 +385,7 @@ BOOST_AUTO_TEST_CASE(halfspace_cone) {
       expected.addPoint(tf2.transform(point_on_cone_base));
     }
 
-    const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+    const ContactPatch &contact_patch = patch_res.getContactPatch(0);
     BOOST_CHECK(expected.tf == contact_patch.tf);
     BOOST_CHECK(expected.isSame(contact_patch, tol));
   }
@@ -403,10 +403,10 @@ BOOST_AUTO_TEST_CASE(halfspace_cone) {
                             patch_res);
   BOOST_CHECK(patch_res.numContactPatches() == 1);
   if (patch_res.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+    const Contact &contact = col_res.getContact(0);
+    const ContactPatch &contact_patch = patch_res.getContactPatch(0);
     BOOST_CHECK(contact_patch.size() == 1);
-    const CoalScalar tol = 1e-8;
+    const CoalScalar tol = CoalScalar(1e-8);
     EIGEN_VECTOR_IS_APPROX(contact_patch.getPoint(0), contact.pos, tol);
     EIGEN_VECTOR_IS_APPROX(contact_patch.tf.translation(), contact.pos, tol);
     EIGEN_VECTOR_IS_APPROX(contact_patch.getNormal(), contact.normal, tol);
@@ -439,10 +439,10 @@ BOOST_AUTO_TEST_CASE(halfspace_cone) {
                             patch_res);
   BOOST_CHECK(patch_res.numContactPatches() == 1);
   if (patch_res.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+    const Contact &contact = col_res.getContact(0);
+    const ContactPatch &contact_patch = patch_res.getContactPatch(0);
     BOOST_CHECK(contact_patch.size() == 1);
-    const CoalScalar tol = 1e-8;
+    const CoalScalar tol = CoalScalar(1e-8);
     EIGEN_VECTOR_IS_APPROX(contact_patch.getPoint(0), contact.pos, tol);
     EIGEN_VECTOR_IS_APPROX(contact_patch.tf.translation(), contact.pos, tol);
     EIGEN_VECTOR_IS_APPROX(contact_patch.getNormal(), contact.normal, tol);
@@ -464,14 +464,14 @@ BOOST_AUTO_TEST_CASE(halfspace_cone) {
 
 BOOST_AUTO_TEST_CASE(halfspace_cylinder) {
   const Halfspace hspace(0, 0, 1, 0);
-  const CoalScalar radius = 0.25;
-  const CoalScalar height = 1.;
+  const CoalScalar radius = CoalScalar(0.25);
+  const CoalScalar height = 1;
   const Cylinder cylinder(radius, height);
 
   const Transform3s tf1;
   Transform3s tf2;
   // set translation to have a collision
-  const CoalScalar offset = 0.001;
+  const CoalScalar offset = CoalScalar(0.001);
   tf2.setTranslation(Vec3s(0, 0, height / 2 - offset));
 
   const size_t num_max_contact = 1;
@@ -482,9 +482,9 @@ BOOST_AUTO_TEST_CASE(halfspace_cylinder) {
   BOOST_CHECK(col_res.isCollision());
 
   if (col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
+    const Contact &contact = col_res.getContact(0);
     const size_t expected_size = ContactPatch::default_preallocated_size;
-    const CoalScalar tol = 1e-6;
+    const CoalScalar tol = CoalScalar(1e-6);
     ContactPatch expected(expected_size);
     expected.tf.rotation() =
         constructOrthonormalBasisFromVector(contact.normal);
@@ -511,7 +511,7 @@ BOOST_AUTO_TEST_CASE(halfspace_cylinder) {
 
     if (patch_res.numContactPatches() > 0) {
       EIGEN_VECTOR_IS_APPROX(contact.normal, hspace.n, tol);
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.tf == contact_patch.tf);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
@@ -530,7 +530,7 @@ BOOST_AUTO_TEST_CASE(halfspace_cylinder) {
     BOOST_CHECK(patch_res.numContactPatches() == 1);
     if (patch_res.numContactPatches() > 0 && col_res.isCollision()) {
       EIGEN_VECTOR_IS_APPROX(contact.normal, hspace.n, tol);
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.tf == contact_patch.tf);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
@@ -553,8 +553,8 @@ BOOST_AUTO_TEST_CASE(halfspace_cylinder) {
                             patch_res);
   BOOST_CHECK(patch_res.numContactPatches() == 1);
   if (col_res.isCollision() && patch_res.numContactPatches() > 0) {
-    const Contact& contact = col_res.getContact(0);
-    const CoalScalar tol = 1e-6;
+    const Contact &contact = col_res.getContact(0);
+    const CoalScalar tol = CoalScalar(1e-6);
 
     const size_t expected_size = 2;
     ContactPatch expected(expected_size);
@@ -567,7 +567,7 @@ BOOST_AUTO_TEST_CASE(halfspace_cylinder) {
     expected.addPoint(
         tf2.transform(Vec3s(cylinder.radius, 0, -cylinder.halfLength)));
 
-    const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+    const ContactPatch &contact_patch = patch_res.getContactPatch(0);
     BOOST_CHECK(expected.isSame(contact_patch, tol));
   }
 }
@@ -580,7 +580,7 @@ BOOST_AUTO_TEST_CASE(convex_convex) {
   const Transform3s tf1;
   Transform3s tf2;
   // set translation to have a collision
-  const CoalScalar offset = 0.001;
+  const CoalScalar offset = CoalScalar(0.001);
   tf2.setTranslation(Vec3s(0, 0, 2 * halfside - offset));
 
   const size_t num_max_contact = 1;
@@ -604,8 +604,8 @@ BOOST_AUTO_TEST_CASE(convex_convex) {
 
   if (patch_res1.numContactPatches() > 0 &&
       patch_res2.numContactPatches() > 0 && col_res.isCollision()) {
-    const Contact& contact = col_res.getContact(0);
-    const CoalScalar tol = 1e-6;
+    const Contact &contact = col_res.getContact(0);
+    const CoalScalar tol = CoalScalar(1e-6);
     EIGEN_VECTOR_IS_APPROX(contact.normal, Vec3s(0, 0, 1), tol);
 
     const size_t expected_size = 4;
@@ -681,8 +681,8 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_segment) {
     BOOST_CHECK(patch_res.numContactPatches() == 1);
 
     if (patch_res.numContactPatches() > 0) {
-      const Contact& contact = col_res.getContact(0);
-      const CoalScalar tol = 1e-6;
+      const Contact &contact = col_res.getContact(0);
+      const CoalScalar tol = CoalScalar(1e-6);
 
       ContactPatch expected(expected_size);
       // GJK/EPA can return any normal which is in the dual cone
@@ -694,7 +694,7 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_segment) {
       expected.addPoint(expected_cp1);
       expected.addPoint(expected_cp2);
 
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
   }
@@ -702,7 +702,7 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_segment) {
   {
     // Case 2 - Face-Segment contact
     std::shared_ptr<std::vector<Vec3s>> pts1(new std::vector<Vec3s>({
-        Vec3s(-1, 0, -0.2),
+        Vec3s(-1, 0, CoalScalar(-0.2)),
         Vec3s(0, 0, 0),
         Vec3s(0, 1, 0),
         Vec3s(-1, -1, -1),
@@ -732,8 +732,8 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_segment) {
     BOOST_CHECK(patch_res.numContactPatches() == 1);
 
     if (patch_res.numContactPatches() > 0) {
-      const Contact& contact = col_res.getContact(0);
-      const CoalScalar tol = 1e-6;
+      const Contact &contact = col_res.getContact(0);
+      const CoalScalar tol = CoalScalar(1e-6);
 
       ContactPatch expected(expected_size);
       expected.tf.rotation() =
@@ -743,7 +743,7 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_segment) {
       expected.addPoint(expected_cp1);
       expected.addPoint(expected_cp2);
 
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
   }
@@ -751,7 +751,7 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_segment) {
   {
     // Case 3 - Segment-Segment contact
     std::shared_ptr<std::vector<Vec3s>> pts1(new std::vector<Vec3s>({
-        Vec3s(-1, 0, -0.2),
+        Vec3s(-1, 0, CoalScalar(-0.2)),
         Vec3s(0, 0, 0),
         Vec3s(0, 1, 0),
         Vec3s(-1, -1, -1),
@@ -781,8 +781,8 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_segment) {
     BOOST_CHECK(patch_res.numContactPatches() == 1);
 
     if (patch_res.numContactPatches() > 0) {
-      const Contact& contact = col_res.getContact(0);
-      const CoalScalar tol = 1e-6;
+      const Contact &contact = col_res.getContact(0);
+      const CoalScalar tol = CoalScalar(1e-6);
 
       ContactPatch expected(expected_size);
       expected.tf.rotation() =
@@ -792,7 +792,7 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_segment) {
       expected.addPoint(expected_cp1);
       expected.addPoint(expected_cp2);
 
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
   }
@@ -847,8 +847,8 @@ BOOST_AUTO_TEST_CASE(edge_case_vertex_vertex) {
     BOOST_CHECK(patch_res.numContactPatches() == 1);
 
     if (patch_res.numContactPatches() > 0) {
-      const Contact& contact = col_res.getContact(0);
-      const CoalScalar tol = 1e-6;
+      const Contact &contact = col_res.getContact(0);
+      const CoalScalar tol = CoalScalar(1e-6);
 
       ContactPatch expected(expected_size);
       expected.tf.rotation() =
@@ -857,7 +857,7 @@ BOOST_AUTO_TEST_CASE(edge_case_vertex_vertex) {
       expected.penetration_depth = contact.penetration_depth;
       expected.addPoint(expected_cp);
 
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
   }
@@ -895,8 +895,8 @@ BOOST_AUTO_TEST_CASE(edge_case_vertex_vertex) {
     BOOST_CHECK(patch_res.numContactPatches() == 1);
 
     if (patch_res.numContactPatches() > 0) {
-      const Contact& contact = col_res.getContact(0);
-      const CoalScalar tol = 1e-6;
+      const Contact &contact = col_res.getContact(0);
+      const CoalScalar tol = CoalScalar(1e-6);
 
       ContactPatch expected(expected_size);
       expected.tf.rotation() =
@@ -905,7 +905,7 @@ BOOST_AUTO_TEST_CASE(edge_case_vertex_vertex) {
       expected.penetration_depth = contact.penetration_depth;
       expected.addPoint(expected_cp);
 
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
   }
@@ -913,7 +913,7 @@ BOOST_AUTO_TEST_CASE(edge_case_vertex_vertex) {
   {
     // Case 2 - Segment-Segment contact
     std::shared_ptr<std::vector<Vec3s>> pts1(new std::vector<Vec3s>({
-        Vec3s(-1, 0, -0.2),
+        Vec3s(-1, 0, CoalScalar(-0.2)),
         Vec3s(0, 0, 0),
         Vec3s(0, 1, 0),
         Vec3s(-1, -1, -1),
@@ -943,8 +943,8 @@ BOOST_AUTO_TEST_CASE(edge_case_vertex_vertex) {
     BOOST_CHECK(patch_res.numContactPatches() == 1);
 
     if (patch_res.numContactPatches() > 0) {
-      const Contact& contact = col_res.getContact(0);
-      const CoalScalar tol = 1e-6;
+      const Contact &contact = col_res.getContact(0);
+      const CoalScalar tol = CoalScalar(1e-6);
 
       ContactPatch expected(expected_size);
       expected.tf.rotation() =
@@ -953,7 +953,7 @@ BOOST_AUTO_TEST_CASE(edge_case_vertex_vertex) {
       expected.penetration_depth = contact.penetration_depth;
       expected.addPoint(expected_cp);
 
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
   }
@@ -1008,8 +1008,8 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_face) {
     BOOST_CHECK(patch_res.numContactPatches() == 1);
 
     if (patch_res.numContactPatches() > 0) {
-      const Contact& contact = col_res.getContact(0);
-      const CoalScalar tol = 1e-6;
+      const Contact &contact = col_res.getContact(0);
+      const CoalScalar tol = CoalScalar(1e-6);
 
       ContactPatch expected(expected_size);
       expected.tf.rotation() =
@@ -1019,7 +1019,7 @@ BOOST_AUTO_TEST_CASE(edge_case_segment_face) {
       expected.addPoint(expected_cp1);
       expected.addPoint(expected_cp2);
 
-      const ContactPatch& contact_patch = patch_res.getContactPatch(0);
+      const ContactPatch &contact_patch = patch_res.getContactPatch(0);
       BOOST_CHECK(expected.isSame(contact_patch, tol));
     }
   }

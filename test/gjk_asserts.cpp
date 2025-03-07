@@ -10,7 +10,7 @@ using namespace coal;
 constexpr CoalScalar pi = boost::math::constants::pi<CoalScalar>();
 
 CoalScalar DegToRad(const CoalScalar& deg) {
-  static CoalScalar degToRad = pi / 180.;
+  static CoalScalar degToRad = pi / CoalScalar(180);
   return deg * degToRad;
 }
 std::vector<Vec3s> dirs{Vec3s::UnitZ(),  -Vec3s::UnitZ(), Vec3s::UnitY(),
@@ -76,9 +76,10 @@ BOOST_AUTO_TEST_CASE(TestSpheres) {
           /// assertion: src/narrowphase/gjk.cpp:1263
           (i == 86 && j == 52) || (i == 89 && j == 17) ||
           (i == 89 && j == 58) || (i == 89 && j == 145)) {
-        sphere2Tf.setQuatRotation(
-            Eigen::AngleAxis<CoalScalar>(DegToRad(i), Vec3s::UnitZ()) *
-            Eigen::AngleAxis<CoalScalar>(DegToRad(j), Vec3s::UnitY()));
+        sphere2Tf.setQuatRotation(Eigen::AngleAxis<CoalScalar>(
+                                      DegToRad(CoalScalar(i)), Vec3s::UnitZ()) *
+                                  Eigen::AngleAxis<CoalScalar>(
+                                      DegToRad(CoalScalar(j)), Vec3s::UnitY()));
         for (const Vec3s& dir : dirs) {
           sphere2Tf.setTranslation(dir);
           CollisionResult result;

@@ -258,8 +258,15 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
     Matrix3s C = Matrix3s::Zero();
 
     Matrix3s C_canonical;
-    C_canonical << 1 / 60.0, 1 / 120.0, 1 / 120.0, 1 / 120.0, 1 / 60.0,
-        1 / 120.0, 1 / 120.0, 1 / 120.0, 1 / 60.0;
+    C_canonical << CoalScalar(1 / 60.0),  //
+        CoalScalar(1 / 120.0),            //
+        CoalScalar(1 / 120.0),            //
+        CoalScalar(1 / 120.0),            //
+        CoalScalar(1 / 60.0),             //
+        CoalScalar(1 / 120.0),            //
+        CoalScalar(1 / 120.0),            //
+        CoalScalar(1 / 120.0),            //
+        CoalScalar(1 / 60.0);
 
     if (!(vertices.get())) {
       std::cerr << "BVH Error in `computeMomentofInertia`! The BVHModel does "

@@ -140,7 +140,7 @@ void handleParam(int& iarg, const int& argc, char** argv,
       iarg += 2;
     } else if (a == "-limit") {
       CHECK_PARAM_NB(1, limit);
-      limit = atof(argv[iarg + 1]);
+      limit = CoalScalar(atof(argv[iarg + 1]));
       iarg += 2;
     } else if (a == "-verbose") {
       verbose = true;
@@ -150,9 +150,10 @@ void handleParam(int& iarg, const int& argc, char** argv,
     }
   }
 }
-#define CREATE_SHAPE_2(var, Name)                                  \
-  CHECK_PARAM_NB(2, Name);                                         \
-  var.reset(new Name(atof(argv[iarg + 1]), atof(argv[iarg + 2]))); \
+#define CREATE_SHAPE_2(var, Name)                        \
+  CHECK_PARAM_NB(2, Name);                               \
+  var.reset(new Name(CoalScalar(atof(argv[iarg + 1])),   \
+                     CoalScalar(atof(argv[iarg + 2])))); \
   iarg += 3;
 Geometry makeGeomFromParam(int& iarg, const int& argc, char** argv) {
   if (iarg >= argc) throw std::invalid_argument("An argument is required.");
@@ -161,13 +162,14 @@ Geometry makeGeomFromParam(int& iarg, const int& argc, char** argv) {
   CollisionGeometryPtr_t o;
   if (a == "-box") {
     CHECK_PARAM_NB(3, Box);
-    o.reset(new Box(atof(argv[iarg + 1]), atof(argv[iarg + 2]),
-                    atof(argv[iarg + 3])));
+    o.reset(new Box(CoalScalar(atof(argv[iarg + 1])),
+                    CoalScalar(atof(argv[iarg + 2])),
+                    CoalScalar(atof(argv[iarg + 3]))));
     iarg += 4;
     type = "box";
   } else if (a == "-sphere") {
     CHECK_PARAM_NB(1, Sphere);
-    o.reset(new Sphere(atof(argv[iarg + 1])));
+    o.reset(new Sphere(CoalScalar(atof(argv[iarg + 1]))));
     iarg += 2;
     type = "sphere";
   } else if (a == "-mesh") {
@@ -190,10 +192,12 @@ Geometry makeGeomFromParam(int& iarg, const int& argc, char** argv) {
     iarg += 3;
     if (iarg < argc && strcmp(argv[iarg], "crop") == 0) {
       CHECK_PARAM_NB(6, Crop);
-      coal::AABB aabb(Vec3s(atof(argv[iarg + 1]), atof(argv[iarg + 2]),
-                            atof(argv[iarg + 3])),
-                      Vec3s(atof(argv[iarg + 4]), atof(argv[iarg + 5]),
-                            atof(argv[iarg + 6])));
+      coal::AABB aabb(Vec3s(CoalScalar(atof(argv[iarg + 1])),
+                            CoalScalar(atof(argv[iarg + 2])),
+                            CoalScalar(atof(argv[iarg + 3]))),
+                      Vec3s(CoalScalar(atof(argv[iarg + 4])),
+                            CoalScalar(atof(argv[iarg + 5])),
+                            CoalScalar(atof(argv[iarg + 6]))));
       OUT("Cropping " << aabb.min_.transpose() << " ---- "
                       << aabb.max_.transpose() << " ...");
       o->computeLocalAABB();

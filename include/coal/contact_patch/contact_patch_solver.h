@@ -134,7 +134,7 @@ struct COAL_DLLAPI ContactPatchSolver {
     const size_t num_contact_patch = 1;
     const size_t preallocated_patch_size =
         ContactPatch::default_preallocated_size;
-    const CoalScalar patch_tolerance = 1e-3;
+    const CoalScalar patch_tolerance = CoalScalar(1e-3);
     const ContactPatchRequest request(num_contact_patch,
                                       preallocated_patch_size, patch_tolerance);
     this->set(request);

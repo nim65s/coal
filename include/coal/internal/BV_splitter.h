@@ -166,7 +166,7 @@ class BVSplitter {
       }
     }
 
-    split_value = sum / num_primitives;
+    split_value = sum / CoalScalar(num_primitives);
   }
 
   /// @brief Split algorithm 3: Split the node according to the median of the

@@ -138,7 +138,8 @@ inline void getShapeSupport(const Box* box, const Vec3s& dir, Vec3s& support,
                             int& /*unused*/, ShapeSupportData& /*unused*/) {
   // The inflate value is simply to make the specialized functions with box
   // have a preferred side for edge cases.
-  static const CoalScalar inflate = (dir.array() == 0).any() ? 1 + 1e-10 : 1.;
+  static const CoalScalar inflate =
+      (dir.array() == 0).any() ? 1 + CoalScalar(1e-10) : 1;
   static const CoalScalar dummy_precision =
       Eigen::NumTraits<CoalScalar>::dummy_precision();
   Vec3s support1 = (dir.array() > dummy_precision).select(box->halfSide, 0);
@@ -221,7 +222,7 @@ void getShapeSupport(const Cone* cone, const Vec3s& dir, Vec3s& support,
   // The cone radius is, for -h < z < h, (h - z) * r / (2*h)
   // The inflate value is simply to make the specialized functions with cone
   // have a preferred side for edge cases.
-  static const CoalScalar inflate = 1 + 1e-10;
+  static const CoalScalar inflate = 1 + CoalScalar(1e-10);
   CoalScalar h = cone->halfLength;
   CoalScalar r = cone->radius;
 
@@ -270,7 +271,7 @@ void getShapeSupport(const Cylinder* cylinder, const Vec3s& dir, Vec3s& support,
 
   // The inflate value is simply to make the specialized functions with cylinder
   // have a preferred side for edge cases.
-  static const CoalScalar inflate = 1 + 1e-10;
+  static const CoalScalar inflate = 1 + CoalScalar(1e-10);
   CoalScalar half_h = cylinder->halfLength;
   CoalScalar r = cylinder->radius;
 
@@ -310,7 +311,7 @@ void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
 
   // Use warm start if current support direction is distant from last support
   // direction.
-  const CoalScalar use_warm_start_threshold = 0.9;
+  const CoalScalar use_warm_start_threshold = CoalScalar(0.9);
   Vec3s dir_normalized = dir.normalized();
   if (!support_data.last_dir.isZero() &&
       !convex->support_warm_starts.points.empty() &&
@@ -700,7 +701,7 @@ void getShapeSupportSet(const Cone* cone, SupportSet& support_set,
     // base of the cone. We are guaranteed that these points like at a distance
     // tol of the support plane.
     const CoalScalar angle_increment =
-        2.0 * (CoalScalar)(EIGEN_PI) / ((CoalScalar)(num_sampled_supports));
+        CoalScalar(2 * EIGEN_PI) / (CoalScalar(num_sampled_supports));
     for (size_t i = 0; i < num_sampled_supports; ++i) {
       const CoalScalar theta = (CoalScalar)(i)*angle_increment;
       Vec3s point_on_cone_base(r * std::cos(theta), r * std::sin(theta), z);
@@ -761,7 +762,7 @@ void getShapeSupportSet(const Cylinder* cylinder, SupportSet& support_set,
   if ((support_value - support_dir.dot(p1) <= tol) &&
       (support_value - support_dir.dot(p2) <= tol)) {
     const CoalScalar angle_increment =
-        2.0 * (CoalScalar)(EIGEN_PI) / ((CoalScalar)(num_sampled_supports));
+        CoalScalar(2 * EIGEN_PI) / (CoalScalar(num_sampled_supports));
     for (size_t i = 0; i < num_sampled_supports; ++i) {
       const CoalScalar theta = (CoalScalar)(i)*angle_increment;
       Vec3s point_on_cone_base(r * std::cos(theta), r * std::sin(theta), z);

@@ -105,7 +105,7 @@ bool collisionRecurse_(DynamicAABBTreeCollisionManager::DynamicAABBNode* root1,
         tf2.translation() = translation2;
         constructBox(root2_bv, tf2, *box, box_tf);
 
-        box->cost_density = root2->getOccupancy();
+        box->cost_density = CoalScalar(root2->getOccupancy());
         box->threshold_occupied = tree2->getOccupancyThres();
 
         CollisionObject obj2(shared_ptr<CollisionGeometry>(box), box_tf);

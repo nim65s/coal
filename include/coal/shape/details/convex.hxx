@@ -93,8 +93,15 @@ Matrix3s Convex<PolygonT>::computeMomentofInertia() const {
   Matrix3s C = Matrix3s::Zero();
 
   Matrix3s C_canonical;
-  C_canonical << 1 / 60.0, 1 / 120.0, 1 / 120.0, 1 / 120.0, 1 / 60.0, 1 / 120.0,
-      1 / 120.0, 1 / 120.0, 1 / 60.0;
+  C_canonical << CoalScalar(1 / 60),  //
+      CoalScalar(1 / 120),            //
+      CoalScalar(1 / 120),            //
+      CoalScalar(1 / 120),            //
+      CoalScalar(1 / 60),             //
+      CoalScalar(1 / 120),            //
+      CoalScalar(1 / 120),            //
+      CoalScalar(1 / 120),            //
+      CoalScalar(1 / 60);
 
   if (!(points.get())) {
     std::cerr
@@ -117,7 +124,7 @@ Matrix3s Convex<PolygonT>::computeMomentofInertia() const {
     Vec3s plane_center(0, 0, 0);
     for (size_type j = 0; j < polygon.size(); ++j)
       plane_center += points_[polygon[(index_type)j]];
-    plane_center /= polygon.size();
+    plane_center /= CoalScalar(polygon.size());
 
     // compute the volume of tetrahedron making by neighboring two points, the
     // plane center and the reference point (zero) of the convex shape
@@ -163,7 +170,7 @@ Vec3s Convex<PolygonT>::computeCOM() const {
     Vec3s plane_center(0, 0, 0);
     for (size_type j = 0; j < polygon.size(); ++j)
       plane_center += points_[polygon[(index_type)j]];
-    plane_center /= polygon.size();
+    plane_center /= CoalScalar(polygon.size());
 
     // compute the volume of tetrahedron making by neighboring two points, the
     // plane center and the reference point (zero) of the convex shape
@@ -208,7 +215,7 @@ CoalScalar Convex<PolygonT>::computeVolume() const {
     Vec3s plane_center(0, 0, 0);
     for (size_type j = 0; j < polygon.size(); ++j)
       plane_center += points_[polygon[(index_type)j]];
-    plane_center /= polygon.size();
+    plane_center /= CoalScalar(polygon.size());
 
     // compute the volume of tetrahedron making by neighboring two points, the
     // plane center and the reference point (zero point) of the convex shape

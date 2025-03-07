@@ -230,9 +230,9 @@ inline Quatf fromAxisAngle(const Eigen::MatrixBase<Derived>& axis,
 /// Code taken from Pinocchio (https://github.com/stack-of-tasks/pinocchio).
 inline Quatf uniformRandomQuaternion() {
   // Rotational part
-  const CoalScalar u1 = (CoalScalar)rand() / RAND_MAX;
-  const CoalScalar u2 = (CoalScalar)rand() / RAND_MAX;
-  const CoalScalar u3 = (CoalScalar)rand() / RAND_MAX;
+  const CoalScalar u1 = (CoalScalar)rand() / CoalScalar(RAND_MAX);
+  const CoalScalar u2 = (CoalScalar)rand() / CoalScalar(RAND_MAX);
+  const CoalScalar u3 = (CoalScalar)rand() / CoalScalar(RAND_MAX);
 
   const CoalScalar mult1 = std::sqrt(CoalScalar(1.0) - u1);
   const CoalScalar mult2 = std::sqrt(u1);

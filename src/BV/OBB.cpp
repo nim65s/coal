@@ -152,7 +152,7 @@ inline OBB merge_smalldist(const OBB& b1, const OBB& b2) {
 
   for (int j = 0; j < 3; ++j) {
     b.To.noalias() += (b.axes.col(j) * (0.5 * (pmax[j] + pmin[j])));
-    b.extent[j] = 0.5 * (pmax[j] - pmin[j]);
+    b.extent[j] = CoalScalar(0.5) * (pmax[j] - pmin[j]);
   }
 
   return b;
@@ -161,7 +161,7 @@ inline OBB merge_smalldist(const OBB& b1, const OBB& b2) {
 bool obbDisjoint(const Matrix3s& B, const Vec3s& T, const Vec3s& a,
                  const Vec3s& b) {
   CoalScalar t, s;
-  const CoalScalar reps = 1e-6;
+  const CoalScalar reps = CoalScalar(1e-6);
 
   Matrix3s Bf(B.array().abs() + reps);
   // Bf += reps;

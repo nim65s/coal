@@ -90,7 +90,7 @@ typedef std::chrono::high_resolution_clock clock_type;
 typedef clock_type::duration duration_type;
 
 const char* sep = ",\t";
-const CoalScalar eps = 1.5e-7;
+const CoalScalar eps = CoalScalar(1.5e-7);
 
 const Eigen::IOFormat py_fmt(Eigen::FullPrecision, 0,
                              ", ",   // Coeff separator
@@ -1007,7 +1007,7 @@ bool originalWithNoLowerBound(const Matrix3s& B, const Vec3s& T, const Vec3s& a,
                               const Vec3s& b, const CoalScalar&,
                               CoalScalar& squaredLowerBoundDistance) {
   CoalScalar t, s;
-  const CoalScalar reps = 1e-6;
+  const CoalScalar reps = CoalScalar(1e-6);
 
   squaredLowerBoundDistance = 0;
 

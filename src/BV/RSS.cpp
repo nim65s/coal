@@ -804,12 +804,13 @@ RSS& RSS::operator+=(const Vec3s& p) {
     if (abs_proj2 < radius)
       ;  // do nothing
     else {
-      radius = 0.5 * (radius + abs_proj2);  // enlarge the r
+      const CoalScalar half = CoalScalar(0.5);
+      radius = half * (radius + abs_proj2);  // enlarge the r
       // change RSS origin position
       if (proj2 > 0)
-        Tr[2] += 0.5 * (abs_proj2 - radius);
+        Tr[2] += half * (abs_proj2 - radius);
       else
-        Tr[2] -= 0.5 * (abs_proj2 - radius);
+        Tr[2] -= half * (abs_proj2 - radius);
     }
   } else if ((proj0 < length[0]) && (proj0 > 0) &&
              ((proj1 < 0) || (proj1 > length[1]))) {
@@ -829,10 +830,11 @@ RSS& RSS::operator+=(const Vec3s& p) {
         length[1] += delta_y;
         if (proj1 < 0) Tr[1] -= delta_y;
 
+        const CoalScalar half = CoalScalar(0.5);
         if (proj2 > 0)
-          Tr[2] += 0.5 * (abs_proj2 - radius);
+          Tr[2] += half * (abs_proj2 - radius);
         else
-          Tr[2] -= 0.5 * (abs_proj2 - radius);
+          Tr[2] -= half * (abs_proj2 - radius);
       }
     }
   } else if ((proj1 < length[1]) && (proj1 > 0) &&
@@ -853,10 +855,11 @@ RSS& RSS::operator+=(const Vec3s& p) {
         length[0] += delta_x;
         if (proj0 < 0) Tr[0] -= delta_x;
 
+        const CoalScalar half = CoalScalar(0.5);
         if (proj2 > 0)
-          Tr[2] += 0.5 * (abs_proj2 - radius);
+          Tr[2] += half * (abs_proj2 - radius);
         else
-          Tr[2] -= 0.5 * (abs_proj2 - radius);
+          Tr[2] -= half * (abs_proj2 - radius);
       }
     }
   } else {
@@ -893,10 +896,11 @@ RSS& RSS::operator+=(const Vec3s& p) {
           Tr[1] -= delta_y;
         }
 
+        const CoalScalar half = CoalScalar(0.5);
         if (proj2 > 0)
-          Tr[2] += 0.5 * (abs_proj2 - radius);
+          Tr[2] += half * (abs_proj2 - radius);
         else
-          Tr[2] -= 0.5 * (abs_proj2 - radius);
+          Tr[2] -= half * (abs_proj2 - radius);
       }
     }
   }

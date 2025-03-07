@@ -66,7 +66,16 @@ ConvexBase* ConvexBase::convexHull(const Vec3s* pts, unsigned int num_points,
   Qhull qh;
   const char* command =
       qhullCommand ? qhullCommand : (keepTriangles ? "Qt" : "");
-  qh.runQhull("", 3, static_cast<int>(num_points), pts[0].data(), command);
+
+  // TODO: add a ifdef not double precision here
+  using Vec3d = Eigen::Vector3d;
+  std::vector<Vec3d> qhull_pts;
+  qhull_pts.reserve(num_points);
+  for (size_t i = 0; i < num_points; ++i) {
+    qhull_pts.push_back(pts[i].template cast<double>());
+  }
+  qh.runQhull("", 3, static_cast<int>(num_points), qhull_pts[0].data(),
+              command);
 
   if (qh.qhullStatus() != qh_ERRnone) {
     if (qh.hasQhullMessage()) std::cerr << qh.qhullMessage() << std::endl;
@@ -89,7 +98,8 @@ ConvexBase* ConvexBase::convexHull(const Vec3s* pts, unsigned int num_points,
        v != vertexList.end(); ++v) {
     QhullPoint pt((*v).point());
     pts_to_vertices[(size_t)pt.id()] = (int)i_vertex;
-    (*vertices)[i_vertex] = Vec3s(pt[0], pt[1], pt[2]);
+    (*vertices)[i_vertex] =
+        Vec3s(CoalScalar(pt[0]), CoalScalar(pt[1]), CoalScalar(pt[2]));
     ++i_vertex;
   }
   assert(i_vertex == nvertex);
@@ -217,7 +227,13 @@ void ConvexBase::buildDoubleDescription() {
 
   Qhull qh;
   const char* command = "Qt";
-  qh.runQhull("", 3, static_cast<int>(num_points), (*points)[0].data(),
+  using Vec3d = Eigen::Vector3d;
+  std::vector<Vec3d> qhull_pts;
+  qhull_pts.reserve(num_points);
+  for (size_t i = 0; i < num_points; ++i) {
+    qhull_pts.push_back((*points)[i].template cast<double>());
+  }
+  qh.runQhull("", 3, static_cast<int>(num_points), qhull_pts[0].data(),
               command);
 
   if (qh.qhullStatus() != qh_ERRnone) {
@@ -238,9 +254,10 @@ void ConvexBase::buildDoubleDescriptionFromQHullResult(const Qhull& qh) {
   for (QhullFacet facet = qh.beginFacet(); facet != qh.endFacet();
        facet = facet.next()) {
     const orgQhull::QhullHyperplane& plane = facet.hyperplane();
-    normals_[i_normal] = Vec3s(plane.coordinates()[0], plane.coordinates()[1],
-                               plane.coordinates()[2]);
-    offsets_[i_normal] = plane.offset();
+    normals_[i_normal] = Vec3s(CoalScalar(plane.coordinates()[0]),
+                               CoalScalar(plane.coordinates()[1]),
+                               CoalScalar(plane.coordinates()[2]));
+    offsets_[i_normal] = CoalScalar(plane.offset());
     i_normal++;
   }
   assert(static_cast<int>(i_normal) == qh.facetCount());

@@ -30,7 +30,7 @@
 using namespace coal;
 
 bool verbose = false;
-CoalScalar DELTA = 0.001;
+CoalScalar DELTA = CoalScalar(0.001);
 
 template <typename BV>
 void makeModel(const std::vector<Vec3s>& vertices,
@@ -38,17 +38,17 @@ void makeModel(const std::vector<Vec3s>& vertices,
                SplitMethodType split_method, BVHModel<BV>& model);
 
 template <typename BV, typename TraversalNode>
-CoalScalar distance(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
-                    const BVHModel<BV>& m2, bool verbose);
+double distance(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
+                const BVHModel<BV>& m2, bool verbose);
 
 template <typename BV, typename TraversalNode>
-CoalScalar collide(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
-                   const BVHModel<BV>& m2, bool verbose);
+double collide(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
+               const BVHModel<BV>& m2, bool verbose);
 
 template <typename BV>
-CoalScalar run(const std::vector<Transform3s>& tf,
-               const BVHModel<BV> (&models)[2][3], int split_method,
-               const char* sm_name);
+double run(const std::vector<Transform3s>& tf,
+           const BVHModel<BV> (&models)[2][3], int split_method,
+           const char* sm_name);
 
 template <typename BV>
 struct traits {};
@@ -90,8 +90,8 @@ void makeModel(const std::vector<Vec3s>& vertices,
 }
 
 template <typename BV, typename TraversalNode>
-CoalScalar distance(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
-                    const BVHModel<BV>& m2, bool verbose) {
+double distance(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
+                const BVHModel<BV>& m2, bool verbose) {
   Transform3s pose2;
 
   DistanceResult local_result;
@@ -114,8 +114,8 @@ CoalScalar distance(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
 }
 
 template <typename BV, typename TraversalNode>
-CoalScalar collide(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
-                   const BVHModel<BV>& m2, bool verbose) {
+double collide(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
+               const BVHModel<BV>& m2, bool verbose) {
   Transform3s pose2;
 
   CollisionResult local_result;
@@ -141,12 +141,12 @@ CoalScalar collide(const std::vector<Transform3s>& tf, const BVHModel<BV>& m1,
 }
 
 template <typename BV>
-CoalScalar run(const std::vector<Transform3s>& tf,
-               const BVHModel<BV> (&models)[2][3], int split_method,
-               const char* prefix) {
-  CoalScalar col = collide<BV, typename traits<BV>::CollisionTraversalNode>(
+double run(const std::vector<Transform3s>& tf,
+           const BVHModel<BV> (&models)[2][3], int split_method,
+           const char* prefix) {
+  double col = collide<BV, typename traits<BV>::CollisionTraversalNode>(
       tf, models[0][split_method], models[1][split_method], verbose);
-  CoalScalar dist = distance<BV, typename traits<BV>::DistanceTraversalNode>(
+  double dist = distance<BV, typename traits<BV>::DistanceTraversalNode>(
       tf, models[0][split_method], models[1][split_method], verbose);
 
   std::cout << prefix << " (" << col << ", " << dist << ")\n";
@@ -154,12 +154,12 @@ CoalScalar run(const std::vector<Transform3s>& tf,
 }
 
 template <>
-CoalScalar run<OBB>(const std::vector<Transform3s>& tf,
-                    const BVHModel<OBB> (&models)[2][3], int split_method,
-                    const char* prefix) {
-  CoalScalar col = collide<OBB, traits<OBB>::CollisionTraversalNode>(
+double run<OBB>(const std::vector<Transform3s>& tf,
+                const BVHModel<OBB> (&models)[2][3], int split_method,
+                const char* prefix) {
+  double col = collide<OBB, traits<OBB>::CollisionTraversalNode>(
       tf, models[0][split_method], models[1][split_method], verbose);
-  CoalScalar dist = 0;
+  double dist = 0;
 
   std::cout << prefix << " (\t" << col << ", \tNaN)\n";
   return col + dist;

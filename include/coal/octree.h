@@ -66,22 +66,22 @@ class COAL_DLLAPI OcTree : public CollisionGeometry {
   explicit OcTree(CoalScalar resolution)
       : tree(shared_ptr<const octomap::OcTree>(
             new octomap::OcTree(resolution))) {
-    default_occupancy = tree->getOccupancyThres();
+    default_occupancy = CoalScalar(tree->getOccupancyThres());
 
     // default occupancy/free threshold is consistent with default setting from
     // octomap
-    occupancy_threshold = tree->getOccupancyThres();
+    occupancy_threshold = CoalScalar(tree->getOccupancyThres());
     free_threshold = 0;
   }
 
   /// @brief construct octree from octomap
   explicit OcTree(const shared_ptr<const octomap::OcTree>& tree_)
       : tree(tree_) {
-    default_occupancy = tree->getOccupancyThres();
+    default_occupancy = CoalScalar(tree->getOccupancyThres());
 
     // default occupancy/free threshold is consistent with default setting from
     // octomap
-    occupancy_threshold = tree->getOccupancyThres();
+    occupancy_threshold = CoalScalar(tree->getOccupancyThres());
     free_threshold = 0;
   }
 
@@ -103,8 +103,8 @@ class COAL_DLLAPI OcTree : public CollisionGeometry {
 
   /// @brief compute the AABB for the octree in its local coordinate system
   void computeLocalAABB() {
-    typedef Eigen::Matrix<float, 3, 1> Vec3sloat;
-    Vec3sloat max_extent, min_extent;
+    typedef Eigen::Matrix<float, 3, 1> Vec3float;
+    Vec3float max_extent, min_extent;
 
     octomap::OcTree::iterator it =
         tree->begin((unsigned char)tree->getTreeDepth());
@@ -115,17 +115,17 @@ class COAL_DLLAPI OcTree : public CollisionGeometry {
     {
       const octomap::point3d& coord =
           it.getCoordinate();  // getCoordinate returns a copy
-      max_extent = min_extent = Eigen::Map<const Vec3sloat>(&coord.x());
+      max_extent = min_extent = Eigen::Map<const Vec3float>(&coord.x());
       for (++it; it != end; ++it) {
         const octomap::point3d& coord = it.getCoordinate();
-        const Vec3sloat pos = Eigen::Map<const Vec3sloat>(&coord.x());
+        const Vec3float pos = Eigen::Map<const Vec3float>(&coord.x());
         max_extent = max_extent.array().max(pos.array());
         min_extent = min_extent.array().min(pos.array());
       }
     }
 
     // Account for the size of the boxes.
-    const CoalScalar resolution = tree->getResolution();
+    const CoalScalar resolution = CoalScalar(tree->getResolution());
     max_extent.array() += float(resolution / 2.);
     min_extent.array() -= float(resolution / 2.);
 
@@ -137,7 +137,8 @@ class COAL_DLLAPI OcTree : public CollisionGeometry {
 
   /// @brief get the bounding volume for the root
   AABB getRootBV() const {
-    CoalScalar delta = (1 << tree->getTreeDepth()) * tree->getResolution() / 2;
+    CoalScalar delta =
+        CoalScalar((1 << tree->getTreeDepth()) * tree->getResolution() / 2);
 
     // std::cout << "octree size " << delta << std::endl;
     return AABB(Vec3s(-delta, -delta, -delta), Vec3s(delta, delta, delta));
@@ -150,7 +151,7 @@ class COAL_DLLAPI OcTree : public CollisionGeometry {
   unsigned long size() const { return tree->size(); }
 
   /// @brief Returns the resolution of the octree
-  CoalScalar getResolution() const { return tree->getResolution(); }
+  CoalScalar getResolution() const { return CoalScalar(tree->getResolution()); }
 
   /// @brief get the root node of the octree
   OcTreeNode* getRoot() const { return tree->getRoot(); }
@@ -184,12 +185,12 @@ class COAL_DLLAPI OcTree : public CollisionGeometry {
          it != end; ++it) {
       // if(tree->isNodeOccupied(*it))
       if (isNodeOccupied(&*it)) {
-        CoalScalar x = it.getX();
-        CoalScalar y = it.getY();
-        CoalScalar z = it.getZ();
-        CoalScalar size = it.getSize();
-        CoalScalar c = (*it).getOccupancy();
-        CoalScalar t = tree->getOccupancyThres();
+        CoalScalar x = CoalScalar(it.getX());
+        CoalScalar y = CoalScalar(it.getY());
+        CoalScalar z = CoalScalar(it.getZ());
+        CoalScalar size = CoalScalar(it.getSize());
+        CoalScalar c = CoalScalar((*it).getOccupancy());
+        CoalScalar t = CoalScalar(tree->getOccupancyThres());
 
         Vec6s box;
         box << x, y, z, size, c, t;
@@ -298,28 +299,29 @@ class COAL_DLLAPI OcTree : public CollisionGeometry {
 /// @brief compute the bounding volume of an octree node's i-th child
 static inline void computeChildBV(const AABB& root_bv, unsigned int i,
                                   AABB& child_bv) {
+  const CoalScalar half = CoalScalar(0.5);
   if (i & 1) {
-    child_bv.min_[0] = (root_bv.min_[0] + root_bv.max_[0]) * 0.5;
+    child_bv.min_[0] = (root_bv.min_[0] + root_bv.max_[0]) * half;
     child_bv.max_[0] = root_bv.max_[0];
   } else {
     child_bv.min_[0] = root_bv.min_[0];
-    child_bv.max_[0] = (root_bv.min_[0] + root_bv.max_[0]) * 0.5;
+    child_bv.max_[0] = (root_bv.min_[0] + root_bv.max_[0]) * half;
   }
 
   if (i & 2) {
-    child_bv.min_[1] = (root_bv.min_[1] + root_bv.max_[1]) * 0.5;
+    child_bv.min_[1] = (root_bv.min_[1] + root_bv.max_[1]) * half;
     child_bv.max_[1] = root_bv.max_[1];
   } else {
     child_bv.min_[1] = root_bv.min_[1];
-    child_bv.max_[1] = (root_bv.min_[1] + root_bv.max_[1]) * 0.5;
+    child_bv.max_[1] = (root_bv.min_[1] + root_bv.max_[1]) * half;
   }
 
   if (i & 4) {
-    child_bv.min_[2] = (root_bv.min_[2] + root_bv.max_[2]) * 0.5;
+    child_bv.min_[2] = (root_bv.min_[2] + root_bv.max_[2]) * half;
     child_bv.max_[2] = root_bv.max_[2];
   } else {
     child_bv.min_[2] = root_bv.min_[2];
-    child_bv.max_[2] = (root_bv.min_[2] + root_bv.max_[2]) * 0.5;
+    child_bv.max_[2] = (root_bv.min_[2] + root_bv.max_[2]) * half;
   }
 }
 
