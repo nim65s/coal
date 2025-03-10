@@ -95,7 +95,7 @@ void exposeMaths() {
            return_value_policy<copy_const_reference>())
       .def("isIdentity", &Transform3s::isIdentity,
            (bp::arg("self"),
-            bp::arg("prec") = Eigen::NumTraits<CoalScalar>::dummy_precision()),
+            bp::arg("prec") = Eigen::NumTraits<Scalar>::dummy_precision()),
            doxygen::member_func_doc(&Transform3s::getTranslation))
 
       .def(dv::member_func("setQuatRotation", &Transform3s::setQuatRotation))

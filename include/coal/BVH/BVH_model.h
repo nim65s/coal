@@ -199,7 +199,7 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
   virtual void makeParentRelative() = 0;
 
   Vec3s computeCOM() const {
-    CoalScalar vol = 0;
+    Scalar vol = 0;
     Vec3s com(0, 0, 0);
     if (!(vertices.get())) {
       std::cerr << "BVH Error in `computeCOM`! The BVHModel does not contain "
@@ -218,7 +218,7 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
 
     for (unsigned int i = 0; i < num_tris; ++i) {
       const Triangle& tri = tri_indices_[i];
-      CoalScalar d_six_vol =
+      Scalar d_six_vol =
           (vertices_[tri[0]].cross(vertices_[tri[1]])).dot(vertices_[tri[2]]);
       vol += d_six_vol;
       com += (vertices_[tri[0]] + vertices_[tri[1]] + vertices_[tri[2]]) *
@@ -228,8 +228,8 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
     return com / (vol * 4);
   }
 
-  CoalScalar computeVolume() const {
-    CoalScalar vol = 0;
+  Scalar computeVolume() const {
+    Scalar vol = 0;
     if (!(vertices.get())) {
       std::cerr << "BVH Error in `computeCOM`! The BVHModel does not contain "
                    "vertices."
@@ -246,7 +246,7 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
     const std::vector<Triangle>& tri_indices_ = *tri_indices;
     for (unsigned int i = 0; i < num_tris; ++i) {
       const Triangle& tri = tri_indices_[i];
-      CoalScalar d_six_vol =
+      Scalar d_six_vol =
           (vertices_[tri[0]].cross(vertices_[tri[1]])).dot(vertices_[tri[2]]);
       vol += d_six_vol;
     }
@@ -258,15 +258,15 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
     Matrix3s C = Matrix3s::Zero();
 
     Matrix3s C_canonical;
-    C_canonical << CoalScalar(1 / 60.0),  //
-        CoalScalar(1 / 120.0),            //
-        CoalScalar(1 / 120.0),            //
-        CoalScalar(1 / 120.0),            //
-        CoalScalar(1 / 60.0),             //
-        CoalScalar(1 / 120.0),            //
-        CoalScalar(1 / 120.0),            //
-        CoalScalar(1 / 120.0),            //
-        CoalScalar(1 / 60.0);
+    C_canonical << Scalar(1 / 60.0),  //
+        Scalar(1 / 120.0),            //
+        Scalar(1 / 120.0),            //
+        Scalar(1 / 120.0),            //
+        Scalar(1 / 60.0),             //
+        Scalar(1 / 120.0),            //
+        Scalar(1 / 120.0),            //
+        Scalar(1 / 120.0),            //
+        Scalar(1 / 60.0);
 
     if (!(vertices.get())) {
       std::cerr << "BVH Error in `computeMomentofInertia`! The BVHModel does "

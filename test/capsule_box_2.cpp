@@ -48,7 +48,7 @@
 #include "coal/collision_object.h"
 #include "coal/shape/geometric_shapes.h"
 
-using coal::CoalScalar;
+using coal::Scalar;
 
 BOOST_AUTO_TEST_CASE(distance_capsule_box) {
   typedef coal::shared_ptr<coal::CollisionGeometry> CollisionGeometryPtr_t;
@@ -63,8 +63,8 @@ BOOST_AUTO_TEST_CASE(distance_capsule_box) {
 
   // Rotate capsule around y axis by pi/2 and move it behind box
   coal::Transform3s tf1(
-      coal::makeQuat(sqrt(CoalScalar(2)) / 2, 0, sqrt(CoalScalar(2)) / 2, 0),
-      coal::Vec3s(CoalScalar(-10.), CoalScalar(0.8), CoalScalar(1.5)));
+      coal::makeQuat(sqrt(Scalar(2)) / 2, 0, sqrt(Scalar(2)) / 2, 0),
+      coal::Vec3s(Scalar(-10.), Scalar(0.8), Scalar(1.5)));
   coal::Transform3s tf2;
   coal::CollisionObject capsule(capsuleGeometry, tf1);
   coal::CollisionObject box(boxGeometry, tf2);

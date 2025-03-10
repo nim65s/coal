@@ -30,7 +30,7 @@
 using namespace coal;
 
 bool verbose = false;
-CoalScalar DELTA = CoalScalar(0.001);
+Scalar DELTA = Scalar(0.001);
 
 template <typename BV>
 void makeModel(const std::vector<Vec3s>& vertices,
@@ -208,7 +208,7 @@ int main(int, char*[]) {
   makeModel(p2, t2, SPLIT_METHOD_MEDIAN, ms_obbrss[1][SPLIT_METHOD_MEDIAN]);
 
   std::vector<Transform3s> transforms;  // t0
-  CoalScalar extents[] = {-3000, -3000, -3000, 3000, 3000, 3000};
+  Scalar extents[] = {-3000, -3000, -3000, 3000, 3000, 3000};
   std::size_t n = 10000;
 
   generateRandomTransforms(extents, transforms, n);

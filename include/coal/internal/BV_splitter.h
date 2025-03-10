@@ -110,7 +110,7 @@ class BVSplitter {
   /// @brief The split threshold, different primitives are splitted according
   /// whether their projection on the split_axis is larger or smaller than the
   /// threshold
-  CoalScalar split_value;
+  Scalar split_value;
 
   /// @brief The mesh vertices or points handled by the splitter
   Vec3s* vertices;
@@ -150,7 +150,7 @@ class BVSplitter {
       axis = 1;
 
     split_axis = axis;
-    CoalScalar sum = 0;
+    Scalar sum = 0;
 
     if (type == BVH_MODEL_TRIANGLES) {
       for (unsigned int i = 0; i < num_primitives; ++i) {
@@ -166,7 +166,7 @@ class BVSplitter {
       }
     }
 
-    split_value = sum / CoalScalar(num_primitives);
+    split_value = sum / Scalar(num_primitives);
   }
 
   /// @brief Split algorithm 3: Split the node according to the median of the
@@ -181,7 +181,7 @@ class BVSplitter {
       axis = 1;
 
     split_axis = axis;
-    std::vector<CoalScalar> proj((size_t)num_primitives);
+    std::vector<Scalar> proj((size_t)num_primitives);
 
     if (type == BVH_MODEL_TRIANGLES) {
       for (unsigned int i = 0; i < num_primitives; ++i) {

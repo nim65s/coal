@@ -43,7 +43,7 @@ namespace coal {
 
 namespace internal {
 template <>
-CoalScalar ShapeShapeDistance<TriangleP, TriangleP>(
+Scalar ShapeShapeDistance<TriangleP, TriangleP>(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2,
     const GJKSolver* solver, const bool, Vec3s& p1, Vec3s& p2, Vec3s& normal) {
@@ -84,10 +84,10 @@ CoalScalar ShapeShapeDistance<TriangleP, TriangleP>(
   // Retrieve witness points and normal
   solver->gjk.getWitnessPointsAndNormal(solver->minkowski_difference, p1, p2,
                                         normal);
-  CoalScalar distance = solver->gjk.distance;
+  Scalar distance = solver->gjk.distance;
 
   if (gjk_status == details::GJK::Collision) {
-    CoalScalar penetrationDepth =
+    Scalar penetrationDepth =
         details::computePenetration(t1.a, t1.b, t1.c, t2.a, t2.b, t2.c, normal);
     distance = -penetrationDepth;
   } else {

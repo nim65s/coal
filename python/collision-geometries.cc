@@ -83,8 +83,7 @@ typedef std::vector<Vec3s> Vec3ss;
 typedef std::vector<Triangle> Triangles;
 
 struct BVHModelBaseWrapper {
-  typedef Eigen::Matrix<CoalScalar, Eigen::Dynamic, 3, Eigen::RowMajor>
-      RowMatrixX3;
+  typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 3, Eigen::RowMajor> RowMatrixX3;
   typedef Eigen::Map<RowMatrixX3> MapRowMatrixX3;
   typedef Eigen::Ref<RowMatrixX3> RefRowMatrixX3;
 
@@ -139,8 +138,8 @@ void exposeHeightField(const std::string& bvname) {
       type_name.c_str(), doxygen::class_doc<Geometry>(), no_init)
       .def(dv::init<HeightField<BV>>())
       .def(dv::init<HeightField<BV>, const HeightField<BV>&>())
-      .def(dv::init<HeightField<BV>, CoalScalar, CoalScalar, const MatrixXs&,
-                    bp::optional<CoalScalar>>())
+      .def(dv::init<HeightField<BV>, Scalar, Scalar, const MatrixXs&,
+                    bp::optional<Scalar>>())
 
       .DEF_CLASS_FUNC(Geometry, getXDim)
       .DEF_CLASS_FUNC(Geometry, getYDim)
@@ -174,8 +173,7 @@ void exposeHeightField(const std::string& bvname) {
 }
 
 struct ConvexBaseWrapper {
-  typedef Eigen::Matrix<CoalScalar, Eigen::Dynamic, 3, Eigen::RowMajor>
-      RowMatrixX3;
+  typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 3, Eigen::RowMajor> RowMatrixX3;
   typedef Eigen::Map<RowMatrixX3> MapRowMatrixX3;
   typedef Eigen::Ref<RowMatrixX3> RefRowMatrixX3;
   typedef Eigen::Map<VecXs> MapVecXs;
@@ -202,7 +200,7 @@ struct ConvexBaseWrapper {
                           convex.num_normals_and_offsets, 3);
   }
 
-  static CoalScalar offset(const ConvexBase& convex, unsigned int i) {
+  static Scalar offset(const ConvexBase& convex, unsigned int i) {
     if (i >= convex.num_normals_and_offsets)
       throw std::out_of_range("index is out of range");
     return (*(convex.offsets))[i];
@@ -290,7 +288,7 @@ void exposeShapes() {
       "Box", doxygen::class_doc<ShapeBase>(), no_init)
       .def(dv::init<Box>())
       .def(dv::init<Box, const Box&>())
-      .def(dv::init<Box, CoalScalar, CoalScalar, CoalScalar>())
+      .def(dv::init<Box, Scalar, Scalar, Scalar>())
       .def(dv::init<Box, const Vec3s&>())
       .DEF_RW_CLASS_ATTRIB(Box, halfSide)
       .def("clone", &Box::clone, doxygen::member_func_doc(&Box::clone),
@@ -305,7 +303,7 @@ void exposeShapes() {
   class_<Capsule, bases<ShapeBase>, shared_ptr<Capsule>>(
       "Capsule", doxygen::class_doc<Capsule>(), no_init)
       .def(dv::init<Capsule>())
-      .def(dv::init<Capsule, CoalScalar, CoalScalar>())
+      .def(dv::init<Capsule, Scalar, Scalar>())
       .def(dv::init<Capsule, const Capsule&>())
       .DEF_RW_CLASS_ATTRIB(Capsule, radius)
       .DEF_RW_CLASS_ATTRIB(Capsule, halfLength)
@@ -321,7 +319,7 @@ void exposeShapes() {
   class_<Cone, bases<ShapeBase>, shared_ptr<Cone>>(
       "Cone", doxygen::class_doc<Cone>(), no_init)
       .def(dv::init<Cone>())
-      .def(dv::init<Cone, CoalScalar, CoalScalar>())
+      .def(dv::init<Cone, Scalar, Scalar>())
       .def(dv::init<Cone, const Cone&>())
       .DEF_RW_CLASS_ATTRIB(Cone, radius)
       .DEF_RW_CLASS_ATTRIB(Cone, halfLength)
@@ -388,7 +386,7 @@ void exposeShapes() {
   class_<Cylinder, bases<ShapeBase>, shared_ptr<Cylinder>>(
       "Cylinder", doxygen::class_doc<Cylinder>(), no_init)
       .def(dv::init<Cylinder>())
-      .def(dv::init<Cylinder, CoalScalar, CoalScalar>())
+      .def(dv::init<Cylinder, Scalar, Scalar>())
       .def(dv::init<Cylinder, const Cylinder&>())
       .DEF_RW_CLASS_ATTRIB(Cylinder, radius)
       .DEF_RW_CLASS_ATTRIB(Cylinder, halfLength)
@@ -404,10 +402,9 @@ void exposeShapes() {
 
   class_<Halfspace, bases<ShapeBase>, shared_ptr<Halfspace>>(
       "Halfspace", doxygen::class_doc<Halfspace>(), no_init)
-      .def(dv::init<Halfspace, const Vec3s&, CoalScalar>())
+      .def(dv::init<Halfspace, const Vec3s&, Scalar>())
       .def(dv::init<Halfspace, const Halfspace&>())
-      .def(
-          dv::init<Halfspace, CoalScalar, CoalScalar, CoalScalar, CoalScalar>())
+      .def(dv::init<Halfspace, Scalar, Scalar, Scalar, Scalar>())
       .def(dv::init<Halfspace>())
       .DEF_RW_CLASS_ATTRIB(Halfspace, n)
       .DEF_RW_CLASS_ATTRIB(Halfspace, d)
@@ -423,9 +420,9 @@ void exposeShapes() {
 
   class_<Plane, bases<ShapeBase>, shared_ptr<Plane>>(
       "Plane", doxygen::class_doc<Plane>(), no_init)
-      .def(dv::init<Plane, const Vec3s&, CoalScalar>())
+      .def(dv::init<Plane, const Vec3s&, Scalar>())
       .def(dv::init<Plane, const Plane&>())
-      .def(dv::init<Plane, CoalScalar, CoalScalar, CoalScalar, CoalScalar>())
+      .def(dv::init<Plane, Scalar, Scalar, Scalar, Scalar>())
       .def(dv::init<Plane>())
       .DEF_RW_CLASS_ATTRIB(Plane, n)
       .DEF_RW_CLASS_ATTRIB(Plane, d)
@@ -442,7 +439,7 @@ void exposeShapes() {
       "Sphere", doxygen::class_doc<Sphere>(), no_init)
       .def(dv::init<Sphere>())
       .def(dv::init<Sphere, const Sphere&>())
-      .def(dv::init<Sphere, CoalScalar>())
+      .def(dv::init<Sphere, Scalar>())
       .DEF_RW_CLASS_ATTRIB(Sphere, radius)
       .def("clone", &Sphere::clone, doxygen::member_func_doc(&Sphere::clone),
            return_value_policy<manage_new_object>())
@@ -456,7 +453,7 @@ void exposeShapes() {
   class_<Ellipsoid, bases<ShapeBase>, shared_ptr<Ellipsoid>>(
       "Ellipsoid", doxygen::class_doc<Ellipsoid>(), no_init)
       .def(dv::init<Ellipsoid>())
-      .def(dv::init<Ellipsoid, CoalScalar, CoalScalar, CoalScalar>())
+      .def(dv::init<Ellipsoid, Scalar, Scalar, Scalar>())
       .def(dv::init<Ellipsoid, Vec3s>())
       .def(dv::init<Ellipsoid, const Ellipsoid&>())
       .DEF_RW_CLASS_ATTRIB(Ellipsoid, radii)
@@ -491,7 +488,7 @@ void exposeShapes() {
 
 boost::python::tuple AABB_distance_proxy(const AABB& self, const AABB& other) {
   Vec3s P, Q;
-  CoalScalar distance = self.distance(other, &P, &Q);
+  Scalar distance = self.distance(other, &P, &Q);
   return boost::python::make_tuple(distance, P, Q);
 }
 
@@ -577,7 +574,7 @@ void exposeCollisionGeometries() {
            "Check whether two AABB are overlaping and return the overloaping "
            "part if true.")
 
-      .def("distance", (CoalScalar(AABB::*)(const AABB&) const)&AABB::distance,
+      .def("distance", (Scalar(AABB::*)(const AABB&) const)&AABB::distance,
            bp::args("self", "other"), "Distance between two AABBs.")
       //    .def("distance",
       //         AABB_distance_proxy,
@@ -616,18 +613,17 @@ void exposeCollisionGeometries() {
       .def("volume", &AABB::volume, bp::arg("self"), "Volume of the AABB.")
 
       .def("expand",
-           static_cast<AABB& (AABB::*)(const AABB&, CoalScalar)>(&AABB::expand),
+           static_cast<AABB& (AABB::*)(const AABB&, Scalar)>(&AABB::expand),
            //         doxygen::member_func_doc(static_cast<AABB& (AABB::*)(const
-           //         AABB &, CoalScalar)>(&AABB::expand)),
+           //         AABB &, Scalar)>(&AABB::expand)),
            //         doxygen::member_func_args(static_cast<AABB&
-           //         (AABB::*)(const AABB &, CoalScalar)>(&AABB::expand)),
+           //         (AABB::*)(const AABB &, Scalar)>(&AABB::expand)),
            bp::return_internal_reference<>())
-      .def("expand",
-           static_cast<AABB& (AABB::*)(const CoalScalar)>(&AABB::expand),
+      .def("expand", static_cast<AABB& (AABB::*)(const Scalar)>(&AABB::expand),
            //         doxygen::member_func_doc(static_cast<AABB& (AABB::*)(const
-           //         CoalScalar)>(&AABB::expand)),
+           //         Scalar)>(&AABB::expand)),
            //         doxygen::member_func_args(static_cast<AABB&
-           //         (AABB::*)(const CoalScalar)>(&AABB::expand)),
+           //         (AABB::*)(const Scalar)>(&AABB::expand)),
            bp::return_internal_reference<>())
       .def("expand", static_cast<AABB& (AABB::*)(const Vec3s&)>(&AABB::expand),
            //         doxygen::member_func_doc(static_cast<AABB& (AABB::*)(const

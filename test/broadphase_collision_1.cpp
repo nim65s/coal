@@ -65,13 +65,11 @@ using namespace coal;
 
 /// @brief make sure if broadphase algorithms doesn't check twice for the same
 /// collision object pair
-void broad_phase_duplicate_check_test(CoalScalar env_scale,
-                                      std::size_t env_size,
+void broad_phase_duplicate_check_test(Scalar env_scale, std::size_t env_size,
                                       bool verbose = false);
 
 /// @brief test for broad phase update
-void broad_phase_update_collision_test(CoalScalar env_scale,
-                                       std::size_t env_size,
+void broad_phase_update_collision_test(Scalar env_scale, std::size_t env_size,
                                        std::size_t query_size,
                                        std::size_t num_max_contacts = 1,
                                        bool exhaustive = false,
@@ -199,8 +197,8 @@ struct CollisionFunctionForUniquenessChecking : CollisionCallBackBase {
 };
 
 //==============================================================================
-void broad_phase_duplicate_check_test(CoalScalar env_scale,
-                                      std::size_t env_size, bool verbose) {
+void broad_phase_duplicate_check_test(Scalar env_scale, std::size_t env_size,
+                                      bool verbose) {
   std::vector<TStruct> ts;
   std::vector<BenchTimer> timers;
 
@@ -214,10 +212,9 @@ void broad_phase_duplicate_check_test(CoalScalar env_scale,
   managers.push_back(new IntervalTreeCollisionManager());
   Vec3s lower_limit, upper_limit;
   SpatialHashingCollisionManager<>::computeBound(env, lower_limit, upper_limit);
-  CoalScalar cell_size =
-      std::min(std::min((upper_limit[0] - lower_limit[0]) / 20,
-                        (upper_limit[1] - lower_limit[1]) / 20),
-               (upper_limit[2] - lower_limit[2]) / 20);
+  Scalar cell_size = std::min(std::min((upper_limit[0] - lower_limit[0]) / 20,
+                                       (upper_limit[1] - lower_limit[1]) / 20),
+                              (upper_limit[2] - lower_limit[2]) / 20);
   managers.push_back(
       new SpatialHashingCollisionManager<
           detail::SparseHashTable<AABB, CollisionObject*, detail::SpatialHash>>(
@@ -266,31 +263,25 @@ void broad_phase_duplicate_check_test(CoalScalar env_scale,
   }
 
   // update the environment
-  CoalScalar delta_angle_max = CoalScalar(10) / CoalScalar(360 * 2) *
-                               boost::math::constants::pi<CoalScalar>();
-  CoalScalar delta_trans_max = CoalScalar(0.01) * env_scale;
-  const CoalScalar half = CoalScalar(0.5);
+  Scalar delta_angle_max =
+      Scalar(10) / Scalar(360 * 2) * boost::math::constants::pi<Scalar>();
+  Scalar delta_trans_max = Scalar(0.01) * env_scale;
+  const Scalar half = Scalar(0.5);
   for (size_t i = 0; i < env.size(); ++i) {
-    CoalScalar rand_angle_x =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_angle_max;
-    CoalScalar rand_trans_x =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_trans_max;
-    CoalScalar rand_angle_y =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_angle_max;
-    CoalScalar rand_trans_y =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_trans_max;
-    CoalScalar rand_angle_z =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_angle_max;
-    CoalScalar rand_trans_z =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_trans_max;
+    Scalar rand_angle_x =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_angle_max;
+    Scalar rand_trans_x =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_trans_max;
+    Scalar rand_angle_y =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_angle_max;
+    Scalar rand_trans_y =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_trans_max;
+    Scalar rand_angle_z =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_angle_max;
+    Scalar rand_trans_z =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_trans_max;
 
-    using AngleAxis = Eigen::AngleAxis<CoalScalar>;
+    using AngleAxis = Eigen::AngleAxis<Scalar>;
     Matrix3s dR(AngleAxis(rand_angle_x, Vec3s::UnitX()) *
                 AngleAxis(rand_angle_y, Vec3s::UnitY()) *
                 AngleAxis(rand_angle_z, Vec3s::UnitZ()));
@@ -363,8 +354,7 @@ void broad_phase_duplicate_check_test(CoalScalar env_scale,
   std::cout << std::endl;
 }
 
-void broad_phase_update_collision_test(CoalScalar env_scale,
-                                       std::size_t env_size,
+void broad_phase_update_collision_test(Scalar env_scale, std::size_t env_size,
                                        std::size_t query_size,
                                        std::size_t num_max_contacts,
                                        bool exhaustive, bool use_mesh) {
@@ -393,10 +383,9 @@ void broad_phase_update_collision_test(CoalScalar env_scale,
 
   Vec3s lower_limit, upper_limit;
   SpatialHashingCollisionManager<>::computeBound(env, lower_limit, upper_limit);
-  CoalScalar cell_size =
-      std::min(std::min((upper_limit[0] - lower_limit[0]) / 20,
-                        (upper_limit[1] - lower_limit[1]) / 20),
-               (upper_limit[2] - lower_limit[2]) / 20);
+  Scalar cell_size = std::min(std::min((upper_limit[0] - lower_limit[0]) / 20,
+                                       (upper_limit[1] - lower_limit[1]) / 20),
+                              (upper_limit[2] - lower_limit[2]) / 20);
   // managers.push_back(new SpatialHashingCollisionManager(cell_size,
   // lower_limit, upper_limit));
   managers.push_back(
@@ -447,31 +436,25 @@ void broad_phase_update_collision_test(CoalScalar env_scale,
   }
 
   // update the environment
-  CoalScalar delta_angle_max = CoalScalar(10) / CoalScalar(360 * 2) *
-                               boost::math::constants::pi<CoalScalar>();
-  CoalScalar delta_trans_max = CoalScalar(0.01) * env_scale;
-  const CoalScalar half = CoalScalar(0.5);
+  Scalar delta_angle_max =
+      Scalar(10) / Scalar(360 * 2) * boost::math::constants::pi<Scalar>();
+  Scalar delta_trans_max = Scalar(0.01) * env_scale;
+  const Scalar half = Scalar(0.5);
   for (size_t i = 0; i < env.size(); ++i) {
-    CoalScalar rand_angle_x =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_angle_max;
-    CoalScalar rand_trans_x =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_trans_max;
-    CoalScalar rand_angle_y =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_angle_max;
-    CoalScalar rand_trans_y =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_trans_max;
-    CoalScalar rand_angle_z =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_angle_max;
-    CoalScalar rand_trans_z =
-        2 * (CoalScalar(rand()) / CoalScalar(RAND_MAX) - half) *
-        delta_trans_max;
+    Scalar rand_angle_x =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_angle_max;
+    Scalar rand_trans_x =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_trans_max;
+    Scalar rand_angle_y =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_angle_max;
+    Scalar rand_trans_y =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_trans_max;
+    Scalar rand_angle_z =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_angle_max;
+    Scalar rand_trans_z =
+        2 * (Scalar(rand()) / Scalar(RAND_MAX) - half) * delta_trans_max;
 
-    using AngleAxis = Eigen::AngleAxis<CoalScalar>;
+    using AngleAxis = Eigen::AngleAxis<Scalar>;
     Matrix3s dR(AngleAxis(rand_angle_x, Vec3s::UnitX()) *
                 AngleAxis(rand_angle_y, Vec3s::UnitY()) *
                 AngleAxis(rand_angle_z, Vec3s::UnitZ()));

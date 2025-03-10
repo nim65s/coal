@@ -50,9 +50,9 @@
 
 using namespace coal;
 
-CoalScalar extents[6] = {0, 0, 0, 10, 10, 10};
+Scalar extents[6] = {0, 0, 0, 10, 10, 10};
 
-CoalScalar tol_gjk = CoalScalar(0.01);
+Scalar tol_gjk = Scalar(0.01);
 GJKSolver solver1;
 GJKSolver solver2;
 
@@ -82,7 +82,7 @@ void printComparisonError(const std::string& comparison_type, const S1& s1,
                           const Transform3s& tf2,
                           const Vec3s& contact_or_normal,
                           const Vec3s& expected_contact_or_normal,
-                          bool check_opposite_normal, CoalScalar tol) {
+                          bool check_opposite_normal, Scalar tol) {
   std::cout << "Disagreement between " << comparison_type << " and expected_"
             << comparison_type << " for " << getNodeTypeName(s1.getNodeType())
             << " and " << getNodeTypeName(s2.getNodeType()) << ".\n"
@@ -110,8 +110,8 @@ void printComparisonError(const std::string& comparison_type, const S1& s1,
 template <typename S1, typename S2>
 void printComparisonError(const std::string& comparison_type, const S1& s1,
                           const Transform3s& tf1, const S2& s2,
-                          const Transform3s& tf2, CoalScalar depth,
-                          CoalScalar expected_depth, CoalScalar tol) {
+                          const Transform3s& tf2, Scalar depth,
+                          Scalar expected_depth, Scalar tol) {
   std::cout << "Disagreement between " << comparison_type << " and expected_"
             << comparison_type << " for " << getNodeTypeName(s1.getNodeType())
             << " and " << getNodeTypeName(s2.getNodeType()) << ".\n"
@@ -128,10 +128,9 @@ void printComparisonError(const std::string& comparison_type, const S1& s1,
 template <typename S1, typename S2>
 void compareContact(const S1& s1, const Transform3s& tf1, const S2& s2,
                     const Transform3s& tf2, const Vec3s& contact,
-                    Vec3s* expected_point, CoalScalar depth,
-                    CoalScalar* expected_depth, const Vec3s& normal,
-                    Vec3s* expected_normal, bool check_opposite_normal,
-                    CoalScalar tol) {
+                    Vec3s* expected_point, Scalar depth, Scalar* expected_depth,
+                    const Vec3s& normal, Vec3s* expected_normal,
+                    bool check_opposite_normal, Scalar tol) {
   if (expected_point) {
     bool contact_equal = isEqual(contact, *expected_point, tol);
     FCL_CHECK(contact_equal);
@@ -165,10 +164,10 @@ template <typename S1, typename S2>
 void testShapeCollide(const S1& s1, const Transform3s& tf1, const S2& s2,
                       const Transform3s& tf2, bool expect_collision,
                       Vec3s* expected_point = NULL,
-                      CoalScalar* expected_depth = NULL,
+                      Scalar* expected_depth = NULL,
                       Vec3s* expected_normal = NULL,
                       bool check_opposite_normal = false,
-                      CoalScalar tol = CoalScalar(1e-9)) {
+                      Scalar tol = Scalar(1e-9)) {
   CollisionRequest request;
   CollisionResult result;
 
@@ -245,7 +244,7 @@ BOOST_AUTO_TEST_CASE(collide_spheresphere) {
   generateRandomTransform(extents, transform);
 
   // Vec3s point;
-  // CoalScalar depth;
+  // Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -265,24 +264,24 @@ BOOST_AUTO_TEST_CASE(collide_spheresphere) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(30.01), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(30.01), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(30.01), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(30.01), 0, 0));
   normal = transform.getRotation() * Vec3s(1, 0, 0);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(29.9), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(29.9), 0, 0));
   normal << 1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(29.9), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(29.9), 0, 0));
   normal = transform.getRotation() * Vec3s(1, 0, 0);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
@@ -302,13 +301,13 @@ BOOST_AUTO_TEST_CASE(collide_spheresphere) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-29.9), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-29.9), 0, 0));
   normal << -1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-29.9), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-29.9), 0, 0));
   normal = transform.getRotation() * Vec3s(-1, 0, 0);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
@@ -320,13 +319,13 @@ BOOST_AUTO_TEST_CASE(collide_spheresphere) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-30.01), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-30.01), 0, 0));
   normal << -1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-30.01), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-30.01), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 }
@@ -361,11 +360,11 @@ void testBoxBoxContactPoints(const Matrix3s& R) {
   Vec3s p1, p2;
 
   // Make sure the two boxes are colliding
-  solver1.gjk_tolerance = CoalScalar(1e-5);
-  solver1.epa_tolerance = CoalScalar(1e-5);
+  solver1.gjk_tolerance = Scalar(1e-5);
+  solver1.epa_tolerance = Scalar(1e-5);
   const bool compute_penetration = true;
-  CoalScalar distance = solver1.shapeDistance(
-      s1, tf1, s2, tf2, compute_penetration, p1, p2, normal);
+  Scalar distance = solver1.shapeDistance(s1, tf1, s2, tf2, compute_penetration,
+                                          p1, p2, normal);
   FCL_CHECK(distance <= 0);
 
   // Compute global vertices
@@ -375,9 +374,9 @@ void testBoxBoxContactPoints(const Matrix3s& R) {
   std::sort(vertices.begin(), vertices.end(), compareContactPoints);
 
   // The lowest vertex along z-axis should be the contact point
-  FCL_CHECK(normal.isApprox(Vec3s(0, 0, 1), CoalScalar(1e-6)));
-  Vec3s point = CoalScalar(0.5) * (p1 + p2);
-  FCL_CHECK(vertices[0].head<2>().isApprox(point.head<2>(), CoalScalar(1e-6)));
+  FCL_CHECK(normal.isApprox(Vec3s(0, 0, 1), Scalar(1e-6)));
+  Vec3s point = Scalar(0.5) * (p1 + p2);
+  FCL_CHECK(vertices[0].head<2>().isApprox(point.head<2>(), Scalar(1e-6)));
   FCL_CHECK(vertices[0][2] <= point[2] && point[2] < 0);
 }
 
@@ -392,11 +391,11 @@ BOOST_AUTO_TEST_CASE(collide_boxbox) {
   generateRandomTransform(extents, transform);
 
   // Vec3s point;
-  // CoalScalar depth;
+  // Scalar depth;
   Vec3s normal;
 
   Quats q;
-  q = AngleAxis((CoalScalar)3.140 / 6, UnitZ);
+  q = AngleAxis((Scalar)3.140 / 6, UnitZ);
 
   tf1 = Transform3s();
   tf2 = Transform3s();
@@ -419,15 +418,15 @@ BOOST_AUTO_TEST_CASE(collide_boxbox) {
   normal << 1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false,
-                   CoalScalar(1e-8));
+                   Scalar(1e-8));
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(15.01), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(15.01), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(15.01), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(15.01), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
@@ -463,7 +462,7 @@ BOOST_AUTO_TEST_CASE(collide_spherebox) {
   generateRandomTransform(extents, transform);
 
   // Vec3s point;
-  // CoalScalar depth;
+  // Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -482,23 +481,23 @@ BOOST_AUTO_TEST_CASE(collide_spherebox) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, NULL);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(22.50001), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(22.50001), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(22.501), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(22.501), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(22.4), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(22.4), 0, 0));
   normal << 1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(22.4), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(22.4), 0, 0));
   normal = transform.getRotation() * Vec3s(1, 0, 0);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
@@ -520,7 +519,7 @@ BOOST_AUTO_TEST_CASE(distance_spherebox) {
   distance(&sphere, Transform3s(rotSphere, trSphere), &box,
            Transform3s(rotBox, trBox), DistanceRequest(true), result);
 
-  CoalScalar eps = Eigen::NumTraits<CoalScalar>::epsilon();
+  Scalar eps = Eigen::NumTraits<Scalar>::epsilon();
   BOOST_CHECK_CLOSE(result.min_distance, 3., eps);
   EIGEN_VECTOR_IS_APPROX(result.nearest_points[0], Vec3s(0, 1, 0), eps);
   EIGEN_VECTOR_IS_APPROX(result.nearest_points[1], Vec3s(0, 4, 0), eps);
@@ -538,7 +537,7 @@ BOOST_AUTO_TEST_CASE(collide_spherecapsule) {
   generateRandomTransform(extents, transform);
 
   // Vec3s point;
-  // CoalScalar depth;
+  // Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -556,13 +555,13 @@ BOOST_AUTO_TEST_CASE(collide_spherecapsule) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, NULL);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(24.9), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(24.9), 0, 0));
   normal << 1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(24.9), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(24.9), 0, 0));
   normal = transform.getRotation() * Vec3s(1, 0, 0);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
@@ -574,19 +573,19 @@ BOOST_AUTO_TEST_CASE(collide_spherecapsule) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(24.999999), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(24.999999), 0, 0));
   normal = transform.getRotation() * Vec3s(1, 0, 0);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(25.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(25.1), 0, 0));
   normal << 1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(25.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(25.1), 0, 0));
   normal = transform.getRotation() * Vec3s(1, 0, 0);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
@@ -603,7 +602,7 @@ BOOST_AUTO_TEST_CASE(collide_cylindercylinder) {
   generateRandomTransform(extents, transform);
 
   // Vec3s point;
-  // CoalScalar depth;
+  // Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -621,36 +620,36 @@ BOOST_AUTO_TEST_CASE(collide_cylindercylinder) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, NULL);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(9.9), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(9.9), 0, 0));
   normal << 1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(9.9), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(9.9), 0));
   normal << 0, 1, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(9.9), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(9.9), 0, 0));
   normal << 1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(9.9), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(9.9), 0, 0));
   normal = transform.getRotation() * Vec3s(1, 0, 0);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(10.01), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(10.01), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(10.01), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(10.01), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 }
@@ -666,7 +665,7 @@ BOOST_AUTO_TEST_CASE(collide_conecone) {
   generateRandomTransform(extents, transform);
 
   // Vec3s point;
-  // CoalScalar depth;
+  // Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -685,7 +684,7 @@ BOOST_AUTO_TEST_CASE(collide_conecone) {
 
   tf1 = Transform3s();
   // z=0 is a singular points. Two normals could be returned.
-  tf2 = Transform3s(Vec3s(CoalScalar(9.9), 0, CoalScalar(0.00001)));
+  tf2 = Transform3s(Vec3s(Scalar(9.9), 0, Scalar(0.00001)));
   normal = Vec3s(2 * (s1.halfLength + s2.halfLength), 0, s1.radius + s2.radius)
                .normalized();
   SET_LINE;
@@ -698,7 +697,7 @@ BOOST_AUTO_TEST_CASE(collide_conecone) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(9.9), 0, CoalScalar(0.00001)));
+  tf2 = transform * Transform3s(Vec3s(Scalar(9.9), 0, Scalar(0.00001)));
   normal = Vec3s(2 * (s1.halfLength + s2.halfLength), 0, s1.radius + s2.radius)
                .normalized();
   normal = transform.getRotation() * normal;
@@ -706,28 +705,28 @@ BOOST_AUTO_TEST_CASE(collide_conecone) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, true, tol_gjk);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(10.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(10.1), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(10.001), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(10.001), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(10.001), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(10.001), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(9.9)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(9.9)));
   normal << 0, 0, 1;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(9.9)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(9.9)));
   normal = transform.getRotation() * Vec3s(0, 0, 1);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
@@ -744,7 +743,7 @@ BOOST_AUTO_TEST_CASE(collide_conecylinder) {
   generateRandomTransform(extents, transform);
 
   // Vec3s point;
-  // CoalScalar depth;
+  // Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -762,7 +761,7 @@ BOOST_AUTO_TEST_CASE(collide_conecylinder) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, NULL);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(9.9), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(9.9), 0, 0));
   normal =
       Vec3s(2 * (s1.halfLength + s2.halfLength), 0, -(s1.radius + s2.radius))
           .normalized();
@@ -770,30 +769,30 @@ BOOST_AUTO_TEST_CASE(collide_conecylinder) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(9.9), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(9.9), 0, 0));
   normal = transform.getRotation() * normal;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(9.9), 0, CoalScalar(0.1)));
+  tf2 = Transform3s(Vec3s(Scalar(9.9), 0, Scalar(0.1)));
   normal << 1, 0, 0;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(9.9), 0, CoalScalar(0.1)));
+  tf2 = transform * Transform3s(Vec3s(Scalar(9.9), 0, Scalar(0.1)));
   normal = transform.getRotation() * normal;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(10.01), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(10.01), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(10.01), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(10.01), 0, 0));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
@@ -808,24 +807,24 @@ BOOST_AUTO_TEST_CASE(collide_conecylinder) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, NULL);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(9.9)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(9.9)));
   normal << 0, 0, 1;
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(9.9)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(9.9)));
   normal = transform.getRotation() * Vec3s(0, 0, 1);
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(10.01)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(10.01)));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(10.01)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(10.01)));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 
@@ -836,7 +835,7 @@ BOOST_AUTO_TEST_CASE(collide_conecylinder) {
   testShapeCollide(s1, tf1, s2, tf2, true, NULL, NULL, &normal, false, tol_gjk);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(10.1)));
   SET_LINE;
   testShapeCollide(s1, tf1, s2, tf2, false);
 }
@@ -860,7 +859,7 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();  // identity
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(0.001)));
     normal << 0, 0, 1;
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -869,7 +868,7 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     testShapeCollide(s, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(-0.001)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(-0.001)));
     normal << 0, 0, -1;
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -882,13 +881,13 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
   {
     Vec3s t[3];
     t[0] << 30, 0, 0;
-    t[1] << CoalScalar(9.9), -20, 0;
-    t[2] << CoalScalar(9.9), 20, 0;
+    t[1] << Scalar(9.9), -20, 0;
+    t[2] << Scalar(9.9), 20, 0;
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(0.001)));
-    normal << CoalScalar(9.9), 0, CoalScalar(0.001);
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(0.001)));
+    normal << Scalar(9.9), 0, Scalar(0.001);
     normal.normalize();
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -897,8 +896,8 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     testShapeCollide(s, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(-0.001)));
-    normal << CoalScalar(9.9), 0, CoalScalar(-0.001);
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(-0.001)));
+    normal << Scalar(9.9), 0, Scalar(-0.001);
     normal.normalize();
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -916,7 +915,7 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();
 
-    tf_tri.setTranslation(Vec3s(0, CoalScalar(0.001), 0));
+    tf_tri.setTranslation(Vec3s(0, Scalar(0.001), 0));
     normal << 0, 1, 0;
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -925,7 +924,7 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     testShapeCollide(s, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, CoalScalar(-0.001), 0));
+    tf_tri.setTranslation(Vec3s(0, Scalar(-0.001), 0));
     normal << 0, -1, 0;
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -943,7 +942,7 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();
 
-    tf_tri.setTranslation(Vec3s(CoalScalar(0.001), 0, 0));
+    tf_tri.setTranslation(Vec3s(Scalar(0.001), 0, 0));
     normal << 1, 0, 0;
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -952,7 +951,7 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     testShapeCollide(s, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(CoalScalar(-0.001), 0, 0));
+    tf_tri.setTranslation(Vec3s(Scalar(-0.001), 0, 0));
     normal << -1, 0, 0;
     testShapeCollide(s, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
     SET_LINE;
@@ -973,13 +972,13 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(10.1)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(10.1)));
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(s, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(-10.1)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(-10.1)));
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -994,13 +993,13 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     TriangleP tri(t[0], t[1], t[2]);
 
     Transform3s tf_tri = Transform3s();
-    tf_tri.setTranslation(Vec3s(0, CoalScalar(10.1), 0));
+    tf_tri.setTranslation(Vec3s(0, Scalar(10.1), 0));
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(s, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(0, CoalScalar(-10.1), 0));
+    tf_tri.setTranslation(Vec3s(0, Scalar(-10.1), 0));
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -1015,13 +1014,13 @@ BOOST_AUTO_TEST_CASE(collide_spheretriangle) {
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();
 
-    tf_tri.setTranslation(Vec3s(CoalScalar(10.1), 0, 0));
+    tf_tri.setTranslation(Vec3s(Scalar(10.1), 0, 0));
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(s, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(CoalScalar(-10.1), 0, 0));
+    tf_tri.setTranslation(Vec3s(Scalar(-10.1), 0, 0));
     SET_LINE;
     testShapeCollide(s, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -1047,7 +1046,7 @@ BOOST_AUTO_TEST_CASE(collide_halfspacetriangle) {
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();  // identity
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(-0.001)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(-0.001)));
     normal = hs.n;
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -1056,19 +1055,19 @@ BOOST_AUTO_TEST_CASE(collide_halfspacetriangle) {
     testShapeCollide(hs, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(hs, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(1, 1, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(1, 1, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(hs, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(-1, -1, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(-1, -1, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -1083,7 +1082,7 @@ BOOST_AUTO_TEST_CASE(collide_halfspacetriangle) {
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(-0.001)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(-0.001)));
     normal = hs.n;
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -1092,19 +1091,19 @@ BOOST_AUTO_TEST_CASE(collide_halfspacetriangle) {
     testShapeCollide(hs, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(hs, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(1, 1, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(1, 1, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(hs, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(-1, -1, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(-1, -1, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -1119,7 +1118,7 @@ BOOST_AUTO_TEST_CASE(collide_halfspacetriangle) {
     TriangleP tri(t[0], t[1], t[2]);
     Transform3s tf_tri = Transform3s();
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(-0.001)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(-0.001)));
     normal = hs.n;
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -1128,19 +1127,19 @@ BOOST_AUTO_TEST_CASE(collide_halfspacetriangle) {
     testShapeCollide(hs, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(hs, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(1, 1, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(1, 1, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(hs, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(-1, -1, CoalScalar(0.001)));
+    tf_tri.setTranslation(Vec3s(-1, -1, Scalar(0.001)));
     SET_LINE;
     testShapeCollide(hs, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -1156,9 +1155,9 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
 
   {
     Vec3s t[3];
-    t[0] << 20, 0, CoalScalar(0.05);
-    t[1] << -20, 0, CoalScalar(0.05);
-    t[2] << 0, 20, CoalScalar(-0.1);
+    t[0] << 20, 0, Scalar(0.05);
+    t[1] << -20, 0, Scalar(0.05);
+    t[2] << 0, 20, Scalar(-0.1);
     Plane pl(Vec3s(0, 0, 1), 0);
 
     TriangleP tri(t[0], t[1], t[2]);
@@ -1171,7 +1170,7 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
     testShapeCollide(pl, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(0.05)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(0.05)));
     normal = pl.n;
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -1180,13 +1179,13 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
     testShapeCollide(pl, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(-0.06)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(-0.06)));
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(pl, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(0, 0, CoalScalar(0.11)));
+    tf_tri.setTranslation(Vec3s(0, 0, Scalar(0.11)));
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -1195,9 +1194,9 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
 
   {
     Vec3s t[3];
-    t[0] << 30, CoalScalar(0.05), 0;
-    t[1] << -20, CoalScalar(0.05), 0;
-    t[2] << 0, CoalScalar(-0.1), 20;
+    t[0] << 30, Scalar(0.05), 0;
+    t[1] << -20, Scalar(0.05), 0;
+    t[2] << 0, Scalar(-0.1), 20;
     Plane pl(Vec3s(0, 1, 0), 0);
 
     TriangleP tri(t[0], t[1], t[2]);
@@ -1210,7 +1209,7 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
     testShapeCollide(pl, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, CoalScalar(0.05), 0));
+    tf_tri.setTranslation(Vec3s(0, Scalar(0.05), 0));
     normal = pl.n;
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -1219,13 +1218,13 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
     testShapeCollide(pl, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(0, CoalScalar(-0.06), 0));
+    tf_tri.setTranslation(Vec3s(0, Scalar(-0.06), 0));
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(pl, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(0, CoalScalar(0.11), 0));
+    tf_tri.setTranslation(Vec3s(0, Scalar(0.11), 0));
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -1234,9 +1233,9 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
 
   {
     Vec3s t[3];
-    t[0] << CoalScalar(0.05), 30, 0;
-    t[1] << CoalScalar(0.05), -10, 0;
-    t[2] << CoalScalar(-0.1), 0, 20;
+    t[0] << Scalar(0.05), 30, 0;
+    t[1] << Scalar(0.05), -10, 0;
+    t[2] << Scalar(-0.1), 0, 20;
     Plane pl(Vec3s(1, 0, 0), 0);
 
     TriangleP tri(t[0], t[1], t[2]);
@@ -1249,7 +1248,7 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
     testShapeCollide(pl, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(CoalScalar(0.05), 0, 0));
+    tf_tri.setTranslation(Vec3s(Scalar(0.05), 0, 0));
     normal = pl.n;
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, true, NULL, NULL, &normal);
@@ -1258,13 +1257,13 @@ BOOST_AUTO_TEST_CASE(collide_planetriangle) {
     testShapeCollide(pl, transform, tri, transform * tf_tri, true, NULL, NULL,
                      &normal);
 
-    tf_tri.setTranslation(Vec3s(CoalScalar(-0.06), 0, 0));
+    tf_tri.setTranslation(Vec3s(Scalar(-0.06), 0, 0));
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, false);
     SET_LINE;
     testShapeCollide(pl, transform, tri, transform * tf_tri, false);
 
-    tf_tri.setTranslation(Vec3s(CoalScalar(0.11), 0, 0));
+    tf_tri.setTranslation(Vec3s(Scalar(0.11), 0, 0));
     SET_LINE;
     testShapeCollide(pl, Transform3s(), tri, tf_tri, false);
     SET_LINE;
@@ -1283,7 +1282,7 @@ BOOST_AUTO_TEST_CASE(collide_halfspacesphere) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -1335,27 +1334,27 @@ BOOST_AUTO_TEST_CASE(collide_halfspacesphere) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-10.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-10.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-10.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-10.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(10.1), 0, 0));
-  contact << CoalScalar(0.05), 0, 0;
-  depth = CoalScalar(-20.1);
+  tf2 = Transform3s(Vec3s(Scalar(10.1), 0, 0));
+  contact << Scalar(0.05), 0, 0;
+  depth = Scalar(-20.1);
   normal << -1, 0, 0;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(10.1), 0, 0));
-  contact = transform.transform(Vec3s(CoalScalar(0.05), 0, 0));
-  depth = CoalScalar(-20.1);
+  tf2 = transform * Transform3s(Vec3s(Scalar(10.1), 0, 0));
+  contact = transform.transform(Vec3s(Scalar(0.05), 0, 0));
+  depth = Scalar(-20.1);
   normal = transform.getRotation() * Vec3s(-1, 0, 0);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
@@ -1372,11 +1371,11 @@ BOOST_AUTO_TEST_CASE(collide_planesphere) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
   Vec3s p1, p2;
 
-  CoalScalar eps = CoalScalar(1e-6);
+  Scalar eps = Scalar(1e-6);
   tf1 = Transform3s(Vec3s(eps, 0, 0));
   tf2 = Transform3s();
   depth = -10 + eps;
@@ -1395,7 +1394,7 @@ BOOST_AUTO_TEST_CASE(collide_planesphere) {
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal, true);
 
-  eps = CoalScalar(-1e-6);
+  eps = Scalar(-1e-6);
   tf1 = Transform3s(Vec3s(eps, 0, 0));
   tf2 = Transform3s();
   depth = -10 - eps;
@@ -1450,22 +1449,22 @@ BOOST_AUTO_TEST_CASE(collide_planesphere) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-10.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-10.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-10.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-10.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(10.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(10.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(10.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(10.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 }
@@ -1481,7 +1480,7 @@ BOOST_AUTO_TEST_CASE(collide_halfspacebox) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -1533,28 +1532,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacebox) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(2.51), 0, 0));
-  contact << CoalScalar(0.005), 0, 0;
-  depth = CoalScalar(-5.01);
+  tf2 = Transform3s(Vec3s(Scalar(2.51), 0, 0));
+  contact << Scalar(0.005), 0, 0;
+  depth = Scalar(-5.01);
   normal << -1, 0, 0;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(2.51), 0, 0));
-  contact = transform.transform(Vec3s(CoalScalar(0.005), 0, 0));
-  depth = CoalScalar(-5.01);
+  tf2 = transform * Transform3s(Vec3s(Scalar(2.51), 0, 0));
+  contact = transform.transform(Vec3s(Scalar(0.005), 0, 0));
+  depth = Scalar(-5.01);
   normal = transform.getRotation() * Vec3s(-1, 0, 0);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-2.51), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-2.51), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-2.51), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-2.51), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -1575,7 +1574,7 @@ BOOST_AUTO_TEST_CASE(collide_planebox) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -1632,22 +1631,22 @@ BOOST_AUTO_TEST_CASE(collide_planebox) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(2.51), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(2.51), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(2.51), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(2.51), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-2.51), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-2.51), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-2.51), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-2.51), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -1668,7 +1667,7 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecapsule) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -1720,28 +1719,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecapsule) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
-  contact << CoalScalar(0.05), 0, 0;
-  depth = CoalScalar(-10.1);
+  tf2 = Transform3s(Vec3s(Scalar(5.1), 0, 0));
+  contact << Scalar(0.05), 0, 0;
+  depth = Scalar(-10.1);
   normal << -1, 0, 0;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
-  contact = transform.transform(Vec3s(CoalScalar(0.05), 0, 0));
-  depth = CoalScalar(-10.1);
+  tf2 = transform * Transform3s(Vec3s(Scalar(5.1), 0, 0));
+  contact = transform.transform(Vec3s(Scalar(0.05), 0, 0));
+  depth = Scalar(-10.1);
   normal = transform.getRotation() * Vec3s(-1, 0, 0);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -1796,28 +1795,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecapsule) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(5.1), 0));
-  contact << 0, CoalScalar(0.05), 0;
-  depth = CoalScalar(-10.1);
+  tf2 = Transform3s(Vec3s(0, Scalar(5.1), 0));
+  contact << 0, Scalar(0.05), 0;
+  depth = Scalar(-10.1);
   normal << 0, -1, 0;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(5.1), 0));
-  contact = transform.transform(Vec3s(0, CoalScalar(0.05), 0));
-  depth = CoalScalar(-10.1);
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(5.1), 0));
+  contact = transform.transform(Vec3s(0, Scalar(0.05), 0));
+  depth = Scalar(-10.1);
   normal = transform.getRotation() * Vec3s(0, -1, 0);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -1872,28 +1871,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecapsule) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
-  contact << 0, 0, CoalScalar(0.05);
-  depth = CoalScalar(-20.1);
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(10.1)));
+  contact << 0, 0, Scalar(0.05);
+  depth = Scalar(-20.1);
   normal << 0, 0, -1;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
-  contact = transform.transform(Vec3s(0, 0, CoalScalar(0.05)));
-  depth = CoalScalar(-20.1);
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(10.1)));
+  contact = transform.transform(Vec3s(0, 0, Scalar(0.05)));
+  depth = Scalar(-20.1);
   normal = transform.getRotation() * Vec3s(0, 0, -1);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(-10.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(-10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(-10.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(-10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 }
@@ -1909,7 +1908,7 @@ BOOST_AUTO_TEST_CASE(collide_planecapsule) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -1961,22 +1960,22 @@ BOOST_AUTO_TEST_CASE(collide_planecapsule) {
   testShapeCollide(s, tf1, hs, tf2, true, 0x0, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -2031,22 +2030,22 @@ BOOST_AUTO_TEST_CASE(collide_planecapsule) {
   testShapeCollide(s, tf1, hs, tf2, true, 0x0, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -2101,22 +2100,22 @@ BOOST_AUTO_TEST_CASE(collide_planecapsule) {
   testShapeCollide(s, tf1, hs, tf2, true, 0x0, &depth, 0x0);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(-10.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(-10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(-10.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(-10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 }
@@ -2132,7 +2131,7 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecylinder) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -2184,28 +2183,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecylinder) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
-  contact << CoalScalar(0.05), 0, 0;
-  depth = CoalScalar(-10.1);
+  tf2 = Transform3s(Vec3s(Scalar(5.1), 0, 0));
+  contact << Scalar(0.05), 0, 0;
+  depth = Scalar(-10.1);
   normal << -1, 0, 0;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
-  contact = transform.transform(Vec3s(CoalScalar(0.05), 0, 0));
-  depth = CoalScalar(-10.1);
+  tf2 = transform * Transform3s(Vec3s(Scalar(5.1), 0, 0));
+  contact = transform.transform(Vec3s(Scalar(0.05), 0, 0));
+  depth = Scalar(-10.1);
   normal = transform.getRotation() * Vec3s(-1, 0, 0);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -2260,28 +2259,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecylinder) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(5.1), 0));
-  contact << 0, CoalScalar(0.05), 0;
-  depth = CoalScalar(-10.1);
+  tf2 = Transform3s(Vec3s(0, Scalar(5.1), 0));
+  contact << 0, Scalar(0.05), 0;
+  depth = Scalar(-10.1);
   normal << 0, -1, 0;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(5.1), 0));
-  contact = transform.transform(Vec3s(0, CoalScalar(0.05), 0));
-  depth = CoalScalar(-10.1);
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(5.1), 0));
+  contact = transform.transform(Vec3s(0, Scalar(0.05), 0));
+  depth = Scalar(-10.1);
   normal = transform.getRotation() * Vec3s(0, -1, 0);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -2336,28 +2335,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecylinder) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(5.1)));
-  contact << 0, 0, CoalScalar(0.05);
-  depth = CoalScalar(-10.1);
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(5.1)));
+  contact << 0, 0, Scalar(0.05);
+  depth = Scalar(-10.1);
   normal << 0, 0, -1;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(5.1)));
-  contact = transform.transform(Vec3s(0, 0, CoalScalar(0.05)));
-  depth = CoalScalar(-10.1);
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(5.1)));
+  contact = transform.transform(Vec3s(0, 0, Scalar(0.05)));
+  depth = Scalar(-10.1);
   normal = transform.getRotation() * Vec3s(0, 0, -1);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(-5.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(-5.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(-5.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(-5.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 }
@@ -2373,11 +2372,11 @@ BOOST_AUTO_TEST_CASE(collide_planecylinder) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
   Vec3s p1, p2;
 
-  CoalScalar eps = CoalScalar(1e-6);
+  Scalar eps = Scalar(1e-6);
   tf1 = Transform3s(Vec3s(eps, 0, 0));
   tf2 = Transform3s();
   p1 << -5 + eps, 0, 0;
@@ -2397,7 +2396,7 @@ BOOST_AUTO_TEST_CASE(collide_planecylinder) {
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal, true);
 
-  eps = CoalScalar(-1e-6);
+  eps = Scalar(-1e-6);
   tf1 = Transform3s(Vec3s(eps, 0, 0));
   tf2 = Transform3s();
   p1 << 5 + eps, 0, 0;
@@ -2454,28 +2453,28 @@ BOOST_AUTO_TEST_CASE(collide_planecylinder) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   hs = Plane(Vec3s(0, 1, 0), 0);
 
-  eps = CoalScalar(1e-6);
+  eps = Scalar(1e-6);
   tf1 = Transform3s(Vec3s(0, eps, 0));
   tf2 = Transform3s();
   p1 << 0, -5 + eps, 0;
@@ -2494,7 +2493,7 @@ BOOST_AUTO_TEST_CASE(collide_planecylinder) {
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal, true);
 
-  eps = CoalScalar(-1e-6);
+  eps = Scalar(-1e-6);
   tf1 = Transform3s(Vec3s(0, eps, 0));
   tf2 = Transform3s();
   p1 << 0, 5 + eps, 0;
@@ -2550,28 +2549,28 @@ BOOST_AUTO_TEST_CASE(collide_planecylinder) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   hs = Plane(Vec3s(0, 0, 1), 0);
 
-  eps = CoalScalar(1e-6);
+  eps = Scalar(1e-6);
   tf1 = Transform3s(Vec3s(0, 0, eps));
   tf2 = Transform3s();
   p1 << 0, 0, -5 + eps;
@@ -2590,7 +2589,7 @@ BOOST_AUTO_TEST_CASE(collide_planecylinder) {
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal, true);
 
-  eps = CoalScalar(-1e-6);
+  eps = Scalar(-1e-6);
   tf1 = Transform3s(Vec3s(0, 0, eps));
   tf2 = Transform3s();
   p1 << 0, 0, 5 + eps;
@@ -2646,22 +2645,22 @@ BOOST_AUTO_TEST_CASE(collide_planecylinder) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(-10.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(-10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(-10.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(-10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 }
@@ -2677,7 +2676,7 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecone) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
 
   tf1 = Transform3s();
@@ -2729,28 +2728,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecone) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
-  contact << CoalScalar(0.05), 0, -5;
-  depth = CoalScalar(-10.1);
+  tf2 = Transform3s(Vec3s(Scalar(5.1), 0, 0));
+  contact << Scalar(0.05), 0, -5;
+  depth = Scalar(-10.1);
   normal << -1, 0, 0;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
-  contact = transform.transform(Vec3s(CoalScalar(0.05), 0, -5));
-  depth = CoalScalar(-10.1);
+  tf2 = transform * Transform3s(Vec3s(Scalar(5.1), 0, 0));
+  contact = transform.transform(Vec3s(Scalar(0.05), 0, -5));
+  depth = Scalar(-10.1);
   normal = transform.getRotation() * Vec3s(-1, 0, 0);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -2805,28 +2804,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecone) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(5.1), 0));
-  contact << 0, CoalScalar(0.05), -5;
-  depth = CoalScalar(-10.1);
+  tf2 = Transform3s(Vec3s(0, Scalar(5.1), 0));
+  contact << 0, Scalar(0.05), -5;
+  depth = Scalar(-10.1);
   normal << 0, -1, 0;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(5.1), 0));
-  contact = transform.transform(Vec3s(0, CoalScalar(0.05), -5));
-  depth = CoalScalar(-10.1);
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(5.1), 0));
+  contact = transform.transform(Vec3s(0, Scalar(0.05), -5));
+  depth = Scalar(-10.1);
   normal = transform.getRotation() * Vec3s(0, -1, 0);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
@@ -2881,28 +2880,28 @@ BOOST_AUTO_TEST_CASE(collide_halfspacecone) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(5.1)));
-  contact << 0, 0, CoalScalar(0.05);
-  depth = CoalScalar(-10.1);
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(5.1)));
+  contact << 0, 0, Scalar(0.05);
+  depth = Scalar(-10.1);
   normal << 0, 0, -1;
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(5.1)));
-  contact = transform.transform(Vec3s(0, 0, CoalScalar(0.05)));
-  depth = CoalScalar(-10.1);
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(5.1)));
+  contact = transform.transform(Vec3s(0, 0, Scalar(0.05)));
+  depth = Scalar(-10.1);
   normal = transform.getRotation() * Vec3s(0, 0, -1);
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(-5.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(-5.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(-5.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(-5.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 }
@@ -2918,11 +2917,11 @@ BOOST_AUTO_TEST_CASE(collide_planecone) {
   generateRandomTransform(extents, transform);
 
   Vec3s contact;
-  CoalScalar depth;
+  Scalar depth;
   Vec3s normal;
   Vec3s p1, p2;
 
-  CoalScalar eps = CoalScalar(1e-6);
+  Scalar eps = Scalar(1e-6);
   tf1 = Transform3s(Vec3s(eps, 0, 0));
   tf2 = Transform3s();
   p1 << -5 + eps, 0, -5;
@@ -2942,7 +2941,7 @@ BOOST_AUTO_TEST_CASE(collide_planecone) {
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal, true);
 
-  eps = CoalScalar(-1e-6);
+  eps = Scalar(-1e-6);
   tf1 = Transform3s(Vec3s(eps, 0, 0));
   tf2 = Transform3s();
   p1 << 5 + eps, 0, -5;
@@ -2999,28 +2998,28 @@ BOOST_AUTO_TEST_CASE(collide_planecone) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(CoalScalar(-5.1), 0, 0));
+  tf2 = transform * Transform3s(Vec3s(Scalar(-5.1), 0, 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   hs = Plane(Vec3s(0, 1, 0), 0);
 
-  eps = CoalScalar(1e-6);
+  eps = Scalar(1e-6);
   tf1 = Transform3s(Vec3s(0, eps, 0));
   tf2 = Transform3s();
   p1 << 0, -5 + eps, -5;
@@ -3039,7 +3038,7 @@ BOOST_AUTO_TEST_CASE(collide_planecone) {
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal, true);
 
-  eps = CoalScalar(-1e-6);
+  eps = Scalar(-1e-6);
   tf1 = Transform3s(Vec3s(0, eps, 0));
   tf2 = Transform3s();
   p1 << 0, 5 + eps, -5;
@@ -3095,28 +3094,28 @@ BOOST_AUTO_TEST_CASE(collide_planecone) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, CoalScalar(-5.1), 0));
+  tf2 = transform * Transform3s(Vec3s(0, Scalar(-5.1), 0));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   hs = Plane(Vec3s(0, 0, 1), 0);
 
-  eps = CoalScalar(1e-6);
+  eps = Scalar(1e-6);
   tf1 = Transform3s(Vec3s(0, 0, eps));
   tf2 = Transform3s();
   p1 << 0, 0, -5 + eps;
@@ -3135,7 +3134,7 @@ BOOST_AUTO_TEST_CASE(collide_planecone) {
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal, true);
 
-  eps = CoalScalar(-1e-6);
+  eps = Scalar(-1e-6);
   tf1 = Transform3s(Vec3s(0, 0, eps));
   tf2 = Transform3s();
   p1 << 0, 0, 5 + eps;
@@ -3191,22 +3190,22 @@ BOOST_AUTO_TEST_CASE(collide_planecone) {
   testShapeCollide(s, tf1, hs, tf2, true, &contact, &depth, &normal);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(10.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = Transform3s();
-  tf2 = Transform3s(Vec3s(0, 0, CoalScalar(-10.1)));
+  tf2 = Transform3s(Vec3s(0, 0, Scalar(-10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 
   tf1 = transform;
-  tf2 = transform * Transform3s(Vec3s(0, 0, CoalScalar(-10.1)));
+  tf2 = transform * Transform3s(Vec3s(0, 0, Scalar(-10.1)));
   SET_LINE;
   testShapeCollide(s, tf1, hs, tf2, false);
 }
@@ -3217,14 +3216,14 @@ BOOST_AUTO_TEST_CASE(collide_planeplane) {
 
   Vec3s normal;
   Vec3s contact;
-  CoalScalar distance;
+  Scalar distance;
 
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset = CoalScalar(3.14);
+    Scalar offset = Scalar(3.14);
     Plane plane1(n, offset);
     Plane plane2(n, offset);
 
@@ -3251,8 +3250,8 @@ BOOST_AUTO_TEST_CASE(collide_planeplane) {
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset1 = CoalScalar(3.14);
-    CoalScalar offset2 = offset1 + CoalScalar(1.19841);
+    Scalar offset1 = Scalar(3.14);
+    Scalar offset2 = offset1 + Scalar(1.19841);
     Plane plane1(n, offset1);
     Plane plane2(n, offset2);
 
@@ -3269,8 +3268,8 @@ BOOST_AUTO_TEST_CASE(collide_planeplane) {
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset1 = CoalScalar(3.14);
-    CoalScalar offset2 = offset1 - CoalScalar(1.19841);
+    Scalar offset1 = Scalar(3.14);
+    Scalar offset2 = offset1 - Scalar(1.19841);
     Plane plane1(n, offset1);
     Plane plane2(n, offset2);
 
@@ -3287,10 +3286,10 @@ BOOST_AUTO_TEST_CASE(collide_planeplane) {
 
   {
     Vec3s n1(1, 0, 0);
-    CoalScalar offset1 = CoalScalar(3.14);
+    Scalar offset1 = Scalar(3.14);
     Plane plane1(n1, offset1);
     Vec3s n2(0, 0, 1);
-    CoalScalar offset2 = CoalScalar(-2.13);
+    Scalar offset2 = Scalar(-2.13);
     Plane plane2(n2, offset2);
 
     tf1.setIdentity();
@@ -3309,25 +3308,25 @@ BOOST_AUTO_TEST_CASE(collide_planeplane) {
 
   {
     Vec3s n1(1, 0, 0);
-    CoalScalar offset1 = CoalScalar(3.14);
+    Scalar offset1 = Scalar(3.14);
     Plane plane1(n1, offset1);
     Vec3s n2(1, 1, 1);
-    CoalScalar offset2 = CoalScalar(-2.13);
+    Scalar offset2 = Scalar(-2.13);
     Plane plane2(n2, offset2);
 
     tf1.setIdentity();
     tf2.setIdentity();
-    normal << 0, CoalScalar(-0.5774), CoalScalar(0.5774);
+    normal << 0, Scalar(-0.5774), Scalar(0.5774);
     SET_LINE;
     testShapeCollide(plane1, tf1, plane2, tf2, true, NULL, NULL, &normal, false,
-                     CoalScalar(1e-3));
+                     Scalar(1e-3));
 
     tf1 = transform;
     tf2 = transform;
     normal = transform.getRotation() * normal;
     SET_LINE;
     testShapeCollide(plane1, tf1, plane2, tf2, true, NULL, NULL, &normal, false,
-                     CoalScalar(1e-3));
+                     Scalar(1e-3));
   }
 }
 
@@ -3337,14 +3336,14 @@ BOOST_AUTO_TEST_CASE(collide_halfspacehalfspace) {
 
   Vec3s normal;
   Vec3s contact;
-  CoalScalar distance;
+  Scalar distance;
 
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset = CoalScalar(3.14);
+    Scalar offset = Scalar(3.14);
     Halfspace hf1(n, offset);
     Halfspace hf2(n, offset);
 
@@ -3363,8 +3362,8 @@ BOOST_AUTO_TEST_CASE(collide_halfspacehalfspace) {
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset1 = CoalScalar(3.14);
-    CoalScalar offset2 = offset1 + CoalScalar(1.19841);
+    Scalar offset1 = Scalar(3.14);
+    Scalar offset2 = offset1 + Scalar(1.19841);
     Halfspace hf1(n, offset1);
     Halfspace hf2(n, offset2);
 
@@ -3383,8 +3382,8 @@ BOOST_AUTO_TEST_CASE(collide_halfspacehalfspace) {
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset1 = CoalScalar(3.14);
-    CoalScalar offset2 = offset1 - CoalScalar(1.19841);
+    Scalar offset1 = Scalar(3.14);
+    Scalar offset2 = offset1 - Scalar(1.19841);
     Halfspace hf1(n, offset1);
     Halfspace hf2(-n, -offset2);
 
@@ -3404,10 +3403,10 @@ BOOST_AUTO_TEST_CASE(collide_halfspacehalfspace) {
 
   {
     Vec3s n1(1, 0, 0);
-    CoalScalar offset1 = CoalScalar(3.14);
+    Scalar offset1 = Scalar(3.14);
     Halfspace hf1(n1, offset1);
     Vec3s n2(0, 0, 1);
-    CoalScalar offset2 = CoalScalar(-2.13);
+    Scalar offset2 = Scalar(-2.13);
     Halfspace hf2(n2, offset2);
 
     tf1.setIdentity();
@@ -3425,25 +3424,25 @@ BOOST_AUTO_TEST_CASE(collide_halfspacehalfspace) {
 
   {
     Vec3s n1(1, 0, 0);
-    CoalScalar offset1 = CoalScalar(3.14);
+    Scalar offset1 = Scalar(3.14);
     Halfspace hf1(n1, offset1);
     Vec3s n2(1, 1, 1);
-    CoalScalar offset2 = CoalScalar(-2.13);
+    Scalar offset2 = Scalar(-2.13);
     Halfspace hf2(n2, offset2);
 
     tf1.setIdentity();
     tf2.setIdentity();
-    normal << 0, CoalScalar(-0.5774), CoalScalar(0.5774);
+    normal << 0, Scalar(-0.5774), Scalar(0.5774);
     SET_LINE;
     testShapeCollide(hf1, tf1, hf2, tf2, true, NULL, NULL, &normal, false,
-                     CoalScalar(1e-3));
+                     Scalar(1e-3));
 
     tf1 = transform;
     tf2 = transform;
     normal = transform.getRotation() * normal;
     SET_LINE;
     testShapeCollide(hf1, tf1, hf2, tf2, true, NULL, NULL, &normal, false,
-                     CoalScalar(1e-3));
+                     Scalar(1e-3));
   }
 }
 
@@ -3453,14 +3452,14 @@ BOOST_AUTO_TEST_CASE(collide_halfspaceplane) {
 
   Vec3s normal;
   Vec3s contact;
-  CoalScalar distance;
+  Scalar distance;
 
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset = CoalScalar(3.14);
+    Scalar offset = Scalar(3.14);
     Halfspace hf(n, offset);
     Plane plane(n, offset);
 
@@ -3480,8 +3479,8 @@ BOOST_AUTO_TEST_CASE(collide_halfspaceplane) {
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset1 = CoalScalar(3.14);
-    CoalScalar offset2 = offset1 + CoalScalar(1.19841);
+    Scalar offset1 = Scalar(3.14);
+    Scalar offset2 = offset1 + Scalar(1.19841);
     Halfspace hf(n, offset1);
     Plane plane(n, offset2);
 
@@ -3501,8 +3500,8 @@ BOOST_AUTO_TEST_CASE(collide_halfspaceplane) {
 
   {
     Vec3s n = Vec3s::Random().normalized();
-    CoalScalar offset1 = CoalScalar(3.14);
-    CoalScalar offset2 = offset1 - CoalScalar(1.19841);
+    Scalar offset1 = Scalar(3.14);
+    Scalar offset2 = offset1 - Scalar(1.19841);
     Halfspace hf(n, offset1);
     Plane plane(n, offset2);
 
@@ -3522,10 +3521,10 @@ BOOST_AUTO_TEST_CASE(collide_halfspaceplane) {
 
   {
     Vec3s n1(1, 0, 0);
-    CoalScalar offset1 = CoalScalar(3.14);
+    Scalar offset1 = Scalar(3.14);
     Halfspace hf(n1, offset1);
     Vec3s n2(0, 0, 1);
-    CoalScalar offset2 = CoalScalar(-2.13);
+    Scalar offset2 = Scalar(-2.13);
     Plane plane(n2, offset2);
 
     tf1.setIdentity();
@@ -3543,25 +3542,25 @@ BOOST_AUTO_TEST_CASE(collide_halfspaceplane) {
 
   {
     Vec3s n1(1, 0, 0);
-    CoalScalar offset1 = CoalScalar(3.14);
+    Scalar offset1 = Scalar(3.14);
     Halfspace hf(n1, offset1);
     Vec3s n2(1, 1, 1);
-    CoalScalar offset2 = CoalScalar(-2.13);
+    Scalar offset2 = Scalar(-2.13);
     Plane plane(n2, offset2);
 
     tf1.setIdentity();
     tf2.setIdentity();
-    normal << 0, CoalScalar(-0.5774), CoalScalar(0.5774);
+    normal << 0, Scalar(-0.5774), Scalar(0.5774);
     SET_LINE;
     testShapeCollide(hf, tf1, plane, tf2, true, NULL, NULL, &normal, false,
-                     CoalScalar(1e-3));
+                     Scalar(1e-3));
 
     tf1 = transform;
     tf2 = transform;
     normal = transform.getRotation() * normal;
     SET_LINE;
     testShapeCollide(hf, tf1, plane, tf2, true, NULL, NULL, &normal, false,
-                     CoalScalar(1e-3));
+                     Scalar(1e-3));
   }
 }
 
@@ -3574,7 +3573,7 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_spheresphere) {
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
-  CoalScalar dist = -1;
+  Scalar dist = -1;
 
   dist = solver1.shapeDistance(
       s1, Transform3s(), s2, Transform3s(Vec3s(40, 0, 0)), compute_penetration,
@@ -3582,12 +3581,12 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_spheresphere) {
   BOOST_CHECK(fabs(dist - 10) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(30.1), 0, 0)),
+      s1, Transform3s(), s2, Transform3s(Vec3s(Scalar(30.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(29.9), 0, 0)),
+      s1, Transform3s(), s2, Transform3s(Vec3s(Scalar(29.9), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(dist <= 0);
 
@@ -3596,14 +3595,14 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_spheresphere) {
                                closest_p2, normal);
   BOOST_CHECK(fabs(dist - 10) < 0.001);
 
-  dist = solver1.shapeDistance(s1, Transform3s(Vec3s(CoalScalar(30.1), 0, 0)),
-                               s2, Transform3s(), compute_penetration,
-                               closest_p1, closest_p2, normal);
+  dist = solver1.shapeDistance(s1, Transform3s(Vec3s(Scalar(30.1), 0, 0)), s2,
+                               Transform3s(), compute_penetration, closest_p1,
+                               closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
-  dist = solver1.shapeDistance(s1, Transform3s(Vec3s(CoalScalar(29.9), 0, 0)),
-                               s2, Transform3s(), compute_penetration,
-                               closest_p1, closest_p2, normal);
+  dist = solver1.shapeDistance(s1, Transform3s(Vec3s(Scalar(29.9), 0, 0)), s2,
+                               Transform3s(), compute_penetration, closest_p1,
+                               closest_p2, normal);
   BOOST_CHECK(dist < 0);
 
   dist = solver1.shapeDistance(
@@ -3612,12 +3611,12 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_spheresphere) {
   BOOST_CHECK(fabs(dist - 10) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, transform, s2, transform * Transform3s(Vec3s(CoalScalar(30.1), 0, 0)),
+      s1, transform, s2, transform * Transform3s(Vec3s(Scalar(30.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, transform, s2, transform * Transform3s(Vec3s(CoalScalar(29.9), 0, 0)),
+      s1, transform, s2, transform * Transform3s(Vec3s(Scalar(29.9), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(dist < 0);
 
@@ -3627,12 +3626,12 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_spheresphere) {
   BOOST_CHECK(fabs(dist - 10) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, transform * Transform3s(Vec3s(CoalScalar(30.1), 0, 0)), s2, transform,
+      s1, transform * Transform3s(Vec3s(Scalar(30.1), 0, 0)), s2, transform,
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, transform * Transform3s(Vec3s(CoalScalar(29.9), 0, 0)), s2, transform,
+      s1, transform * Transform3s(Vec3s(Scalar(29.9), 0, 0)), s2, transform,
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(dist < 0);
 }
@@ -3646,7 +3645,7 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_boxbox) {
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
-  CoalScalar dist;
+  Scalar dist;
 
   dist = solver1.shapeDistance(s1, Transform3s(), s2, Transform3s(),
                                compute_penetration, closest_p1, closest_p2,
@@ -3659,49 +3658,47 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_boxbox) {
   BOOST_CHECK(dist <= 0);
 
   dist = solver1.shapeDistance(
-      s2, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(10.1), 0, 0)),
+      s2, Transform3s(), s2, Transform3s(Vec3s(Scalar(10.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
   dist = solver1.shapeDistance(
-      s2, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(20.1), 0, 0)),
+      s2, Transform3s(), s2, Transform3s(Vec3s(Scalar(20.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 10.1) < 0.001);
 
   dist = solver1.shapeDistance(
-      s2, Transform3s(), s2, Transform3s(Vec3s(0, CoalScalar(20.2), 0)),
+      s2, Transform3s(), s2, Transform3s(Vec3s(0, Scalar(20.2), 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 10.2) < 0.001);
 
   dist = solver1.shapeDistance(
-      s2, Transform3s(), s2,
-      Transform3s(Vec3s(CoalScalar(10.1), CoalScalar(10.1), 0)),
+      s2, Transform3s(), s2, Transform3s(Vec3s(Scalar(10.1), Scalar(10.1), 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1 * 1.414) < 0.001);
 
   dist = solver2.shapeDistance(
-      s2, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(10.1), 0, 0)),
+      s2, Transform3s(), s2, Transform3s(Vec3s(Scalar(10.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
   dist = solver2.shapeDistance(
-      s2, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(20.1), 0, 0)),
+      s2, Transform3s(), s2, Transform3s(Vec3s(Scalar(20.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 10.1) < 0.001);
 
   dist = solver2.shapeDistance(
-      s2, Transform3s(), s2, Transform3s(Vec3s(0, CoalScalar(20.1), 0)),
+      s2, Transform3s(), s2, Transform3s(Vec3s(0, Scalar(20.1), 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 10.1) < 0.001);
 
   dist = solver2.shapeDistance(
-      s2, Transform3s(), s2,
-      Transform3s(Vec3s(CoalScalar(10.1), CoalScalar(10.1), 0)),
+      s2, Transform3s(), s2, Transform3s(Vec3s(Scalar(10.1), Scalar(10.1), 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1 * 1.414) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, transform, s2, transform * Transform3s(Vec3s(CoalScalar(15.1), 0, 0)),
+      s1, transform, s2, transform * Transform3s(Vec3s(Scalar(15.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
@@ -3717,21 +3714,20 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_boxbox) {
 }
 
 BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_cylinderbox) {
-  Cylinder s1(CoalScalar(0.029), CoalScalar(0.1));
-  Box s2(CoalScalar(1.6), CoalScalar(0.6), CoalScalar(0.025));
+  Cylinder s1(Scalar(0.029), Scalar(0.1));
+  Box s2(Scalar(1.6), Scalar(0.6), Scalar(0.025));
 
-  using Quat = Eigen::Quaternion<CoalScalar>;
+  using Quat = Eigen::Quaternion<Scalar>;
   Transform3s tf1(
-      Quat(CoalScalar(0.5279170511703305), CoalScalar(-0.50981118132505521),
-           CoalScalar(-0.67596178682051911), CoalScalar(0.0668715876735793)),
-      Vec3s(CoalScalar(0.041218354748013122), CoalScalar(1.2022554710435607),
-            CoalScalar(0.77338855025700015)));
+      Quat(Scalar(0.5279170511703305), Scalar(-0.50981118132505521),
+           Scalar(-0.67596178682051911), Scalar(0.0668715876735793)),
+      Vec3s(Scalar(0.041218354748013122), Scalar(1.2022554710435607),
+            Scalar(0.77338855025700015)));
 
   Transform3s tf2(
-      Quat(CoalScalar(0.70738826916719977), 0, 0,
-           CoalScalar(0.70682518110536596)),
-      Vec3s(CoalScalar(-0.29936284351096382), CoalScalar(0.80023864435868775),
-            CoalScalar(0.71750000000000003)));
+      Quat(Scalar(0.70738826916719977), 0, 0, Scalar(0.70682518110536596)),
+      Vec3s(Scalar(-0.29936284351096382), Scalar(0.80023864435868775),
+            Scalar(0.71750000000000003)));
 
   GJKSolver solver;
   Vec3s p1, p2, normal;
@@ -3764,14 +3760,14 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_cylinderbox) {
 
   BOOST_CHECK((!p2_in_cylinder && !p1_in_box) || (p2_in_cylinder && p1_in_box));
 
-  s1 = Cylinder(CoalScalar(0.06), CoalScalar(0.1));
-  tf1.setTranslation(Vec3s(CoalScalar(-0.66734052046473924),
-                           CoalScalar(0.22219183277457269),
-                           CoalScalar(0.76825248755616293)));
-  using Quat = Eigen::Quaternion<CoalScalar>;
+  s1 = Cylinder(Scalar(0.06), Scalar(0.1));
+  tf1.setTranslation(Vec3s(Scalar(-0.66734052046473924),
+                           Scalar(0.22219183277457269),
+                           Scalar(0.76825248755616293)));
+  using Quat = Eigen::Quaternion<Scalar>;
   tf1.setQuatRotation(
-      Quat(CoalScalar(0.52613359459338371), CoalScalar(0.32189408354839893),
-           CoalScalar(0.70415587451837913), CoalScalar(-0.35175580165512249)));
+      Quat(Scalar(0.52613359459338371), Scalar(0.32189408354839893),
+           Scalar(0.70415587451837913), Scalar(-0.35175580165512249)));
   solver.shapeDistance(s1, tf1, s2, tf2, compute_penetration, p1, p2, normal);
 }
 
@@ -3784,19 +3780,17 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_boxsphere) {
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
-  CoalScalar dist;
+  Scalar dist;
 
   int N = 10;
   for (int i = 0; i < N + 1; ++i) {
-    CoalScalar dbox = CoalScalar(0.0001) + (s1.radius + s2.halfSide(0)) *
-                                               CoalScalar(i) * 4 /
-                                               (3 * CoalScalar(N));
+    Scalar dbox = Scalar(0.0001) + (s1.radius + s2.halfSide(0)) * Scalar(i) *
+                                       4 / (3 * Scalar(N));
     dist = solver1.shapeDistance(s1, Transform3s(Vec3s(dbox, 0., 0.)), s2,
                                  Transform3s(), compute_penetration, closest_p1,
                                  closest_p2, normal);
-    BOOST_CHECK_CLOSE(dist, (dbox - s1.radius - s2.halfSide(0)),
-                      CoalScalar(1e-6));
-    EIGEN_VECTOR_IS_APPROX(normal, -Vec3s(1, 0, 0), CoalScalar(1e-6));
+    BOOST_CHECK_CLOSE(dist, (dbox - s1.radius - s2.halfSide(0)), Scalar(1e-6));
+    EIGEN_VECTOR_IS_APPROX(normal, -Vec3s(1, 0, 0), Scalar(1e-6));
 
     dist =
         solver1.shapeDistance(s1, transform, s2, transform, compute_penetration,
@@ -3804,10 +3798,9 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_boxsphere) {
     dist = solver1.shapeDistance(
         s1, transform * Transform3s(Vec3s(dbox, 0., 0.)), s2, transform,
         compute_penetration, closest_p1, closest_p2, normal);
-    BOOST_CHECK_CLOSE(dist, (dbox - s1.radius - s2.halfSide(0)),
-                      CoalScalar(1e-6));
+    BOOST_CHECK_CLOSE(dist, (dbox - s1.radius - s2.halfSide(0)), Scalar(1e-6));
     EIGEN_VECTOR_IS_APPROX(normal, -transform.getRotation().col(0),
-                           CoalScalar(1e-6));
+                           Scalar(1e-6));
   }
 
   dist = solver1.shapeDistance(s1, Transform3s(), s2, Transform3s(),
@@ -3821,12 +3814,12 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_boxsphere) {
   BOOST_CHECK(dist <= 0);
 
   dist = solver1.shapeDistance(
-      s1, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(22.6), 0, 0)),
+      s1, Transform3s(), s2, Transform3s(Vec3s(Scalar(22.6), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, transform, s2, transform * Transform3s(Vec3s(CoalScalar(22.6), 0, 0)),
+      s1, transform, s2, transform * Transform3s(Vec3s(Scalar(22.6), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.01);
 
@@ -3850,7 +3843,7 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_cylindercylinder) {
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
-  CoalScalar dist;
+  Scalar dist;
 
   {
     // The following situations corresponds to the case where the two cylinders
@@ -3868,9 +3861,9 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_cylindercylinder) {
 
     // To handle the superposing case, we have to decrease the tolerance of EPA
     // and allow it to work with more vertices and faces.
-    CoalScalar epa_tolerance_backup = solver1.epa_tolerance;
+    Scalar epa_tolerance_backup = solver1.epa_tolerance;
     size_t epa_max_iterations_backup = solver1.epa_max_iterations;
-    solver1.epa_tolerance = CoalScalar(1e-2);
+    solver1.epa_tolerance = Scalar(1e-2);
     solver1.epa_max_iterations = 1000;
 
     dist = solver1.shapeDistance(s1, Transform3s(), s2, Transform3s(),
@@ -3889,12 +3882,12 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_cylindercylinder) {
   }
 
   dist = solver1.shapeDistance(
-      s1, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(10.1), 0, 0)),
+      s1, Transform3s(), s2, Transform3s(Vec3s(Scalar(10.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, transform, s2, transform * Transform3s(Vec3s(CoalScalar(10.1), 0, 0)),
+      s1, transform, s2, transform * Transform3s(Vec3s(Scalar(10.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
@@ -3918,7 +3911,7 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_conecone) {
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
-  CoalScalar dist;
+  Scalar dist;
 
   {
     // The following situations corresponds to the case where the two cones
@@ -3936,9 +3929,9 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_conecone) {
 
     // To handle the superposing case, we have to decrease the tolerance of EPA
     // and allow it to work with more vertices and faces.
-    CoalScalar epa_tolerance_backup = solver1.epa_tolerance;
+    Scalar epa_tolerance_backup = solver1.epa_tolerance;
     size_t epa_max_iterations_backup = solver1.epa_max_iterations;
-    solver1.epa_tolerance = CoalScalar(1e-2);
+    solver1.epa_tolerance = Scalar(1e-2);
     solver1.epa_max_iterations = 1000;
 
     dist = solver1.shapeDistance(s1, Transform3s(), s2, Transform3s(),
@@ -3957,12 +3950,12 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_conecone) {
   }
 
   dist = solver1.shapeDistance(
-      s1, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(10.1), 0, 0)),
+      s1, Transform3s(), s2, Transform3s(Vec3s(Scalar(10.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
   dist = solver1.shapeDistance(
-      s1, transform, s2, transform * Transform3s(Vec3s(CoalScalar(10.1), 0, 0)),
+      s1, transform, s2, transform * Transform3s(Vec3s(Scalar(10.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.001);
 
@@ -3986,7 +3979,7 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_conecylinder) {
   Transform3s transform;
   generateRandomTransform(extents, transform);
 
-  CoalScalar dist;
+  Scalar dist;
 
   {
     // The following situations corresponds to the case where the two cones
@@ -4004,9 +3997,9 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_conecylinder) {
 
     // To handle the superposing case, we have to decrease the tolerance of EPA
     // and allow it to work with more vertices and faces.
-    CoalScalar epa_tolerance_backup = solver1.epa_tolerance;
+    Scalar epa_tolerance_backup = solver1.epa_tolerance;
     size_t epa_max_iterations_backup = solver1.epa_max_iterations;
-    solver1.epa_tolerance = CoalScalar(1e-2);
+    solver1.epa_tolerance = Scalar(1e-2);
     solver1.epa_max_iterations = 1000;
 
     dist = solver1.shapeDistance(s1, Transform3s(), s2, Transform3s(),
@@ -4025,12 +4018,12 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_conecylinder) {
   }
 
   dist = solver1.shapeDistance(
-      s1, Transform3s(), s2, Transform3s(Vec3s(CoalScalar(10.1), 0, 0)),
+      s1, Transform3s(), s2, Transform3s(Vec3s(Scalar(10.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.01);
 
   dist = solver1.shapeDistance(
-      s1, transform, s2, transform * Transform3s(Vec3s(CoalScalar(10.1), 0, 0)),
+      s1, transform, s2, transform * Transform3s(Vec3s(Scalar(10.1), 0, 0)),
       compute_penetration, closest_p1, closest_p2, normal);
   BOOST_CHECK(fabs(dist - 0.1) < 0.02);
 
@@ -4046,14 +4039,13 @@ BOOST_AUTO_TEST_CASE(GJKSolver_shapeDistance_conecylinder) {
 }
 
 template <typename S1, typename S2>
-void testReversibleShapeDistance(const S1& s1, const S2& s2,
-                                 CoalScalar distance) {
-  const CoalScalar half = CoalScalar(0.5);
+void testReversibleShapeDistance(const S1& s1, const S2& s2, Scalar distance) {
+  const Scalar half = Scalar(0.5);
   Transform3s tf1(Vec3s(-half * distance, 0.0, 0.0));
   Transform3s tf2(Vec3s(+half * distance, 0.0, 0.0));
 
-  CoalScalar distA;
-  CoalScalar distB;
+  Scalar distA;
+  Scalar distB;
   Vec3s p1A;
   Vec3s p1B;
   Vec3s p2A;
@@ -4061,7 +4053,7 @@ void testReversibleShapeDistance(const S1& s1, const S2& s2,
   Vec3s normalA, normalB;
   bool compute_penetration = true;
 
-  const CoalScalar tol = CoalScalar(1e-6);
+  const Scalar tol = Scalar(1e-6);
 
   distA = solver1.shapeDistance(s1, tf1, s2, tf2, compute_penetration, p1A, p2A,
                                 normalA);
@@ -4104,7 +4096,7 @@ BOOST_AUTO_TEST_CASE(reversibleShapeDistance_allshapes) {
 
   // Use sufficiently long distance so that all the primitive shapes CANNOT
   // intersect
-  CoalScalar distance = 15.0;
+  Scalar distance = 15.0;
 
   // If new shape distance algorithm is added for two distinct primitive
   // shapes, uncomment associated lines. For example, box-sphere intersection

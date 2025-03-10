@@ -73,7 +73,7 @@ class COAL_DLLAPI ShapeBase : public CollisionGeometry {
 
   /// @brief Set radius of sphere swept around the shape.
   /// Must be >= 0.
-  void setSweptSphereRadius(CoalScalar radius) {
+  void setSweptSphereRadius(Scalar radius) {
     if (radius < 0) {
       COAL_THROW_PRETTY("Swept-sphere radius must be positive.",
                         std::invalid_argument);
@@ -83,9 +83,7 @@ class COAL_DLLAPI ShapeBase : public CollisionGeometry {
 
   /// @brief Get radius of sphere swept around the shape.
   /// This radius is always >= 0.
-  CoalScalar getSweptSphereRadius() const {
-    return this->m_swept_sphere_radius;
-  }
+  Scalar getSweptSphereRadius() const { return this->m_swept_sphere_radius; }
 
  protected:
   /// \brief Radius of the sphere swept around the shape.
@@ -99,7 +97,7 @@ class COAL_DLLAPI ShapeBase : public CollisionGeometry {
   /// which rounds the sharp corners of a shape.
   /// The swept sphere radius is a property of the shape itself and can be
   /// manually updated between collision checks.
-  CoalScalar m_swept_sphere_radius{0};
+  Scalar m_swept_sphere_radius{0};
 };
 
 /// @defgroup Geometric_Shapes Geometric shapes
@@ -125,7 +123,7 @@ class COAL_DLLAPI TriangleP : public ShapeBase {
 
   NODE_TYPE getNodeType() const { return GEOM_TRIANGLE; }
 
-  //  std::pair<ShapeBase*, Transform3s> inflated(const CoalScalar value) const
+  //  std::pair<ShapeBase*, Transform3s> inflated(const Scalar value) const
   //  {
   //    if (value == 0) return std::make_pair(new TriangleP(*this),
   //    Transform3s()); Vec3s AB(b - a), BC(c - b), CA(a - c); AB.normalize();
@@ -140,9 +138,9 @@ class COAL_DLLAPI TriangleP : public ShapeBase {
   //    Transform3s());
   //  }
   //
-  //  CoalScalar minInflationValue() const
+  //  Scalar minInflationValue() const
   //  {
-  //    return (std::numeric_limits<CoalScalar>::max)(); // TODO(jcarpent):
+  //    return (std::numeric_limits<Scalar>::max)(); // TODO(jcarpent):
   //    implement
   //  }
 
@@ -165,7 +163,7 @@ class COAL_DLLAPI TriangleP : public ShapeBase {
 /// @brief Center at zero point, axis aligned box
 class COAL_DLLAPI Box : public ShapeBase {
  public:
-  Box(CoalScalar x, CoalScalar y, CoalScalar z)
+  Box(Scalar x, Scalar y, Scalar z)
       : ShapeBase(), halfSide(x / 2, y / 2, z / 2) {}
 
   Box(const Vec3s& side_) : ShapeBase(), halfSide(side_ / 2) {}
@@ -194,15 +192,15 @@ class COAL_DLLAPI Box : public ShapeBase {
   /// @brief Get node type: a box
   NODE_TYPE getNodeType() const { return GEOM_BOX; }
 
-  CoalScalar computeVolume() const { return 8 * halfSide.prod(); }
+  Scalar computeVolume() const { return 8 * halfSide.prod(); }
 
   Matrix3s computeMomentofInertia() const {
-    CoalScalar V = computeVolume();
+    Scalar V = computeVolume();
     Vec3s s(halfSide.cwiseAbs2() * V);
     return (Vec3s(s[1] + s[2], s[0] + s[2], s[0] + s[1]) / 3).asDiagonal();
   }
 
-  CoalScalar minInflationValue() const { return -halfSide.minCoeff(); }
+  Scalar minInflationValue() const { return -halfSide.minCoeff(); }
 
   /// \brief Inflate the box by an amount given by `value`.
   /// This value can be positive or negative but must always >=
@@ -212,7 +210,7 @@ class COAL_DLLAPI Box : public ShapeBase {
   ///
   /// \returns a new inflated box and the related transform to account for the
   /// change of shape frame
-  std::pair<Box, Transform3s> inflated(const CoalScalar value) const {
+  std::pair<Box, Transform3s> inflated(const Scalar value) const {
     if (value <= minInflationValue())
       COAL_THROW_PRETTY("value (" << value << ") "
                                   << "is two small. It should be at least: "
@@ -242,7 +240,7 @@ class COAL_DLLAPI Sphere : public ShapeBase {
   /// @brief Default constructor
   Sphere() {}
 
-  explicit Sphere(CoalScalar radius_) : ShapeBase(), radius(radius_) {}
+  explicit Sphere(Scalar radius_) : ShapeBase(), radius(radius_) {}
 
   Sphere(const Sphere& other) : ShapeBase(other), radius(other.radius) {}
 
@@ -250,7 +248,7 @@ class COAL_DLLAPI Sphere : public ShapeBase {
   virtual Sphere* clone() const { return new Sphere(*this); };
 
   /// @brief Radius of the sphere
-  CoalScalar radius;
+  Scalar radius;
 
   /// @brief Compute AABB
   void computeLocalAABB();
@@ -259,16 +257,16 @@ class COAL_DLLAPI Sphere : public ShapeBase {
   NODE_TYPE getNodeType() const { return GEOM_SPHERE; }
 
   Matrix3s computeMomentofInertia() const {
-    CoalScalar I = CoalScalar(0.4) * radius * radius * computeVolume();
+    Scalar I = Scalar(0.4) * radius * radius * computeVolume();
     return I * Matrix3s::Identity();
   }
 
-  CoalScalar computeVolume() const {
-    return 4 * boost::math::constants::pi<CoalScalar>() * radius * radius *
-           radius / 3;
+  Scalar computeVolume() const {
+    return 4 * boost::math::constants::pi<Scalar>() * radius * radius * radius /
+           3;
   }
 
-  CoalScalar minInflationValue() const { return -radius; }
+  Scalar minInflationValue() const { return -radius; }
 
   /// \brief Inflate the sphere by an amount given by `value`.
   /// This value can be positive or negative but must always >=
@@ -278,7 +276,7 @@ class COAL_DLLAPI Sphere : public ShapeBase {
   ///
   /// \returns a new inflated sphere and the related transform to account for
   /// the change of shape frame
-  std::pair<Sphere, Transform3s> inflated(const CoalScalar value) const {
+  std::pair<Sphere, Transform3s> inflated(const Scalar value) const {
     if (value <= minInflationValue())
       COAL_THROW_PRETTY("value (" << value
                                   << ") is two small. It should be at least: "
@@ -307,8 +305,7 @@ class COAL_DLLAPI Ellipsoid : public ShapeBase {
   /// @brief Default constructor
   Ellipsoid() {}
 
-  Ellipsoid(CoalScalar rx, CoalScalar ry, CoalScalar rz)
-      : ShapeBase(), radii(rx, ry, rz) {}
+  Ellipsoid(Scalar rx, Scalar ry, Scalar rz) : ShapeBase(), radii(rx, ry, rz) {}
 
   explicit Ellipsoid(const Vec3s& radii) : radii(radii) {}
 
@@ -328,22 +325,22 @@ class COAL_DLLAPI Ellipsoid : public ShapeBase {
   NODE_TYPE getNodeType() const { return GEOM_ELLIPSOID; }
 
   Matrix3s computeMomentofInertia() const {
-    CoalScalar V = computeVolume();
-    CoalScalar a2 = V * radii[0] * radii[0];
-    CoalScalar b2 = V * radii[1] * radii[1];
-    CoalScalar c2 = V * radii[2] * radii[2];
-    CoalScalar alpha = CoalScalar(0.2);
+    Scalar V = computeVolume();
+    Scalar a2 = V * radii[0] * radii[0];
+    Scalar b2 = V * radii[1] * radii[1];
+    Scalar c2 = V * radii[2] * radii[2];
+    Scalar alpha = Scalar(0.2);
     return (Matrix3s() << alpha * (b2 + c2), 0, 0, 0, alpha * (a2 + c2), 0, 0,
             0, alpha * (a2 + b2))
         .finished();
   }
 
-  CoalScalar computeVolume() const {
-    return 4 * boost::math::constants::pi<CoalScalar>() * radii[0] * radii[1] *
+  Scalar computeVolume() const {
+    return 4 * boost::math::constants::pi<Scalar>() * radii[0] * radii[1] *
            radii[2] / 3;
   }
 
-  CoalScalar minInflationValue() const { return -radii.minCoeff(); }
+  Scalar minInflationValue() const { return -radii.minCoeff(); }
 
   /// \brief Inflate the ellipsoid by an amount given by `value`.
   /// This value can be positive or negative but must always >=
@@ -353,7 +350,7 @@ class COAL_DLLAPI Ellipsoid : public ShapeBase {
   ///
   /// \returns a new inflated ellipsoid and the related transform to account for
   /// the change of shape frame
-  std::pair<Ellipsoid, Transform3s> inflated(const CoalScalar value) const {
+  std::pair<Ellipsoid, Transform3s> inflated(const Scalar value) const {
     if (value <= minInflationValue())
       COAL_THROW_PRETTY("value (" << value
                                   << ") is two small. It should be at least: "
@@ -386,7 +383,7 @@ class COAL_DLLAPI Capsule : public ShapeBase {
   /// @brief Default constructor
   Capsule() {}
 
-  Capsule(CoalScalar radius_, CoalScalar lz_) : ShapeBase(), radius(radius_) {
+  Capsule(Scalar radius_, Scalar lz_) : ShapeBase(), radius(radius_) {
     halfLength = lz_ / 2;
   }
 
@@ -397,10 +394,10 @@ class COAL_DLLAPI Capsule : public ShapeBase {
   virtual Capsule* clone() const { return new Capsule(*this); };
 
   /// @brief Radius of capsule
-  CoalScalar radius;
+  Scalar radius;
 
   /// @brief Half Length along z axis
-  CoalScalar halfLength;
+  Scalar halfLength;
 
   /// @brief Compute AABB
   void computeLocalAABB();
@@ -408,30 +405,28 @@ class COAL_DLLAPI Capsule : public ShapeBase {
   /// @brief Get node type: a capsule
   NODE_TYPE getNodeType() const { return GEOM_CAPSULE; }
 
-  CoalScalar computeVolume() const {
-    return boost::math::constants::pi<CoalScalar>() * radius * radius *
-           ((halfLength * 2) + radius * 4 / CoalScalar(3));
+  Scalar computeVolume() const {
+    return boost::math::constants::pi<Scalar>() * radius * radius *
+           ((halfLength * 2) + radius * 4 / Scalar(3));
   }
 
   Matrix3s computeMomentofInertia() const {
-    CoalScalar v_cyl = radius * radius * (halfLength * 2) *
-                       boost::math::constants::pi<CoalScalar>();
-    CoalScalar v_sph = radius * radius * radius *
-                       boost::math::constants::pi<CoalScalar>() * 4 /
-                       CoalScalar(3);
+    Scalar v_cyl = radius * radius * (halfLength * 2) *
+                   boost::math::constants::pi<Scalar>();
+    Scalar v_sph = radius * radius * radius *
+                   boost::math::constants::pi<Scalar>() * 4 / Scalar(3);
 
-    CoalScalar h2 = halfLength * halfLength;
-    CoalScalar r2 = radius * radius;
-    CoalScalar ix = v_cyl * (h2 / CoalScalar(3) + r2 / CoalScalar(4)) +
-                    v_sph * (CoalScalar(0.4) * r2 + h2 +
-                             CoalScalar(0.75) * radius * halfLength);
-    CoalScalar iz =
-        (CoalScalar(0.5) * v_cyl + CoalScalar(0.4) * v_sph) * radius * radius;
+    Scalar h2 = halfLength * halfLength;
+    Scalar r2 = radius * radius;
+    Scalar ix =
+        v_cyl * (h2 / Scalar(3) + r2 / Scalar(4)) +
+        v_sph * (Scalar(0.4) * r2 + h2 + Scalar(0.75) * radius * halfLength);
+    Scalar iz = (Scalar(0.5) * v_cyl + Scalar(0.4) * v_sph) * radius * radius;
 
     return (Matrix3s() << ix, 0, 0, 0, ix, 0, 0, 0, iz).finished();
   }
 
-  CoalScalar minInflationValue() const { return -radius; }
+  Scalar minInflationValue() const { return -radius; }
 
   /// \brief Inflate the capsule by an amount given by `value`.
   /// This value can be positive or negative but must always >=
@@ -441,7 +436,7 @@ class COAL_DLLAPI Capsule : public ShapeBase {
   ///
   /// \returns a new inflated capsule and the related transform to account for
   /// the change of shape frame
-  std::pair<Capsule, Transform3s> inflated(const CoalScalar value) const {
+  std::pair<Capsule, Transform3s> inflated(const Scalar value) const {
     if (value <= minInflationValue())
       COAL_THROW_PRETTY("value (" << value
                                   << ") is two small. It should be at least: "
@@ -473,7 +468,7 @@ class COAL_DLLAPI Cone : public ShapeBase {
   /// @brief Default constructor
   Cone() {}
 
-  Cone(CoalScalar radius_, CoalScalar lz_) : ShapeBase(), radius(radius_) {
+  Cone(Scalar radius_, Scalar lz_) : ShapeBase(), radius(radius_) {
     halfLength = lz_ / 2;
   }
 
@@ -484,10 +479,10 @@ class COAL_DLLAPI Cone : public ShapeBase {
   virtual Cone* clone() const { return new Cone(*this); };
 
   /// @brief Radius of the cone
-  CoalScalar radius;
+  Scalar radius;
 
   /// @brief Half Length along z axis
-  CoalScalar halfLength;
+  Scalar halfLength;
 
   /// @brief Compute AABB
   void computeLocalAABB();
@@ -495,27 +490,23 @@ class COAL_DLLAPI Cone : public ShapeBase {
   /// @brief Get node type: a cone
   NODE_TYPE getNodeType() const { return GEOM_CONE; }
 
-  CoalScalar computeVolume() const {
-    return boost::math::constants::pi<CoalScalar>() * radius * radius *
+  Scalar computeVolume() const {
+    return boost::math::constants::pi<Scalar>() * radius * radius *
            (halfLength * 2) / 3;
   }
 
   Matrix3s computeMomentofInertia() const {
-    CoalScalar V = computeVolume();
-    CoalScalar ix = V * (CoalScalar(0.4) * halfLength * halfLength +
-                         3 * radius * radius / 20);
-    CoalScalar iz = CoalScalar(0.3) * V * radius * radius;
+    Scalar V = computeVolume();
+    Scalar ix =
+        V * (Scalar(0.4) * halfLength * halfLength + 3 * radius * radius / 20);
+    Scalar iz = Scalar(0.3) * V * radius * radius;
 
     return (Matrix3s() << ix, 0, 0, 0, ix, 0, 0, 0, iz).finished();
   }
 
-  Vec3s computeCOM() const {
-    return Vec3s(0, 0, -CoalScalar(0.5) * halfLength);
-  }
+  Vec3s computeCOM() const { return Vec3s(0, 0, -Scalar(0.5) * halfLength); }
 
-  CoalScalar minInflationValue() const {
-    return -(std::min)(radius, halfLength);
-  }
+  Scalar minInflationValue() const { return -(std::min)(radius, halfLength); }
 
   /// \brief Inflate the cone by an amount given by `value`.
   /// This value can be positive or negative but must always >=
@@ -525,7 +516,7 @@ class COAL_DLLAPI Cone : public ShapeBase {
   ///
   /// \returns a new inflated cone and the related transform to account for the
   /// change of shape frame
-  std::pair<Cone, Transform3s> inflated(const CoalScalar value) const {
+  std::pair<Cone, Transform3s> inflated(const Scalar value) const {
     if (value <= minInflationValue())
       COAL_THROW_PRETTY("value (" << value
                                   << ") is two small. It should be at least: "
@@ -533,16 +524,14 @@ class COAL_DLLAPI Cone : public ShapeBase {
                         std::invalid_argument);
 
     // tan(alpha) = 2*halfLength/radius;
-    const CoalScalar tan_alpha = 2 * halfLength / radius;
-    const CoalScalar sin_alpha =
-        tan_alpha / std::sqrt(1 + tan_alpha * tan_alpha);
-    const CoalScalar top_inflation = value / sin_alpha;
-    const CoalScalar bottom_inflation = value;
+    const Scalar tan_alpha = 2 * halfLength / radius;
+    const Scalar sin_alpha = tan_alpha / std::sqrt(1 + tan_alpha * tan_alpha);
+    const Scalar top_inflation = value / sin_alpha;
+    const Scalar bottom_inflation = value;
 
-    const CoalScalar new_lz = 2 * halfLength + top_inflation + bottom_inflation;
-    const CoalScalar new_cz =
-        (top_inflation + bottom_inflation) / CoalScalar(2);
-    const CoalScalar new_radius = new_lz / tan_alpha;
+    const Scalar new_lz = 2 * halfLength + top_inflation + bottom_inflation;
+    const Scalar new_cz = (top_inflation + bottom_inflation) / Scalar(2);
+    const Scalar new_radius = new_lz / tan_alpha;
 
     return std::make_pair(Cone(new_radius, new_lz),
                           Transform3s(Vec3s(0., 0., new_cz)));
@@ -569,7 +558,7 @@ class COAL_DLLAPI Cylinder : public ShapeBase {
   /// @brief Default constructor
   Cylinder() {}
 
-  Cylinder(CoalScalar radius_, CoalScalar lz_) : ShapeBase(), radius(radius_) {
+  Cylinder(Scalar radius_, Scalar lz_) : ShapeBase(), radius(radius_) {
     halfLength = lz_ / 2;
   }
 
@@ -588,10 +577,10 @@ class COAL_DLLAPI Cylinder : public ShapeBase {
   virtual Cylinder* clone() const { return new Cylinder(*this); };
 
   /// @brief Radius of the cylinder
-  CoalScalar radius;
+  Scalar radius;
 
   /// @brief Half Length along z axis
-  CoalScalar halfLength;
+  Scalar halfLength;
 
   /// @brief Compute AABB
   void computeLocalAABB();
@@ -599,21 +588,19 @@ class COAL_DLLAPI Cylinder : public ShapeBase {
   /// @brief Get node type: a cylinder
   NODE_TYPE getNodeType() const { return GEOM_CYLINDER; }
 
-  CoalScalar computeVolume() const {
-    return boost::math::constants::pi<CoalScalar>() * radius * radius *
+  Scalar computeVolume() const {
+    return boost::math::constants::pi<Scalar>() * radius * radius *
            (halfLength * 2);
   }
 
   Matrix3s computeMomentofInertia() const {
-    CoalScalar V = computeVolume();
-    CoalScalar ix = V * (radius * radius / 4 + halfLength * halfLength / 3);
-    CoalScalar iz = V * radius * radius / 2;
+    Scalar V = computeVolume();
+    Scalar ix = V * (radius * radius / 4 + halfLength * halfLength / 3);
+    Scalar iz = V * radius * radius / 2;
     return (Matrix3s() << ix, 0, 0, 0, ix, 0, 0, 0, iz).finished();
   }
 
-  CoalScalar minInflationValue() const {
-    return -(std::min)(radius, halfLength);
-  }
+  Scalar minInflationValue() const { return -(std::min)(radius, halfLength); }
 
   /// \brief Inflate the cylinder by an amount given by `value`.
   /// This value can be positive or negative but must always >=
@@ -623,7 +610,7 @@ class COAL_DLLAPI Cylinder : public ShapeBase {
   ///
   /// \returns a new inflated cylinder and the related transform to account for
   /// the change of shape frame
-  std::pair<Cylinder, Transform3s> inflated(const CoalScalar value) const {
+  std::pair<Cylinder, Transform3s> inflated(const Scalar value) const {
     if (value <= minInflationValue())
       COAL_THROW_PRETTY("value (" << value
                                   << ") is two small. It should be at least: "
@@ -730,7 +717,7 @@ class COAL_DLLAPI ConvexBase : public ShapeBase {
   std::shared_ptr<std::vector<Vec3s>> normals;
   /// @brief An array of the offsets to the normals of the polygon.
   /// Note: there are as many offsets as normals.
-  std::shared_ptr<std::vector<CoalScalar>> offsets;
+  std::shared_ptr<std::vector<Scalar>> offsets;
   unsigned int num_normals_and_offsets;
 
   /// @brief Neighbors of each vertex.
@@ -854,8 +841,8 @@ class COAL_DLLAPI ConvexBase : public ShapeBase {
         (offsets.get() && !(other.offsets.get())))
       return false;
     if (offsets.get() && other.offsets.get()) {
-      const std::vector<CoalScalar>& offsets_ = *offsets;
-      const std::vector<CoalScalar>& other_offsets_ = *(other.offsets);
+      const std::vector<Scalar>& offsets_ = *offsets;
+      const std::vector<Scalar>& other_offsets_ = *(other.offsets);
       for (unsigned int i = 0; i < num_normals_and_offsets; ++i) {
         if (offsets_[i] != other_offsets_[i]) return false;
       }
@@ -899,12 +886,12 @@ class Convex;
 class COAL_DLLAPI Halfspace : public ShapeBase {
  public:
   /// @brief Construct a half space with normal direction and offset
-  Halfspace(const Vec3s& n_, CoalScalar d_) : ShapeBase(), n(n_), d(d_) {
+  Halfspace(const Vec3s& n_, Scalar d_) : ShapeBase(), n(n_), d(d_) {
     unitNormalTest();
   }
 
   /// @brief Construct a plane with normal direction and offset
-  Halfspace(CoalScalar a, CoalScalar b, CoalScalar c, CoalScalar d_)
+  Halfspace(Scalar a, Scalar b, Scalar c, Scalar d_)
       : ShapeBase(), n(a, b, c), d(d_) {
     unitNormalTest();
   }
@@ -924,11 +911,11 @@ class COAL_DLLAPI Halfspace : public ShapeBase {
   /// @brief Clone *this into a new Halfspace
   virtual Halfspace* clone() const { return new Halfspace(*this); };
 
-  CoalScalar signedDistance(const Vec3s& p) const {
+  Scalar signedDistance(const Vec3s& p) const {
     return n.dot(p) - (d + this->getSweptSphereRadius());
   }
 
-  CoalScalar distance(const Vec3s& p) const {
+  Scalar distance(const Vec3s& p) const {
     return std::abs(this->signedDistance(p));
   }
 
@@ -938,8 +925,8 @@ class COAL_DLLAPI Halfspace : public ShapeBase {
   /// @brief Get node type: a half space
   NODE_TYPE getNodeType() const { return GEOM_HALFSPACE; }
 
-  CoalScalar minInflationValue() const {
-    return std::numeric_limits<CoalScalar>::lowest();
+  Scalar minInflationValue() const {
+    return std::numeric_limits<Scalar>::lowest();
   }
 
   /// \brief Inflate the halfspace by an amount given by `value`.
@@ -950,7 +937,7 @@ class COAL_DLLAPI Halfspace : public ShapeBase {
   ///
   /// \returns a new inflated halfspace and the related transform to account for
   /// the change of shape frame
-  std::pair<Halfspace, Transform3s> inflated(const CoalScalar value) const {
+  std::pair<Halfspace, Transform3s> inflated(const Scalar value) const {
     if (value <= minInflationValue())
       COAL_THROW_PRETTY("value (" << value
                                   << ") is two small. It should be at least: "
@@ -963,7 +950,7 @@ class COAL_DLLAPI Halfspace : public ShapeBase {
   Vec3s n;
 
   /// @brief Plane offset
-  CoalScalar d;
+  Scalar d;
 
  protected:
   /// @brief Turn non-unit normal into unit
@@ -990,12 +977,12 @@ class COAL_DLLAPI Halfspace : public ShapeBase {
 class COAL_DLLAPI Plane : public ShapeBase {
  public:
   /// @brief Construct a plane with normal direction and offset
-  Plane(const Vec3s& n_, CoalScalar d_) : ShapeBase(), n(n_), d(d_) {
+  Plane(const Vec3s& n_, Scalar d_) : ShapeBase(), n(n_), d(d_) {
     unitNormalTest();
   }
 
   /// @brief Construct a plane with normal direction and offset
-  Plane(CoalScalar a, CoalScalar b, CoalScalar c, CoalScalar d_)
+  Plane(Scalar a, Scalar b, Scalar c, Scalar d_)
       : ShapeBase(), n(a, b, c), d(d_) {
     unitNormalTest();
   }
@@ -1014,10 +1001,9 @@ class COAL_DLLAPI Plane : public ShapeBase {
   /// @brief Clone *this into a new Plane
   virtual Plane* clone() const { return new Plane(*this); };
 
-  CoalScalar signedDistance(const Vec3s& p) const {
-    const CoalScalar dist = n.dot(p) - d;
-    CoalScalar signed_dist =
-        std::abs(n.dot(p) - d) - this->getSweptSphereRadius();
+  Scalar signedDistance(const Vec3s& p) const {
+    const Scalar dist = n.dot(p) - d;
+    Scalar signed_dist = std::abs(n.dot(p) - d) - this->getSweptSphereRadius();
     if (dist >= 0) {
       return signed_dist;
     }
@@ -1027,7 +1013,7 @@ class COAL_DLLAPI Plane : public ShapeBase {
     return signed_dist;
   }
 
-  CoalScalar distance(const Vec3s& p) const {
+  Scalar distance(const Vec3s& p) const {
     return std::abs(std::abs(n.dot(p) - d) - this->getSweptSphereRadius());
   }
 
@@ -1041,7 +1027,7 @@ class COAL_DLLAPI Plane : public ShapeBase {
   Vec3s n;
 
   /// @brief Plane offset
-  CoalScalar d;
+  Scalar d;
 
  protected:
   /// @brief Turn non-unit normal into unit

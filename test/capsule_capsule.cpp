@@ -52,11 +52,11 @@
 #include "utility.h"
 
 using namespace coal;
-using Quat = Eigen::Quaternion<CoalScalar>;
-using Vec4s = Eigen::Matrix<CoalScalar, 4, 1>;
+using Quat = Eigen::Quaternion<Scalar>;
+using Vec4s = Eigen::Matrix<Scalar, 4, 1>;
 
 BOOST_AUTO_TEST_CASE(collision_capsule_capsule_trivial) {
-  const CoalScalar radius = 1.;
+  const Scalar radius = 1.;
 
   CollisionGeometryPtr_t c1(new Capsule(radius, 0.));
   CollisionGeometryPtr_t c2(new Capsule(radius, 0.));
@@ -108,8 +108,8 @@ BOOST_AUTO_TEST_CASE(collision_capsule_capsule_trivial) {
 }
 
 BOOST_AUTO_TEST_CASE(collision_capsule_capsule_aligned) {
-  const CoalScalar radius = CoalScalar(0.01);
-  const CoalScalar length = CoalScalar(0.2);
+  const Scalar radius = Scalar(0.01);
+  const Scalar length = Scalar(0.2);
 
   CollisionGeometryPtr_t c1(new Capsule(radius, length));
   CollisionGeometryPtr_t c2(new Capsule(radius, length));
@@ -125,8 +125,8 @@ BOOST_AUTO_TEST_CASE(collision_capsule_capsule_aligned) {
   Vec3s p1 = Vec3s::Zero();
   Vec3s p2_no_collision =
       Vec3s(0, 0,
-            CoalScalar(2 * (length / 2. + radius) +
-                       1e-3));  // because capsule are along the Z axis
+            Scalar(2 * (length / 2. + radius) +
+                   1e-3));  // because capsule are along the Z axis
 
   for (int i = 0; i < num_tests; ++i) {
     Matrix3s rot = Quat(Vec4s::Random().normalized()).toRotationMatrix();
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(collision_capsule_capsule_aligned) {
   }
 
   Vec3s p2_with_collision =
-      Vec3s(0, 0, CoalScalar(std::min(length / 2, radius) * (1. - 1e-2)));
+      Vec3s(0, 0, Scalar(std::min(length / 2, radius) * (1. - 1e-2)));
   for (int i = 0; i < num_tests; ++i) {
     Matrix3s rot = Quat(Vec4s::Random().normalized()).toRotationMatrix();
 
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE(collision_capsule_capsule_aligned) {
     BOOST_CHECK(capsule_num_collisions > 0);
   }
 
-  p2_no_collision = Vec3s(0, 0, CoalScalar(2 * (length / 2. + radius) + 1e-3));
+  p2_no_collision = Vec3s(0, 0, Scalar(2 * (length / 2. + radius) + 1e-3));
 
   Transform3s geom1_placement(Matrix3s::Identity(), Vec3s::Zero());
   Transform3s geom2_placement(Matrix3s::Identity(), p2_no_collision);
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE(collision_capsule_capsule_aligned) {
 
   //  p2_with_collision =
   //  Vec3s(0.,0.,std::min(length/2.,radius)*(1.-1e-2));
-  p2_with_collision = Vec3s(0, 0, CoalScalar(0.01));
+  p2_with_collision = Vec3s(0, 0, Scalar(0.01));
   geom2_placement.setTranslation(p2_with_collision);
 
   for (int i = 0; i < num_tests; ++i) {
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(distance_capsulecapsule_origin) {
   CollisionGeometryPtr_t s2(new Capsule(5, 10));
 
   Transform3s tf1;
-  Transform3s tf2(Vec3s(CoalScalar(20.1), 0, 0));
+  Transform3s tf2(Vec3s(Scalar(20.1), 0, 0));
 
   CollisionObject o1(s1, tf1);
   CollisionObject o2(s2, tf2);
@@ -274,7 +274,7 @@ BOOST_AUTO_TEST_CASE(distance_capsulecapsule_transformXY) {
             << ", p2 = " << distanceResult.nearest_points[1]
             << ", distance = " << distanceResult.min_distance << std::endl;
 
-  CoalScalar expected = sqrt(CoalScalar(800)) - 10;
+  Scalar expected = sqrt(Scalar(800)) - 10;
   BOOST_CHECK_CLOSE(distanceResult.min_distance, expected, 1e-6);
 }
 
@@ -283,7 +283,7 @@ BOOST_AUTO_TEST_CASE(distance_capsulecapsule_transformZ) {
   CollisionGeometryPtr_t s2(new Capsule(5, 10));
 
   Transform3s tf1;
-  Transform3s tf2(Vec3s(0, 0, CoalScalar(20.1)));
+  Transform3s tf2(Vec3s(0, 0, Scalar(20.1)));
 
   CollisionObject o1(s1, tf1);
   CollisionObject o2(s2, tf2);
@@ -309,9 +309,8 @@ BOOST_AUTO_TEST_CASE(distance_capsulecapsule_transformZ2) {
   CollisionGeometryPtr_t s2(new Capsule(5, 10));
 
   Transform3s tf1;
-  Transform3s tf2(
-      makeQuat(sqrt(CoalScalar(2)) / 2, 0, sqrt(CoalScalar(2)) / 2, 0),
-      Vec3s(0, 0, CoalScalar(25.1)));
+  Transform3s tf2(makeQuat(sqrt(Scalar(2)) / 2, 0, sqrt(Scalar(2)) / 2, 0),
+                  Vec3s(0, 0, Scalar(25.1)));
 
   CollisionObject o1(s1, tf1);
   CollisionObject o2(s2, tf2);

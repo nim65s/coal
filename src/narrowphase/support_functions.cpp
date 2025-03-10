@@ -109,9 +109,9 @@ template <int _SupportOptions>
 void getShapeSupport(const TriangleP* triangle, const Vec3s& dir,
                      Vec3s& support, int& /*unused*/,
                      ShapeSupportData& /*unused*/) {
-  CoalScalar dota = dir.dot(triangle->a);
-  CoalScalar dotb = dir.dot(triangle->b);
-  CoalScalar dotc = dir.dot(triangle->c);
+  Scalar dota = dir.dot(triangle->a);
+  Scalar dotb = dir.dot(triangle->b);
+  Scalar dotc = dir.dot(triangle->c);
   if (dota > dotb) {
     if (dotc > dota) {
       support = triangle->c;
@@ -138,10 +138,10 @@ inline void getShapeSupport(const Box* box, const Vec3s& dir, Vec3s& support,
                             int& /*unused*/, ShapeSupportData& /*unused*/) {
   // The inflate value is simply to make the specialized functions with box
   // have a preferred side for edge cases.
-  static const CoalScalar inflate =
-      (dir.array() == 0).any() ? 1 + CoalScalar(1e-10) : 1;
-  static const CoalScalar dummy_precision =
-      Eigen::NumTraits<CoalScalar>::dummy_precision();
+  static const Scalar inflate =
+      (dir.array() == 0).any() ? 1 + Scalar(1e-10) : 1;
+  static const Scalar dummy_precision =
+      Eigen::NumTraits<Scalar>::dummy_precision();
   Vec3s support1 = (dir.array() > dummy_precision).select(box->halfSide, 0);
   Vec3s support2 =
       (dir.array() < -dummy_precision).select(-inflate * box->halfSide, 0);
@@ -175,13 +175,13 @@ template <int _SupportOptions>
 inline void getShapeSupport(const Ellipsoid* ellipsoid, const Vec3s& dir,
                             Vec3s& support, int& /*unused*/,
                             ShapeSupportData& /*unused*/) {
-  CoalScalar a2 = ellipsoid->radii[0] * ellipsoid->radii[0];
-  CoalScalar b2 = ellipsoid->radii[1] * ellipsoid->radii[1];
-  CoalScalar c2 = ellipsoid->radii[2] * ellipsoid->radii[2];
+  Scalar a2 = ellipsoid->radii[0] * ellipsoid->radii[0];
+  Scalar b2 = ellipsoid->radii[1] * ellipsoid->radii[1];
+  Scalar c2 = ellipsoid->radii[2] * ellipsoid->radii[2];
 
   Vec3s v(a2 * dir[0], b2 * dir[1], c2 * dir[2]);
 
-  CoalScalar d = std::sqrt(v.dot(dir));
+  Scalar d = std::sqrt(v.dot(dir));
 
   support = v / d;
 
@@ -196,8 +196,8 @@ template <int _SupportOptions>
 inline void getShapeSupport(const Capsule* capsule, const Vec3s& dir,
                             Vec3s& support, int& /*unused*/,
                             ShapeSupportData& /*unused*/) {
-  static const CoalScalar dummy_precision =
-      Eigen::NumTraits<CoalScalar>::dummy_precision();
+  static const Scalar dummy_precision =
+      Eigen::NumTraits<Scalar>::dummy_precision();
   support.setZero();
   if (dir[2] > dummy_precision) {
     support[2] = capsule->halfLength;
@@ -216,15 +216,15 @@ getShapeSupportTplInstantiation(Capsule);
 template <int _SupportOptions>
 void getShapeSupport(const Cone* cone, const Vec3s& dir, Vec3s& support,
                      int& /*unused*/, ShapeSupportData& /*unused*/) {
-  static const CoalScalar dummy_precision =
-      Eigen::NumTraits<CoalScalar>::dummy_precision();
+  static const Scalar dummy_precision =
+      Eigen::NumTraits<Scalar>::dummy_precision();
 
   // The cone radius is, for -h < z < h, (h - z) * r / (2*h)
   // The inflate value is simply to make the specialized functions with cone
   // have a preferred side for edge cases.
-  static const CoalScalar inflate = 1 + CoalScalar(1e-10);
-  CoalScalar h = cone->halfLength;
-  CoalScalar r = cone->radius;
+  static const Scalar inflate = 1 + Scalar(1e-10);
+  Scalar h = cone->halfLength;
+  Scalar r = cone->radius;
 
   if (dir.head<2>().isZero(dummy_precision)) {
     support.head<2>().setZero();
@@ -234,22 +234,22 @@ void getShapeSupport(const Cone* cone, const Vec3s& dir, Vec3s& support,
       support[2] = -inflate * h;
     }
   } else {
-    CoalScalar zdist = dir[0] * dir[0] + dir[1] * dir[1];
-    CoalScalar len = zdist + dir[2] * dir[2];
+    Scalar zdist = dir[0] * dir[0] + dir[1] * dir[1];
+    Scalar len = zdist + dir[2] * dir[2];
     zdist = std::sqrt(zdist);
 
     if (dir[2] <= 0) {
-      CoalScalar rad = r / zdist;
+      Scalar rad = r / zdist;
       support.head<2>() = rad * dir.head<2>();
       support[2] = -h;
     } else {
       len = std::sqrt(len);
-      CoalScalar sin_a = r / std::sqrt(r * r + 4 * h * h);
+      Scalar sin_a = r / std::sqrt(r * r + 4 * h * h);
 
       if (dir[2] > len * sin_a)
         support << 0, 0, h;
       else {
-        CoalScalar rad = r / zdist;
+        Scalar rad = r / zdist;
         support.head<2>() = rad * dir.head<2>();
         support[2] = -h;
       }
@@ -266,14 +266,14 @@ getShapeSupportTplInstantiation(Cone);
 template <int _SupportOptions>
 void getShapeSupport(const Cylinder* cylinder, const Vec3s& dir, Vec3s& support,
                      int& /*unused*/, ShapeSupportData& /*unused*/) {
-  static const CoalScalar dummy_precision =
-      Eigen::NumTraits<CoalScalar>::dummy_precision();
+  static const Scalar dummy_precision =
+      Eigen::NumTraits<Scalar>::dummy_precision();
 
   // The inflate value is simply to make the specialized functions with cylinder
   // have a preferred side for edge cases.
-  static const CoalScalar inflate = 1 + CoalScalar(1e-10);
-  CoalScalar half_h = cylinder->halfLength;
-  CoalScalar r = cylinder->radius;
+  static const Scalar inflate = 1 + Scalar(1e-10);
+  Scalar half_h = cylinder->halfLength;
+  Scalar r = cylinder->radius;
 
   const bool dir_is_aligned_with_z = dir.head<2>().isZero(dummy_precision);
   if (dir_is_aligned_with_z) half_h *= inflate;
@@ -294,7 +294,7 @@ void getShapeSupport(const Cylinder* cylinder, const Vec3s& dir, Vec3s& support,
   }
 
   assert(fabs(support[0] * dir[1] - support[1] * dir[0]) <
-         sqrt(std::numeric_limits<CoalScalar>::epsilon()));
+         sqrt(std::numeric_limits<Scalar>::epsilon()));
 
   if (_SupportOptions == SupportOptions::WithSweptSphere) {
     support += cylinder->getSweptSphereRadius() * dir.normalized();
@@ -311,16 +311,16 @@ void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
 
   // Use warm start if current support direction is distant from last support
   // direction.
-  const CoalScalar use_warm_start_threshold = CoalScalar(0.9);
+  const Scalar use_warm_start_threshold = Scalar(0.9);
   Vec3s dir_normalized = dir.normalized();
   if (!support_data.last_dir.isZero() &&
       !convex->support_warm_starts.points.empty() &&
       support_data.last_dir.dot(dir_normalized) < use_warm_start_threshold) {
     // Change hint if last dir is too far from current dir.
-    CoalScalar maxdot = convex->support_warm_starts.points[0].dot(dir);
+    Scalar maxdot = convex->support_warm_starts.points[0].dot(dir);
     hint = convex->support_warm_starts.indices[0];
     for (size_t i = 1; i < convex->support_warm_starts.points.size(); ++i) {
-      CoalScalar dot = convex->support_warm_starts.points[i].dot(dir);
+      Scalar dot = convex->support_warm_starts.points[i].dot(dir);
       if (dot > maxdot) {
         maxdot = dot;
         hint = convex->support_warm_starts.indices[i];
@@ -335,7 +335,7 @@ void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
   if (hint < 0 || hint >= (int)convex->num_points) {
     hint = 0;
   }
-  CoalScalar maxdot = pts[static_cast<size_t>(hint)].dot(dir);
+  Scalar maxdot = pts[static_cast<size_t>(hint)].dot(dir);
   std::vector<int8_t>& visited = support_data.visited;
   if (support_data.visited.size() == convex->num_points) {
     std::fill(visited.begin(), visited.end(), false);
@@ -357,7 +357,7 @@ void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
       const unsigned int ip = n[in];
       if (visited[ip]) continue;
       visited[ip] = true;
-      const CoalScalar dot = pts[ip].dot(dir);
+      const Scalar dot = pts[ip].dot(dir);
       bool better = false;
       if (dot > maxdot) {
         better = true;
@@ -387,9 +387,9 @@ void getShapeSupportLinear(const ConvexBase* convex, const Vec3s& dir,
   const std::vector<Vec3s>& pts = *(convex->points);
 
   hint = 0;
-  CoalScalar maxdot = pts[0].dot(dir);
+  Scalar maxdot = pts[0].dot(dir);
   for (int i = 1; i < (int)convex->num_points; ++i) {
-    CoalScalar dot = pts[static_cast<size_t>(i)].dot(dir);
+    Scalar dot = pts[static_cast<size_t>(i)].dot(dir);
     if (dot > maxdot) {
       maxdot = dot;
       hint = i;
@@ -449,7 +449,7 @@ getShapeSupportTplInstantiation(LargeConvex);
                                       max_num_supports, tol)
 template <int _SupportOptions>
 void getSupportSet(const ShapeBase* shape, SupportSet& support_set, int& hint,
-                   size_t max_num_supports, CoalScalar tol) {
+                   size_t max_num_supports, Scalar tol) {
   ShapeSupportData support_data;
   switch (shape->getNodeType()) {
     case GEOM_TRIANGLE:
@@ -485,28 +485,28 @@ void getSupportSet(const ShapeBase* shape, SupportSet& support_set, int& hint,
 
 // Explicit instantiation
 // clang-format off
-template COAL_DLLAPI void getSupportSet<SupportOptions::NoSweptSphere>(const ShapeBase*, SupportSet&, int&, size_t, CoalScalar);
+template COAL_DLLAPI void getSupportSet<SupportOptions::NoSweptSphere>(const ShapeBase*, SupportSet&, int&, size_t, Scalar);
 
-template COAL_DLLAPI void getSupportSet<SupportOptions::WithSweptSphere>(const ShapeBase*, SupportSet&, int&, size_t, CoalScalar);
+template COAL_DLLAPI void getSupportSet<SupportOptions::WithSweptSphere>(const ShapeBase*, SupportSet&, int&, size_t, Scalar);
 // clang-format on
 
 // ============================================================================
 #define getShapeSupportSetTplInstantiation(ShapeType)                          \
   template COAL_DLLAPI void getShapeSupportSet<SupportOptions::NoSweptSphere>( \
       const ShapeType* shape_, SupportSet& support_set, int& hint,             \
-      ShapeSupportData& data, size_t num_sampled_supports, CoalScalar tol);    \
+      ShapeSupportData& data, size_t num_sampled_supports, Scalar tol);        \
                                                                                \
   template COAL_DLLAPI void                                                    \
   getShapeSupportSet<SupportOptions::WithSweptSphere>(                         \
       const ShapeType* shape_, SupportSet& support_set, int& hint,             \
-      ShapeSupportData& data, size_t num_sampled_supports, CoalScalar tol);
+      ShapeSupportData& data, size_t num_sampled_supports, Scalar tol);
 
 // ============================================================================
 template <int _SupportOptions>
 void getShapeSupportSet(const TriangleP* triangle, SupportSet& support_set,
                         int& hint /*unused*/,
                         ShapeSupportData& support_data /*unused*/,
-                        size_t /*unused*/, CoalScalar tol) {
+                        size_t /*unused*/, Scalar tol) {
   assert(tol > 0);
   support_set.clear();
 
@@ -516,7 +516,7 @@ void getShapeSupportSet(const TriangleP* triangle, SupportSet& support_set,
   // swept-sphere radius into account.
   getShapeSupport<SupportOptions::NoSweptSphere>(triangle, support_dir, support,
                                                  hint, support_data);
-  const CoalScalar support_value = support.dot(support_dir);
+  const Scalar support_value = support.dot(support_dir);
 
   if (support_value - support_dir.dot(triangle->a) < tol) {
     // Note: at the moment, it's useless to take into account the
@@ -552,17 +552,17 @@ getShapeSupportSetTplInstantiation(TriangleP);
 template <int _SupportOptions>
 void getShapeSupportSet(const Box* box, SupportSet& support_set,
                         int& hint /*unused*/, ShapeSupportData& support_data,
-                        size_t /*unused*/, CoalScalar tol) {
+                        size_t /*unused*/, Scalar tol) {
   assert(tol > 0);
   Vec3s support;
   const Vec3s& support_dir = support_set.getNormal();
   getShapeSupport<SupportOptions::NoSweptSphere>(box, support_dir, support,
                                                  hint, support_data);
-  const CoalScalar support_value = support.dot(support_dir);
+  const Scalar support_value = support.dot(support_dir);
 
-  const CoalScalar x = box->halfSide[0];
-  const CoalScalar y = box->halfSide[1];
-  const CoalScalar z = box->halfSide[2];
+  const Scalar x = box->halfSide[0];
+  const Scalar y = box->halfSide[1];
+  const Scalar z = box->halfSide[2];
   const std::array<Vec3s, 8> corners = {
       Vec3s(x, y, z),  Vec3s(-x, y, z),  Vec3s(-x, -y, z),  Vec3s(x, -y, z),
       Vec3s(x, y, -z), Vec3s(-x, y, -z), Vec3s(-x, -y, -z), Vec3s(x, -y, -z),
@@ -572,7 +572,7 @@ void getShapeSupportSet(const Box* box, SupportSet& support_set,
   polygon.clear();
   const Transform3s& tf = support_set.tf;
   for (const Vec3s& corner : corners) {
-    const CoalScalar val = corner.dot(support_dir);
+    const Scalar val = corner.dot(support_dir);
     if (support_value - val < tol) {
       if (_SupportOptions == SupportOptions::WithSweptSphere) {
         const Vec2s p =
@@ -595,7 +595,7 @@ template <int _SupportOptions>
 void getShapeSupportSet(const Sphere* sphere, SupportSet& support_set,
                         int& hint /*unused*/,
                         ShapeSupportData& support_data /*unused*/,
-                        size_t /*unused*/, CoalScalar /*unused*/) {
+                        size_t /*unused*/, Scalar /*unused*/) {
   support_set.points().clear();
 
   Vec3s support;
@@ -610,7 +610,7 @@ getShapeSupportSetTplInstantiation(Sphere);
 template <int _SupportOptions>
 void getShapeSupportSet(const Ellipsoid* ellipsoid, SupportSet& support_set,
                         int& hint, ShapeSupportData& support_data /*unused*/,
-                        size_t /*unused*/, CoalScalar /*unused*/) {
+                        size_t /*unused*/, Scalar /*unused*/) {
   support_set.points().clear();
 
   Vec3s support;
@@ -626,7 +626,7 @@ template <int _SupportOptions>
 void getShapeSupportSet(const Capsule* capsule, SupportSet& support_set,
                         int& hint /*unused*/,
                         ShapeSupportData& support_data /*unused*/,
-                        size_t /*unused*/, CoalScalar tol) {
+                        size_t /*unused*/, Scalar tol) {
   // clang-format on
   assert(tol > 0);
   support_set.points().clear();
@@ -635,13 +635,13 @@ void getShapeSupportSet(const Capsule* capsule, SupportSet& support_set,
   const Vec3s& support_dir = support_set.getNormal();
   getShapeSupport<SupportOptions::NoSweptSphere>(capsule, support_dir, support,
                                                  hint, support_data);
-  const CoalScalar support_value =
+  const Scalar support_value =
       support_dir.dot(support + capsule->radius * support_dir);
   // The support set of a capsule has either 2 points or 1 point.
   // The two candidate points lie at the frontier between the cylinder and
   // sphere parts of the capsule.
-  const CoalScalar h = capsule->halfLength;
-  const CoalScalar r = capsule->radius;
+  const Scalar h = capsule->halfLength;
+  const Scalar r = capsule->radius;
   const Vec3s p1(r * support_dir[0], r * support_dir[1], h);
   const Vec3s p2(r * support_dir[0], r * support_dir[1], -h);
   if ((support_value - support_dir.dot(p1) <= tol) &&
@@ -670,7 +670,7 @@ template <int _SupportOptions>
 void getShapeSupportSet(const Cone* cone, SupportSet& support_set,
                         int& hint /*unused*/,
                         ShapeSupportData& support_data /*unused*/,
-                        size_t num_sampled_supports, CoalScalar tol) {
+                        size_t num_sampled_supports, Scalar tol) {
   assert(tol > 0);
   support_set.points().clear();
 
@@ -678,7 +678,7 @@ void getShapeSupportSet(const Cone* cone, SupportSet& support_set,
   const Vec3s& support_dir = support_set.getNormal();
   getShapeSupport<SupportOptions::NoSweptSphere>(cone, support_dir, support,
                                                  hint, support_data);
-  const CoalScalar support_value = support.dot(support_dir);
+  const Scalar support_value = support.dot(support_dir);
 
   // If the support direction is perpendicular to the cone's basis, there is an
   // infinite amount of support points; otherwise there are up to two support
@@ -689,8 +689,8 @@ void getShapeSupportSet(const Cone* cone, SupportSet& support_set,
   // these two points are symmetrical w.r.t the center of the circle. If
   // both these points are tol away from the support plane, then all the
   // points of the circle are tol away from the support plane.
-  const CoalScalar r = cone->radius;
-  const CoalScalar z = -cone->halfLength;
+  const Scalar r = cone->radius;
+  const Scalar z = -cone->halfLength;
   const Vec3s p1(r * support_dir[0], r * support_dir[1], z);
   const Vec3s p2(-r * support_dir[0], -r * support_dir[1], z);
 
@@ -700,10 +700,10 @@ void getShapeSupportSet(const Cone* cone, SupportSet& support_set,
     // the basis of the cone. We sample `num_sampled_supports` points on the
     // base of the cone. We are guaranteed that these points like at a distance
     // tol of the support plane.
-    const CoalScalar angle_increment =
-        CoalScalar(2 * EIGEN_PI) / (CoalScalar(num_sampled_supports));
+    const Scalar angle_increment =
+        Scalar(2 * EIGEN_PI) / (Scalar(num_sampled_supports));
     for (size_t i = 0; i < num_sampled_supports; ++i) {
-      const CoalScalar theta = (CoalScalar)(i)*angle_increment;
+      const Scalar theta = (Scalar)(i)*angle_increment;
       Vec3s point_on_cone_base(r * std::cos(theta), r * std::sin(theta), z);
       assert(std::abs(support_dir.dot(support - point_on_cone_base)) <= tol);
       if (_SupportOptions == SupportOptions::WithSweptSphere) {
@@ -741,7 +741,7 @@ template <int _SupportOptions>
 void getShapeSupportSet(const Cylinder* cylinder, SupportSet& support_set,
                         int& hint /*unused*/,
                         ShapeSupportData& support_data /*unused*/,
-                        size_t num_sampled_supports, CoalScalar tol) {
+                        size_t num_sampled_supports, Scalar tol) {
   assert(tol > 0);
   support_set.points().clear();
 
@@ -749,22 +749,22 @@ void getShapeSupportSet(const Cylinder* cylinder, SupportSet& support_set,
   const Vec3s& support_dir = support_set.getNormal();
   getShapeSupport<SupportOptions::NoSweptSphere>(cylinder, support_dir, support,
                                                  hint, support_data);
-  const CoalScalar support_value = support.dot(support_dir);
+  const Scalar support_value = support.dot(support_dir);
 
   // The following is very similar to what is done for Cone's support set
   // computation.
-  const CoalScalar r = cylinder->radius;
-  const CoalScalar z =
+  const Scalar r = cylinder->radius;
+  const Scalar z =
       support_dir[2] <= 0 ? -cylinder->halfLength : cylinder->halfLength;
   const Vec3s p1(r * support_dir[0], r * support_dir[1], z);
   const Vec3s p2(-r * support_dir[0], -r * support_dir[1], z);
 
   if ((support_value - support_dir.dot(p1) <= tol) &&
       (support_value - support_dir.dot(p2) <= tol)) {
-    const CoalScalar angle_increment =
-        CoalScalar(2 * EIGEN_PI) / (CoalScalar(num_sampled_supports));
+    const Scalar angle_increment =
+        Scalar(2 * EIGEN_PI) / (Scalar(num_sampled_supports));
     for (size_t i = 0; i < num_sampled_supports; ++i) {
-      const CoalScalar theta = (CoalScalar)(i)*angle_increment;
+      const Scalar theta = (Scalar)(i)*angle_increment;
       Vec3s point_on_cone_base(r * std::cos(theta), r * std::sin(theta), z);
       assert(std::abs(support_dir.dot(support - point_on_cone_base)) <= tol);
       if (_SupportOptions == SupportOptions::WithSweptSphere) {
@@ -803,20 +803,20 @@ template <int _SupportOptions>
 void getShapeSupportSetLinear(const ConvexBase* convex, SupportSet& support_set,
                               int& hint /*unused*/,
                               ShapeSupportData& support_data, size_t /*unused*/,
-                              CoalScalar tol) {
+                              Scalar tol) {
   assert(tol > 0);
   Vec3s support;
   const Vec3s& support_dir = support_set.getNormal();
   getShapeSupport<SupportOptions::NoSweptSphere>(convex, support_dir, support,
                                                  hint, support_data);
-  const CoalScalar support_value = support_dir.dot(support);
+  const Scalar support_value = support_dir.dot(support);
 
   const std::vector<Vec3s>& points = *(convex->points);
   SupportSet::Polygon& polygon = support_data.polygon;
   polygon.clear();
   const Transform3s& tf = support_set.tf;
   for (const Vec3s& point : points) {
-    const CoalScalar dot = support_dir.dot(point);
+    const Scalar dot = support_dir.dot(point);
     if (support_value - dot <= tol) {
       if (_SupportOptions == SupportOptions::WithSweptSphere) {
         const Vec2s p =
@@ -839,10 +839,9 @@ template <int _SupportOptions>
 void convexSupportSetRecurse(
     const std::vector<Vec3s>& points,
     const std::vector<ConvexBase::Neighbors>& neighbors,
-    const CoalScalar swept_sphere_radius, const size_t vertex_idx,
-    const Vec3s& support_dir, const CoalScalar support_value,
-    const Transform3s& tf, std::vector<int8_t>& visited,
-    SupportSet::Polygon& polygon, CoalScalar tol) {
+    const Scalar swept_sphere_radius, const size_t vertex_idx,
+    const Vec3s& support_dir, const Scalar support_value, const Transform3s& tf,
+    std::vector<int8_t>& visited, SupportSet::Polygon& polygon, Scalar tol) {
   COAL_UNUSED_VARIABLE(swept_sphere_radius);
 
   if (visited[vertex_idx]) {
@@ -851,7 +850,7 @@ void convexSupportSetRecurse(
 
   visited[vertex_idx] = true;
   const Vec3s& point = points[vertex_idx];
-  const CoalScalar val = point.dot(support_dir);
+  const Scalar val = point.dot(support_dir);
   if (support_value - val <= tol) {
     if (_SupportOptions == SupportOptions::WithSweptSphere) {
       const Vec2s p =
@@ -878,17 +877,17 @@ void convexSupportSetRecurse(
 template <int _SupportOptions>
 void getShapeSupportSetLog(const ConvexBase* convex, SupportSet& support_set,
                            int& hint, ShapeSupportData& support_data,
-                           size_t /*unused*/, CoalScalar tol) {
+                           size_t /*unused*/, Scalar tol) {
   assert(tol > 0);
   Vec3s support;
   const Vec3s& support_dir = support_set.getNormal();
   getShapeSupportLog<SupportOptions::NoSweptSphere>(
       convex, support_dir, support, hint, support_data);
-  const CoalScalar support_value = support.dot(support_dir);
+  const Scalar support_value = support.dot(support_dir);
 
   const std::vector<Vec3s>& points = *(convex->points);
   const std::vector<ConvexBase::Neighbors>& neighbors = *(convex->neighbors);
-  const CoalScalar swept_sphere_radius = convex->getSweptSphereRadius();
+  const Scalar swept_sphere_radius = convex->getSweptSphereRadius();
   std::vector<int8_t>& visited = support_data.visited;
   // `visited` is guaranteed to be of right size due to previous call to convex
   // log support function.
@@ -910,8 +909,7 @@ void getShapeSupportSetLog(const ConvexBase* convex, SupportSet& support_set,
 template <int _SupportOptions>
 void getShapeSupportSet(const ConvexBase* convex, SupportSet& support_set,
                         int& hint, ShapeSupportData& support_data,
-                        size_t num_sampled_supports /*unused*/,
-                        CoalScalar tol) {
+                        size_t num_sampled_supports /*unused*/, Scalar tol) {
   if (convex->num_points > ConvexBase::num_vertices_large_convex_threshold &&
       convex->neighbors != nullptr) {
     getShapeSupportSetLog<_SupportOptions>(
@@ -928,8 +926,7 @@ template <int _SupportOptions>
 void getShapeSupportSet(const SmallConvex* convex, SupportSet& support_set,
                         int& hint /*unused*/,
                         ShapeSupportData& support_data /*unused*/,
-                        size_t num_sampled_supports /*unused*/,
-                        CoalScalar tol) {
+                        size_t num_sampled_supports /*unused*/, Scalar tol) {
   getShapeSupportSetLinear<_SupportOptions>(
       reinterpret_cast<const ConvexBase*>(convex), support_set, hint,
       support_data, num_sampled_supports, tol);
@@ -940,8 +937,7 @@ getShapeSupportSetTplInstantiation(SmallConvex);
 template <int _SupportOptions>
 void getShapeSupportSet(const LargeConvex* convex, SupportSet& support_set,
                         int& hint, ShapeSupportData& support_data,
-                        size_t num_sampled_supports /*unused*/,
-                        CoalScalar tol) {
+                        size_t num_sampled_supports /*unused*/, Scalar tol) {
   getShapeSupportSetLog<_SupportOptions>(
       reinterpret_cast<const ConvexBase*>(convex), support_set, hint,
       support_data, num_sampled_supports, tol);
@@ -976,7 +972,7 @@ void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
     const Vec2s& a = cloud[0];
     const Vec2s& b = cloud[1];
     const Vec2s& c = cloud[2];
-    const CoalScalar det =
+    const Scalar det =
         (b(0) - a(0)) * (c(1) - a(1)) - (b(1) - a(1)) * (c(0) - a(0));
     if (det < 0) {
       std::swap(cloud[1], cloud[2]);
@@ -996,9 +992,9 @@ void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
   // in the direction (0, -1) (take the element of the set which has the lowest
   // y coordinate).
   size_t support_idx = 0;
-  CoalScalar support_val = cloud[0](1);
+  Scalar support_val = cloud[0](1);
   for (size_t i = 1; i < cloud.size(); ++i) {
-    const CoalScalar val = cloud[i](1);
+    const Scalar val = cloud[i](1);
     if (val < support_val) {
       support_val = val;
       support_idx = i;
@@ -1015,9 +1011,9 @@ void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
   std::stable_sort(
       cloud.begin() + 1, cloud.end(), [&v](const Vec2s& p1, const Vec2s& p2) {
         // p1 is "smaller" than p2 if det(p1 - v, p2 - v) >= 0
-        const CoalScalar det =
+        const Scalar det =
             (p1(0) - v(0)) * (p2(1) - v(1)) - (p1(1) - v(1)) * (p2(0) - v(0));
-        if (std::abs(det) <= Eigen::NumTraits<CoalScalar>::dummy_precision()) {
+        if (std::abs(det) <= Eigen::NumTraits<Scalar>::dummy_precision()) {
           // If two points are identical or (v, p1, p2) are colinear, p1 is
           // "smaller" if it is closer to v.
           return ((p1 - v).squaredNorm() <= (p2 - v).squaredNorm());
@@ -1032,11 +1028,11 @@ void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
   auto isRightSided = [](const Vec2s& p1, const Vec2s& p2, const Vec2s& p3) {
     // Checks if (p2 - p1, p3 - p1) forms a right-sided base based on
     // det(p2 - p1, p3 - p1)
-    const CoalScalar det =
+    const Scalar det =
         (p2(0) - p1(0)) * (p3(1) - p1(1)) - (p2(1) - p1(1)) * (p3(0) - p1(0));
     // Note: we set a dummy precision threshold so that identical points or
     // colinear pionts are not added to the cvx-hull.
-    return det > Eigen::NumTraits<CoalScalar>::dummy_precision();
+    return det > Eigen::NumTraits<Scalar>::dummy_precision();
   };
 
   // We initialize the cvx-hull algo by adding the first three
@@ -1047,7 +1043,7 @@ void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
   while (cvx_hull.size() < 3) {
     const Vec2s& vec = cloud[cloud_beginning_idx];
     if ((cvx_hull.back() - vec).squaredNorm() >
-        Eigen::NumTraits<CoalScalar>::epsilon()) {
+        Eigen::NumTraits<Scalar>::epsilon()) {
       cvx_hull.emplace_back(vec);
     }
     ++cloud_beginning_idx;

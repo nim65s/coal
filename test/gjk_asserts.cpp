@@ -7,16 +7,16 @@
 
 using namespace coal;
 
-constexpr CoalScalar pi = boost::math::constants::pi<CoalScalar>();
+constexpr Scalar pi = boost::math::constants::pi<Scalar>();
 
-CoalScalar DegToRad(const CoalScalar& deg) {
-  static CoalScalar degToRad = pi / CoalScalar(180);
+Scalar DegToRad(const Scalar& deg) {
+  static Scalar degToRad = pi / Scalar(180);
   return deg * degToRad;
 }
 std::vector<Vec3s> dirs{Vec3s::UnitZ(),  -Vec3s::UnitZ(), Vec3s::UnitY(),
                         -Vec3s::UnitY(), Vec3s::UnitX(),  -Vec3s::UnitX()};
 
-void CreateSphereMesh(BVHModel<OBBRSS>& model, const CoalScalar& radius) {
+void CreateSphereMesh(BVHModel<OBBRSS>& model, const Scalar& radius) {
   size_t polarSteps{32};
   size_t azimuthSteps{32};
 
@@ -76,10 +76,9 @@ BOOST_AUTO_TEST_CASE(TestSpheres) {
           /// assertion: src/narrowphase/gjk.cpp:1263
           (i == 86 && j == 52) || (i == 89 && j == 17) ||
           (i == 89 && j == 58) || (i == 89 && j == 145)) {
-        sphere2Tf.setQuatRotation(Eigen::AngleAxis<CoalScalar>(
-                                      DegToRad(CoalScalar(i)), Vec3s::UnitZ()) *
-                                  Eigen::AngleAxis<CoalScalar>(
-                                      DegToRad(CoalScalar(j)), Vec3s::UnitY()));
+        sphere2Tf.setQuatRotation(
+            Eigen::AngleAxis<Scalar>(DegToRad(Scalar(i)), Vec3s::UnitZ()) *
+            Eigen::AngleAxis<Scalar>(DegToRad(Scalar(j)), Vec3s::UnitY()));
         for (const Vec3s& dir : dirs) {
           sphere2Tf.setTranslation(dir);
           CollisionResult result;

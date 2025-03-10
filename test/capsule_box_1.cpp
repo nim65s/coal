@@ -48,7 +48,7 @@
 
 #include "utility.h"
 
-using coal::CoalScalar;
+using coal::Scalar;
 
 BOOST_AUTO_TEST_CASE(distance_capsule_box) {
   using coal::CollisionGeometryPtr_t;
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(distance_capsule_box) {
   // Rotate capsule around y axis by pi/2 and move it behind box
   tf1.setTranslation(coal::Vec3s(-10., 0., 0.));
   tf1.setQuatRotation(
-      coal::makeQuat(sqrt(CoalScalar(2)) / 2, 0, sqrt(CoalScalar(2)) / 2, 0));
+      coal::makeQuat(sqrt(Scalar(2)) / 2, 0, sqrt(Scalar(2)) / 2, 0));
   capsule.setTransform(tf1);
 
   // test distance

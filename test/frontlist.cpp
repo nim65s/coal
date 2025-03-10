@@ -86,8 +86,8 @@ BOOST_AUTO_TEST_CASE(front_list) {
 
   std::vector<Transform3s> transforms;   // t0
   std::vector<Transform3s> transforms2;  // t1
-  CoalScalar extents[] = {-3000, -3000, 0, 3000, 3000, 3000};
-  CoalScalar delta_trans[] = {1, 1, 1};
+  Scalar extents[] = {-3000, -3000, 0, 3000, 3000, 3000};
+  Scalar delta_trans[] = {1, 1, 1};
 #ifndef NDEBUG  // if debug mode
   std::size_t n = 2;
 #else
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(front_list) {
   n = getNbRun(utf::master_test_suite().argc, utf::master_test_suite().argv, n);
   bool verbose = false;
 
-  generateRandomTransforms(extents, delta_trans, CoalScalar(0.005 * 2 * 3.1415),
+  generateRandomTransforms(extents, delta_trans, Scalar(0.005 * 2 * 3.1415),
                            transforms, transforms2, n);
 
   bool res, res2;

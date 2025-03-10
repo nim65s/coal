@@ -98,8 +98,7 @@ ConvexBase* ConvexBase::convexHull(const Vec3s* pts, unsigned int num_points,
        v != vertexList.end(); ++v) {
     QhullPoint pt((*v).point());
     pts_to_vertices[(size_t)pt.id()] = (int)i_vertex;
-    (*vertices)[i_vertex] =
-        Vec3s(CoalScalar(pt[0]), CoalScalar(pt[1]), CoalScalar(pt[2]));
+    (*vertices)[i_vertex] = Vec3s(Scalar(pt[0]), Scalar(pt[1]), Scalar(pt[2]));
     ++i_vertex;
   }
   assert(i_vertex == nvertex);
@@ -248,16 +247,16 @@ void ConvexBase::buildDoubleDescriptionFromQHullResult(const Qhull& qh) {
   num_normals_and_offsets = static_cast<unsigned int>(qh.facetCount());
   normals.reset(new std::vector<Vec3s>(num_normals_and_offsets));
   std::vector<Vec3s>& normals_ = *normals;
-  offsets.reset(new std::vector<CoalScalar>(num_normals_and_offsets));
-  std::vector<CoalScalar>& offsets_ = *offsets;
+  offsets.reset(new std::vector<Scalar>(num_normals_and_offsets));
+  std::vector<Scalar>& offsets_ = *offsets;
   unsigned int i_normal = 0;
   for (QhullFacet facet = qh.beginFacet(); facet != qh.endFacet();
        facet = facet.next()) {
     const orgQhull::QhullHyperplane& plane = facet.hyperplane();
-    normals_[i_normal] = Vec3s(CoalScalar(plane.coordinates()[0]),
-                               CoalScalar(plane.coordinates()[1]),
-                               CoalScalar(plane.coordinates()[2]));
-    offsets_[i_normal] = CoalScalar(plane.offset());
+    normals_[i_normal] =
+        Vec3s(Scalar(plane.coordinates()[0]), Scalar(plane.coordinates()[1]),
+              Scalar(plane.coordinates()[2]));
+    offsets_[i_normal] = Scalar(plane.offset());
     i_normal++;
   }
   assert(static_cast<int>(i_normal) == qh.facetCount());

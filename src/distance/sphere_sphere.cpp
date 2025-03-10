@@ -53,10 +53,12 @@ struct GJKSolver;
 
 namespace internal {
 template <>
-CoalScalar ShapeShapeDistance<Sphere, Sphere>(
-    const CollisionGeometry* o1, const Transform3s& tf1,
-    const CollisionGeometry* o2, const Transform3s& tf2, const GJKSolver*,
-    const bool, Vec3s& p1, Vec3s& p2, Vec3s& normal) {
+Scalar ShapeShapeDistance<Sphere, Sphere>(const CollisionGeometry* o1,
+                                          const Transform3s& tf1,
+                                          const CollisionGeometry* o2,
+                                          const Transform3s& tf2,
+                                          const GJKSolver*, const bool,
+                                          Vec3s& p1, Vec3s& p2, Vec3s& normal) {
   const Sphere& s1 = static_cast<const Sphere&>(*o1);
   const Sphere& s2 = static_cast<const Sphere&>(*o2);
   return details::sphereSphereDistance(s1, tf1, s2, tf2, p1, p2, normal);

@@ -67,7 +67,7 @@ void makeMesh(const std::vector<Vec3s>& vertices,
 }
 
 coal::OcTree makeOctree(const BVHModel<OBBRSS>& mesh,
-                        const CoalScalar& resolution) {
+                        const Scalar& resolution) {
   Vec3s m(mesh.aabb_local.min_);
   Vec3s M(mesh.aabb_local.max_);
   coal::Box box(resolution, resolution, resolution);
@@ -76,13 +76,13 @@ coal::OcTree makeOctree(const BVHModel<OBBRSS>& mesh,
   Transform3s tfBox;
   octomap::OcTreePtr_t octree(new octomap::OcTree(resolution));
 
-  for (CoalScalar x = resolution * floor(m[0] / resolution); x <= M[0];
+  for (Scalar x = resolution * floor(m[0] / resolution); x <= M[0];
        x += resolution) {
-    for (CoalScalar y = resolution * floor(m[1] / resolution); y <= M[1];
+    for (Scalar y = resolution * floor(m[1] / resolution); y <= M[1];
          y += resolution) {
-      for (CoalScalar z = resolution * floor(m[2] / resolution); z <= M[2];
+      for (Scalar z = resolution * floor(m[2] / resolution); z <= M[2];
            z += resolution) {
-        const CoalScalar half = CoalScalar(0.5);
+        const Scalar half = Scalar(0.5);
         Vec3s center(x + half * resolution, y + half * resolution,
                      z + half * resolution);
         tfBox.setTranslation(center);
@@ -105,7 +105,7 @@ coal::OcTree makeOctree(const BVHModel<OBBRSS>& mesh,
 BOOST_AUTO_TEST_CASE(octree_mesh) {
   Eigen::IOFormat tuple(Eigen::FullPrecision, Eigen::DontAlignCols, "", ", ",
                         "", "", "(", ")");
-  CoalScalar resolution(10.);
+  Scalar resolution(10.);
   std::vector<Vec3s> pRob, pEnv;
   std::vector<Triangle> tRob, tEnv;
   boost::filesystem::path path(TEST_RESOURCES_DIR);
@@ -137,11 +137,11 @@ BOOST_AUTO_TEST_CASE(octree_mesh) {
   {
     const std::vector<uint8_t> bytes = envOctree.tobytes();
     BOOST_CHECK(bytes.size() > 0 && bytes.size() <= envOctree.toBoxes().size() *
-                                                        3 * sizeof(CoalScalar));
+                                                        3 * sizeof(Scalar));
   }
 
   std::vector<Transform3s> transforms;
-  CoalScalar extents[] = {-2000, -2000, 0, 2000, 2000, 2000};
+  Scalar extents[] = {-2000, -2000, 0, 2000, 2000, 2000};
 #ifndef NDEBUG  // if debug mode
   std::size_t N = 100;
 #else
@@ -179,7 +179,7 @@ BOOST_AUTO_TEST_CASE(octree_mesh) {
 BOOST_AUTO_TEST_CASE(octree_height_field) {
   Eigen::IOFormat tuple(Eigen::FullPrecision, Eigen::DontAlignCols, "", ", ",
                         "", "", "(", ")");
-  CoalScalar resolution(10.);
+  Scalar resolution(10.);
   std::vector<Vec3s> pEnv;
   std::vector<Triangle> tEnv;
   boost::filesystem::path path(TEST_RESOURCES_DIR);
@@ -197,16 +197,16 @@ BOOST_AUTO_TEST_CASE(octree_height_field) {
   std::cout << "Finished loading octree." << std::endl;
 
   // Building hfield
-  const CoalScalar x_dim = 10, y_dim = 20;
+  const Scalar x_dim = 10, y_dim = 20;
   const int nx = 100, ny = 100;
-  const CoalScalar max_altitude = 1., min_altitude = 0.;
+  const Scalar max_altitude = 1., min_altitude = 0.;
   const MatrixXs heights = MatrixXs::Constant(ny, nx, max_altitude);
 
   HeightField<AABB> hfield(x_dim, y_dim, heights, min_altitude);
   hfield.computeLocalAABB();
 
   std::vector<Transform3s> transforms;
-  CoalScalar extents[] = {-2000, -2000, 0, 2000, 2000, 2000};
+  Scalar extents[] = {-2000, -2000, 0, 2000, 2000, 2000};
 #ifndef NDEBUG  // if debug mode
   std::size_t N = 1000;
 #else

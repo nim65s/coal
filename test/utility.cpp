@@ -89,8 +89,8 @@ const Vec3s UnitX = Vec3s(1, 0, 0);
 const Vec3s UnitY = Vec3s(0, 1, 0);
 const Vec3s UnitZ = Vec3s(0, 0, 1);
 
-CoalScalar rand_interval(CoalScalar rmin, CoalScalar rmax) {
-  CoalScalar t = CoalScalar(rand()) / ((CoalScalar)RAND_MAX + 1);
+Scalar rand_interval(Scalar rmin, Scalar rmax) {
+  Scalar t = Scalar(rand()) / ((Scalar)RAND_MAX + 1);
   return (t * (rmax - rmin) + rmin);
 }
 
@@ -121,9 +121,9 @@ void loadOBJFile(const char* filename, std::vector<Vec3s>& points,
           strtok(NULL, "\t ");
           has_texture = true;
         } else {
-          CoalScalar x = (CoalScalar)atof(strtok(NULL, "\t "));
-          CoalScalar y = (CoalScalar)atof(strtok(NULL, "\t "));
-          CoalScalar z = (CoalScalar)atof(strtok(NULL, "\t "));
+          Scalar x = (Scalar)atof(strtok(NULL, "\t "));
+          Scalar y = (Scalar)atof(strtok(NULL, "\t "));
+          Scalar z = (Scalar)atof(strtok(NULL, "\t "));
           Vec3s p(x, y, z);
           points.push_back(p);
         }
@@ -182,8 +182,7 @@ void saveOBJFile(const char* filename, std::vector<Vec3s>& points,
 }
 
 #ifdef COAL_HAS_OCTOMAP
-OcTree loadOctreeFile(const std::string& filename,
-                      const CoalScalar& resolution) {
+OcTree loadOctreeFile(const std::string& filename, const Scalar& resolution) {
   octomap::OcTreePtr_t octree(new octomap::OcTree(filename));
   if (octree->getResolution() != resolution) {
     std::ostringstream oss;
@@ -195,27 +194,27 @@ OcTree loadOctreeFile(const std::string& filename,
 }
 #endif
 
-void eulerToMatrix(CoalScalar a, CoalScalar b, CoalScalar c, Matrix3s& R) {
-  CoalScalar c1 = cos(a);
-  CoalScalar c2 = cos(b);
-  CoalScalar c3 = cos(c);
-  CoalScalar s1 = sin(a);
-  CoalScalar s2 = sin(b);
-  CoalScalar s3 = sin(c);
+void eulerToMatrix(Scalar a, Scalar b, Scalar c, Matrix3s& R) {
+  Scalar c1 = cos(a);
+  Scalar c2 = cos(b);
+  Scalar c3 = cos(c);
+  Scalar s1 = sin(a);
+  Scalar s2 = sin(b);
+  Scalar s3 = sin(c);
 
   R << c1 * c2, -c2 * s1, s2, c3 * s1 + c1 * s2 * s3, c1 * c3 - s1 * s2 * s3,
       -c2 * s3, s1 * s3 - c1 * c3 * s2, c3 * s1 * s2 + c1 * s3, c2 * c3;
 }
 
-void generateRandomTransform(CoalScalar extents[6], Transform3s& transform) {
-  CoalScalar x = rand_interval(extents[0], extents[3]);
-  CoalScalar y = rand_interval(extents[1], extents[4]);
-  CoalScalar z = rand_interval(extents[2], extents[5]);
+void generateRandomTransform(Scalar extents[6], Transform3s& transform) {
+  Scalar x = rand_interval(extents[0], extents[3]);
+  Scalar y = rand_interval(extents[1], extents[4]);
+  Scalar z = rand_interval(extents[2], extents[5]);
 
-  const CoalScalar pi = CoalScalar(3.1415926);
-  CoalScalar a = rand_interval(0, 2 * pi);
-  CoalScalar b = rand_interval(0, 2 * pi);
-  CoalScalar c = rand_interval(0, 2 * pi);
+  const Scalar pi = Scalar(3.1415926);
+  Scalar a = rand_interval(0, 2 * pi);
+  Scalar b = rand_interval(0, 2 * pi);
+  Scalar c = rand_interval(0, 2 * pi);
 
   Matrix3s R;
   eulerToMatrix(a, b, c, R);
@@ -223,19 +222,19 @@ void generateRandomTransform(CoalScalar extents[6], Transform3s& transform) {
   transform.setTransform(R, T);
 }
 
-void generateRandomTransforms(CoalScalar extents[6],
+void generateRandomTransforms(Scalar extents[6],
                               std::vector<Transform3s>& transforms,
                               std::size_t n) {
   transforms.resize(n);
   for (std::size_t i = 0; i < n; ++i) {
-    CoalScalar x = rand_interval(extents[0], extents[3]);
-    CoalScalar y = rand_interval(extents[1], extents[4]);
-    CoalScalar z = rand_interval(extents[2], extents[5]);
+    Scalar x = rand_interval(extents[0], extents[3]);
+    Scalar y = rand_interval(extents[1], extents[4]);
+    Scalar z = rand_interval(extents[2], extents[5]);
 
-    const CoalScalar pi = CoalScalar(3.1415926);
-    CoalScalar a = rand_interval(0, 2 * pi);
-    CoalScalar b = rand_interval(0, 2 * pi);
-    CoalScalar c = rand_interval(0, 2 * pi);
+    const Scalar pi = Scalar(3.1415926);
+    Scalar a = rand_interval(0, 2 * pi);
+    Scalar b = rand_interval(0, 2 * pi);
+    Scalar c = rand_interval(0, 2 * pi);
 
     {
       Matrix3s R;
@@ -246,22 +245,22 @@ void generateRandomTransforms(CoalScalar extents[6],
   }
 }
 
-void generateRandomTransforms(CoalScalar extents[6], CoalScalar delta_trans[3],
-                              CoalScalar delta_rot,
+void generateRandomTransforms(Scalar extents[6], Scalar delta_trans[3],
+                              Scalar delta_rot,
                               std::vector<Transform3s>& transforms,
                               std::vector<Transform3s>& transforms2,
                               std::size_t n) {
   transforms.resize(n);
   transforms2.resize(n);
   for (std::size_t i = 0; i < n; ++i) {
-    CoalScalar x = rand_interval(extents[0], extents[3]);
-    CoalScalar y = rand_interval(extents[1], extents[4]);
-    CoalScalar z = rand_interval(extents[2], extents[5]);
+    Scalar x = rand_interval(extents[0], extents[3]);
+    Scalar y = rand_interval(extents[1], extents[4]);
+    Scalar z = rand_interval(extents[2], extents[5]);
 
-    const CoalScalar pi = CoalScalar(3.1415926);
-    CoalScalar a = rand_interval(0, 2 * pi);
-    CoalScalar b = rand_interval(0, 2 * pi);
-    CoalScalar c = rand_interval(0, 2 * pi);
+    const Scalar pi = Scalar(3.1415926);
+    Scalar a = rand_interval(0, 2 * pi);
+    Scalar b = rand_interval(0, 2 * pi);
+    Scalar c = rand_interval(0, 2 * pi);
 
     {
       Matrix3s R;
@@ -270,13 +269,13 @@ void generateRandomTransforms(CoalScalar extents[6], CoalScalar delta_trans[3],
       transforms[i].setTransform(R, T);
     }
 
-    CoalScalar deltax = rand_interval(-delta_trans[0], delta_trans[0]);
-    CoalScalar deltay = rand_interval(-delta_trans[1], delta_trans[1]);
-    CoalScalar deltaz = rand_interval(-delta_trans[2], delta_trans[2]);
+    Scalar deltax = rand_interval(-delta_trans[0], delta_trans[0]);
+    Scalar deltay = rand_interval(-delta_trans[1], delta_trans[1]);
+    Scalar deltaz = rand_interval(-delta_trans[2], delta_trans[2]);
 
-    CoalScalar deltaa = rand_interval(-delta_rot, delta_rot);
-    CoalScalar deltab = rand_interval(-delta_rot, delta_rot);
-    CoalScalar deltac = rand_interval(-delta_rot, delta_rot);
+    Scalar deltaa = rand_interval(-delta_rot, delta_rot);
+    Scalar deltab = rand_interval(-delta_rot, delta_rot);
+    Scalar deltac = rand_interval(-delta_rot, delta_rot);
 
     {
       Matrix3s R;
@@ -305,7 +304,7 @@ bool defaultCollisionFunction(CollisionObject* o1, CollisionObject* o2,
 }
 
 bool defaultDistanceFunction(CollisionObject* o1, CollisionObject* o2,
-                             void* cdata_, CoalScalar& dist) {
+                             void* cdata_, Scalar& dist) {
   DistanceData* cdata = static_cast<DistanceData*>(cdata_);
   const DistanceRequest& request = cdata->request;
   DistanceResult& result = cdata->result;
@@ -367,7 +366,7 @@ std::string getNodeTypeName(NODE_TYPE node_type) {
     return std::string("invalid");
 }
 
-Quats makeQuat(CoalScalar w, CoalScalar x, CoalScalar y, CoalScalar z) {
+Quats makeQuat(Scalar w, Scalar x, Scalar y, Scalar z) {
   Quats q;
   q.w() = w;
   q.x() = x;
@@ -389,10 +388,10 @@ std::size_t getNbRun(const int& argc, char const* const* argv,
   return defaultValue;
 }
 
-void generateEnvironments(std::vector<CollisionObject*>& env,
-                          CoalScalar env_scale, std::size_t n) {
-  CoalScalar extents[] = {-env_scale, env_scale,  -env_scale,
-                          env_scale,  -env_scale, env_scale};
+void generateEnvironments(std::vector<CollisionObject*>& env, Scalar env_scale,
+                          std::size_t n) {
+  Scalar extents[] = {-env_scale, env_scale,  -env_scale,
+                      env_scale,  -env_scale, env_scale};
   std::vector<Transform3s> transforms(n);
 
   generateRandomTransforms(extents, transforms, n);
@@ -421,9 +420,9 @@ void generateEnvironments(std::vector<CollisionObject*>& env,
 }
 
 void generateEnvironmentsMesh(std::vector<CollisionObject*>& env,
-                              CoalScalar env_scale, std::size_t n) {
-  CoalScalar extents[] = {-env_scale, env_scale,  -env_scale,
-                          env_scale,  -env_scale, env_scale};
+                              Scalar env_scale, std::size_t n) {
+  Scalar extents[] = {-env_scale, env_scale,  -env_scale,
+                      env_scale,  -env_scale, env_scale};
   std::vector<Transform3s> transforms;
 
   generateRandomTransforms(extents, transforms, n);
@@ -457,7 +456,7 @@ void generateEnvironmentsMesh(std::vector<CollisionObject*>& env,
   }
 }
 
-Convex<Quadrilateral> buildBox(CoalScalar l, CoalScalar w, CoalScalar d) {
+Convex<Quadrilateral> buildBox(Scalar l, Scalar w, Scalar d) {
   std::shared_ptr<std::vector<Vec3s>> pts(new std::vector<Vec3s>(
       {Vec3s(l, w, d), Vec3s(l, w, -d), Vec3s(l, -w, d), Vec3s(l, -w, -d),
        Vec3s(-l, w, d), Vec3s(-l, w, -d), Vec3s(-l, -w, d),
@@ -499,7 +498,7 @@ void toEllipsoid(Vec3s& point, const Ellipsoid& ellipsoid) {
 }
 
 Convex<Triangle> constructPolytopeFromEllipsoid(const Ellipsoid& ellipsoid) {
-  CoalScalar PHI = (1 + std::sqrt(CoalScalar(5))) / 2;
+  Scalar PHI = (1 + std::sqrt(Scalar(5))) / 2;
 
   // vertices
   std::shared_ptr<std::vector<Vec3s>> pts(new std::vector<Vec3s>({
@@ -556,50 +555,50 @@ Convex<Triangle> constructPolytopeFromEllipsoid(const Ellipsoid& ellipsoid) {
   );
 }
 
-Box makeRandomBox(CoalScalar min_size, CoalScalar max_size) {
+Box makeRandomBox(Scalar min_size, Scalar max_size) {
   return Box(Vec3s(rand_interval(min_size, max_size),
                    rand_interval(min_size, max_size),
                    rand_interval(min_size, max_size)));
 }
 
-Sphere makeRandomSphere(CoalScalar min_size, CoalScalar max_size) {
+Sphere makeRandomSphere(Scalar min_size, Scalar max_size) {
   return Sphere(rand_interval(min_size, max_size));
 }
 
-Ellipsoid makeRandomEllipsoid(CoalScalar min_size, CoalScalar max_size) {
+Ellipsoid makeRandomEllipsoid(Scalar min_size, Scalar max_size) {
   return Ellipsoid(Vec3s(rand_interval(min_size, max_size),
                          rand_interval(min_size, max_size),
                          rand_interval(min_size, max_size)));
 }
 
-Capsule makeRandomCapsule(std::array<CoalScalar, 2> min_size,
-                          std::array<CoalScalar, 2> max_size) {
+Capsule makeRandomCapsule(std::array<Scalar, 2> min_size,
+                          std::array<Scalar, 2> max_size) {
   return Capsule(rand_interval(min_size[0], max_size[0]),
                  rand_interval(min_size[1], max_size[1]));
 }
 
-Cone makeRandomCone(std::array<CoalScalar, 2> min_size,
-                    std::array<CoalScalar, 2> max_size) {
+Cone makeRandomCone(std::array<Scalar, 2> min_size,
+                    std::array<Scalar, 2> max_size) {
   return Cone(rand_interval(min_size[0], max_size[0]),
               rand_interval(min_size[1], max_size[1]));
 }
 
-Cylinder makeRandomCylinder(std::array<CoalScalar, 2> min_size,
-                            std::array<CoalScalar, 2> max_size) {
+Cylinder makeRandomCylinder(std::array<Scalar, 2> min_size,
+                            std::array<Scalar, 2> max_size) {
   return Cylinder(rand_interval(min_size[0], max_size[0]),
                   rand_interval(min_size[1], max_size[1]));
 }
 
-Convex<Triangle> makeRandomConvex(CoalScalar min_size, CoalScalar max_size) {
+Convex<Triangle> makeRandomConvex(Scalar min_size, Scalar max_size) {
   Ellipsoid ellipsoid = makeRandomEllipsoid(min_size, max_size);
   return constructPolytopeFromEllipsoid(ellipsoid);
 }
 
-Plane makeRandomPlane(CoalScalar min_size, CoalScalar max_size) {
+Plane makeRandomPlane(Scalar min_size, Scalar max_size) {
   return Plane(Vec3s::Random().normalized(), rand_interval(min_size, max_size));
 }
 
-Halfspace makeRandomHalfspace(CoalScalar min_size, CoalScalar max_size) {
+Halfspace makeRandomHalfspace(Scalar min_size, Scalar max_size) {
   return Halfspace(Vec3s::Random().normalized(),
                    rand_interval(min_size, max_size));
 }
@@ -613,43 +612,37 @@ std::shared_ptr<ShapeBase> makeRandomGeometry(NODE_TYPE node_type) {
                         std::invalid_argument);
       break;
     case GEOM_BOX:
-      return std::make_shared<Box>(
-          makeRandomBox(CoalScalar(0.1), CoalScalar(1)));
+      return std::make_shared<Box>(makeRandomBox(Scalar(0.1), Scalar(1)));
       break;
     case GEOM_SPHERE:
-      return std::make_shared<Sphere>(
-          makeRandomSphere(CoalScalar(0.1), CoalScalar(1)));
+      return std::make_shared<Sphere>(makeRandomSphere(Scalar(0.1), Scalar(1)));
       break;
     case GEOM_ELLIPSOID:
       return std::make_shared<Ellipsoid>(
-          makeRandomEllipsoid(CoalScalar(0.1), CoalScalar(1)));
+          makeRandomEllipsoid(Scalar(0.1), Scalar(1)));
       break;
     case GEOM_CAPSULE:
-      return std::make_shared<Capsule>(
-          makeRandomCapsule({CoalScalar(0.1), CoalScalar(0.2)},
-                            {CoalScalar(0.8), CoalScalar(1)}));
+      return std::make_shared<Capsule>(makeRandomCapsule(
+          {Scalar(0.1), Scalar(0.2)}, {Scalar(0.8), Scalar(1)}));
       break;
     case GEOM_CONE:
-      return std::make_shared<Cone>(
-          makeRandomCone({CoalScalar(0.1), CoalScalar(0.2)},
-                         {CoalScalar(0.8), CoalScalar(1.0)}));
+      return std::make_shared<Cone>(makeRandomCone({Scalar(0.1), Scalar(0.2)},
+                                                   {Scalar(0.8), Scalar(1.0)}));
       break;
     case GEOM_CYLINDER:
-      return std::make_shared<Cylinder>(
-          makeRandomCylinder({CoalScalar(0.1), CoalScalar(0.2)},
-                             {CoalScalar(0.8), CoalScalar(1.0)}));
+      return std::make_shared<Cylinder>(makeRandomCylinder(
+          {Scalar(0.1), Scalar(0.2)}, {Scalar(0.8), Scalar(1.0)}));
       break;
     case GEOM_CONVEX:
       return std::make_shared<Convex<Triangle>>(
-          makeRandomConvex(CoalScalar(0.1), CoalScalar(1)));
+          makeRandomConvex(Scalar(0.1), Scalar(1)));
       break;
     case GEOM_PLANE:
-      return std::make_shared<Plane>(
-          makeRandomPlane(CoalScalar(0.1), CoalScalar(1)));
+      return std::make_shared<Plane>(makeRandomPlane(Scalar(0.1), Scalar(1)));
       break;
     case GEOM_HALFSPACE:
       return std::make_shared<Halfspace>(
-          makeRandomHalfspace(CoalScalar(0.1), CoalScalar(1)));
+          makeRandomHalfspace(Scalar(0.1), Scalar(1)));
       break;
     default:
       COAL_THROW_PRETTY(std::string(get_node_type_name(node_type)) +

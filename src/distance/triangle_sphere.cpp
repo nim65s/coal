@@ -43,20 +43,20 @@ namespace coal {
 
 namespace internal {
 template <>
-CoalScalar ShapeShapeDistance<TriangleP, Sphere>(
+Scalar ShapeShapeDistance<TriangleP, Sphere>(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2, const GJKSolver*,
     const bool, Vec3s& p1, Vec3s& p2, Vec3s& normal) {
   const TriangleP& s1 = static_cast<const TriangleP&>(*o1);
   const Sphere& s2 = static_cast<const Sphere&>(*o2);
-  const CoalScalar distance =
+  const Scalar distance =
       details::sphereTriangleDistance(s2, tf2, s1, tf1, p2, p1, normal);
   normal = -normal;
   return distance;
 }
 
 template <>
-CoalScalar ShapeShapeDistance<Sphere, TriangleP>(
+Scalar ShapeShapeDistance<Sphere, TriangleP>(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2, const GJKSolver*,
     const bool, Vec3s& p1, Vec3s& p2, Vec3s& normal) {

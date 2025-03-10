@@ -9,11 +9,9 @@
 
 using namespace coal;
 
-static CoalScalar epsilon = CoalScalar(1e-6);
+static Scalar epsilon = Scalar(1e-6);
 
-static bool approx(CoalScalar x, CoalScalar y) {
-  return std::abs(x - y) < epsilon;
-}
+static bool approx(Scalar x, Scalar y) { return std::abs(x - y) < epsilon; }
 
 BOOST_AUTO_TEST_CASE(projection_test_line) {
   Vec3s v1(0, 0, 0);
@@ -49,10 +47,10 @@ BOOST_AUTO_TEST_CASE(projection_test_triangle) {
   Vec3s p(1, 1, 1);
   Project::ProjectResult res = Project::projectTriangle(v1, v2, v3, p);
   BOOST_CHECK(res.encode == 7);
-  BOOST_CHECK(approx(res.sqr_distance, CoalScalar(4 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[0], CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[1], CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[2], CoalScalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.sqr_distance, Scalar(4 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[0], Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[1], Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[2], Scalar(1 / 3.0)));
 
   p = Vec3s(0, 0, 1.5);
   res = Project::projectTriangle(v1, v2, v3, p);
@@ -121,38 +119,38 @@ BOOST_AUTO_TEST_CASE(projection_test_tetrahedron) {
   p = Vec3s(0, 0, 0);
   res = Project::projectTetrahedra(v1, v2, v3, v4, p);
   BOOST_CHECK(res.encode == 7);
-  BOOST_CHECK(approx(res.sqr_distance, CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[0], CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[1], CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[2], CoalScalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.sqr_distance, Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[0], Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[1], Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[2], Scalar(1 / 3.0)));
   BOOST_CHECK(approx(res.parameterization[3], 0));
 
   p = Vec3s(0, 1, 1);
   res = Project::projectTetrahedra(v1, v2, v3, v4, p);
   BOOST_CHECK(res.encode == 11);
-  BOOST_CHECK(approx(res.sqr_distance, CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[0], CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[1], CoalScalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.sqr_distance, Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[0], Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[1], Scalar(1 / 3.0)));
   BOOST_CHECK(approx(res.parameterization[2], 0));
-  BOOST_CHECK(approx(res.parameterization[3], CoalScalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[3], Scalar(1 / 3.0)));
 
   p = Vec3s(1, 1, 0);
   res = Project::projectTetrahedra(v1, v2, v3, v4, p);
   BOOST_CHECK(res.encode == 14);
-  BOOST_CHECK(approx(res.sqr_distance, CoalScalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.sqr_distance, Scalar(1 / 3.0)));
   BOOST_CHECK(approx(res.parameterization[0], 0));
-  BOOST_CHECK(approx(res.parameterization[1], CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[2], CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[3], CoalScalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[1], Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[2], Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[3], Scalar(1 / 3.0)));
 
   p = Vec3s(1, 0, 1);
   res = Project::projectTetrahedra(v1, v2, v3, v4, p);
   BOOST_CHECK(res.encode == 13);
-  BOOST_CHECK(approx(res.sqr_distance, CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[0], CoalScalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.sqr_distance, Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[0], Scalar(1 / 3.0)));
   BOOST_CHECK(approx(res.parameterization[1], 0));
-  BOOST_CHECK(approx(res.parameterization[2], CoalScalar(1 / 3.0)));
-  BOOST_CHECK(approx(res.parameterization[3], CoalScalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[2], Scalar(1 / 3.0)));
+  BOOST_CHECK(approx(res.parameterization[3], Scalar(1 / 3.0)));
 
   p = Vec3s(1.5, 1.5, 1.5);
   res = Project::projectTetrahedra(v1, v2, v3, v4, p);

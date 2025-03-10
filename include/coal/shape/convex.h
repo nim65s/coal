@@ -75,7 +75,7 @@ class Convex : public ConvexBase {
 
   Vec3s computeCOM() const;
 
-  CoalScalar computeVolume() const;
+  Scalar computeVolume() const;
 
   ///
   /// @brief Set the current Convex from a list of points and polygons.

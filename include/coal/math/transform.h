@@ -43,8 +43,8 @@
 
 namespace coal {
 
-COAL_DEPRECATED typedef Eigen::Quaternion<CoalScalar> Quaternion3f;
-typedef Eigen::Quaternion<CoalScalar> Quats;
+COAL_DEPRECATED typedef Eigen::Quaternion<Scalar> Quaternion3f;
+typedef Eigen::Quaternion<Scalar> Quats;
 
 static inline std::ostream& operator<<(std::ostream& o, const Quats& q) {
   o << "(" << q.w() << " " << q.x() << " " << q.y() << " " << q.z() << ")";
@@ -190,8 +190,7 @@ class COAL_DLLAPI Transform3s {
 
   /// @brief check whether the transform is identity
   inline bool isIdentity(
-      const CoalScalar& prec =
-          Eigen::NumTraits<CoalScalar>::dummy_precision()) const {
+      const Scalar& prec = Eigen::NumTraits<Scalar>::dummy_precision()) const {
     return R.isIdentity(prec) && T.isZero(prec);
   }
 
@@ -222,26 +221,26 @@ class COAL_DLLAPI Transform3s {
 
 template <typename Derived>
 inline Quats fromAxisAngle(const Eigen::MatrixBase<Derived>& axis,
-                           CoalScalar angle) {
-  return Quats(Eigen::AngleAxis<CoalScalar>(angle, axis));
+                           Scalar angle) {
+  return Quats(Eigen::AngleAxis<Scalar>(angle, axis));
 }
 
 /// @brief Uniformly random quaternion sphere.
 /// Code taken from Pinocchio (https://github.com/stack-of-tasks/pinocchio).
 inline Quats uniformRandomQuaternion() {
   // Rotational part
-  const CoalScalar u1 = (CoalScalar)rand() / CoalScalar(RAND_MAX);
-  const CoalScalar u2 = (CoalScalar)rand() / CoalScalar(RAND_MAX);
-  const CoalScalar u3 = (CoalScalar)rand() / CoalScalar(RAND_MAX);
+  const Scalar u1 = (Scalar)rand() / Scalar(RAND_MAX);
+  const Scalar u2 = (Scalar)rand() / Scalar(RAND_MAX);
+  const Scalar u3 = (Scalar)rand() / Scalar(RAND_MAX);
 
-  const CoalScalar mult1 = std::sqrt(CoalScalar(1.0) - u1);
-  const CoalScalar mult2 = std::sqrt(u1);
+  const Scalar mult1 = std::sqrt(Scalar(1.0) - u1);
+  const Scalar mult2 = std::sqrt(u1);
 
-  static const CoalScalar PI_value = static_cast<CoalScalar>(EIGEN_PI);
-  CoalScalar s2 = std::sin(2 * PI_value * u2);
-  CoalScalar c2 = std::cos(2 * PI_value * u2);
-  CoalScalar s3 = std::sin(2 * PI_value * u3);
-  CoalScalar c3 = std::cos(2 * PI_value * u3);
+  static const Scalar PI_value = static_cast<Scalar>(EIGEN_PI);
+  Scalar s2 = std::sin(2 * PI_value * u2);
+  Scalar c2 = std::cos(2 * PI_value * u2);
+  Scalar s3 = std::sin(2 * PI_value * u3);
+  Scalar c3 = std::cos(2 * PI_value * u3);
 
   Quats q;
   q.w() = mult1 * s2;

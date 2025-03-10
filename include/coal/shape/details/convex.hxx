@@ -93,15 +93,15 @@ Matrix3s Convex<PolygonT>::computeMomentofInertia() const {
   Matrix3s C = Matrix3s::Zero();
 
   Matrix3s C_canonical;
-  C_canonical << CoalScalar(1 / 60),  //
-      CoalScalar(1 / 120),            //
-      CoalScalar(1 / 120),            //
-      CoalScalar(1 / 120),            //
-      CoalScalar(1 / 60),             //
-      CoalScalar(1 / 120),            //
-      CoalScalar(1 / 120),            //
-      CoalScalar(1 / 120),            //
-      CoalScalar(1 / 60);
+  C_canonical << Scalar(1 / 60),  //
+      Scalar(1 / 120),            //
+      Scalar(1 / 120),            //
+      Scalar(1 / 120),            //
+      Scalar(1 / 60),             //
+      Scalar(1 / 120),            //
+      Scalar(1 / 120),            //
+      Scalar(1 / 120),            //
+      Scalar(1 / 60);
 
   if (!(points.get())) {
     std::cerr
@@ -124,7 +124,7 @@ Matrix3s Convex<PolygonT>::computeMomentofInertia() const {
     Vec3s plane_center(0, 0, 0);
     for (size_type j = 0; j < polygon.size(); ++j)
       plane_center += points_[polygon[(index_type)j]];
-    plane_center /= CoalScalar(polygon.size());
+    plane_center /= Scalar(polygon.size());
 
     // compute the volume of tetrahedron making by neighboring two points, the
     // plane center and the reference point (zero) of the convex shape
@@ -151,7 +151,7 @@ Vec3s Convex<PolygonT>::computeCOM() const {
   typedef typename PolygonT::index_type index_type;
 
   Vec3s com(0, 0, 0);
-  CoalScalar vol = 0;
+  Scalar vol = 0;
   if (!(points.get())) {
     std::cerr << "Error in `Convex::computeCOM`! Convex has no vertices."
               << std::endl;
@@ -170,7 +170,7 @@ Vec3s Convex<PolygonT>::computeCOM() const {
     Vec3s plane_center(0, 0, 0);
     for (size_type j = 0; j < polygon.size(); ++j)
       plane_center += points_[polygon[(index_type)j]];
-    plane_center /= CoalScalar(polygon.size());
+    plane_center /= Scalar(polygon.size());
 
     // compute the volume of tetrahedron making by neighboring two points, the
     // plane center and the reference point (zero) of the convex shape
@@ -181,7 +181,7 @@ Vec3s Convex<PolygonT>::computeCOM() const {
           polygon[static_cast<index_type>((j + 1) % polygon.size())];
       const Vec3s& v1 = points_[e_first];
       const Vec3s& v2 = points_[e_second];
-      CoalScalar d_six_vol = (v1.cross(v2)).dot(v3);
+      Scalar d_six_vol = (v1.cross(v2)).dot(v3);
       vol += d_six_vol;
       com += (points_[e_first] + points_[e_second] + plane_center) * d_six_vol;
     }
@@ -191,11 +191,11 @@ Vec3s Convex<PolygonT>::computeCOM() const {
 }
 
 template <typename PolygonT>
-CoalScalar Convex<PolygonT>::computeVolume() const {
+Scalar Convex<PolygonT>::computeVolume() const {
   typedef typename PolygonT::size_type size_type;
   typedef typename PolygonT::index_type index_type;
 
-  CoalScalar vol = 0;
+  Scalar vol = 0;
   if (!(points.get())) {
     std::cerr << "Error in `Convex::computeVolume`! Convex has no vertices."
               << std::endl;
@@ -215,7 +215,7 @@ CoalScalar Convex<PolygonT>::computeVolume() const {
     Vec3s plane_center(0, 0, 0);
     for (size_type j = 0; j < polygon.size(); ++j)
       plane_center += points_[polygon[(index_type)j]];
-    plane_center /= CoalScalar(polygon.size());
+    plane_center /= Scalar(polygon.size());
 
     // compute the volume of tetrahedron making by neighboring two points, the
     // plane center and the reference point (zero point) of the convex shape
@@ -226,7 +226,7 @@ CoalScalar Convex<PolygonT>::computeVolume() const {
           polygon[static_cast<index_type>((j + 1) % polygon.size())];
       const Vec3s& v1 = points_[e_first];
       const Vec3s& v2 = points_[e_second];
-      CoalScalar d_six_vol = (v1.cross(v2)).dot(v3);
+      Scalar d_six_vol = (v1.cross(v2)).dot(v3);
       vol += d_six_vol;
     }
   }
