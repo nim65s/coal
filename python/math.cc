@@ -81,9 +81,9 @@ void exposeMaths() {
       .def(dv::init<Transform3s>())
       .def(dv::init<Transform3s, const Matrix3s::MatrixBase&,
                     const Vec3s::MatrixBase&>())
-      .def(dv::init<Transform3s, const Quatf&, const Vec3s::MatrixBase&>())
+      .def(dv::init<Transform3s, const Quats&, const Vec3s::MatrixBase&>())
       .def(dv::init<Transform3s, const Matrix3s&>())
-      .def(dv::init<Transform3s, const Quatf&>())
+      .def(dv::init<Transform3s, const Quats&>())
       .def(dv::init<Transform3s, const Vec3s&>())
       .def(dv::init<Transform3s, const Transform3s&>())
 
@@ -105,7 +105,7 @@ void exposeMaths() {
                            &Transform3s::setTransform<Matrix3s, Vec3s>))
       .def(dv::member_func(
           "setTransform",
-          static_cast<void (Transform3s::*)(const Quatf&, const Vec3s&)>(
+          static_cast<void (Transform3s::*)(const Quats&, const Vec3s&)>(
               &Transform3s::setTransform)))
       .def(dv::member_func("setIdentity", &Transform3s::setIdentity))
       .def(dv::member_func("Identity", &Transform3s::Identity))

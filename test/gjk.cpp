@@ -50,7 +50,7 @@ using coal::CoalScalar;
 using coal::GJKSolver;
 using coal::GJKVariant;
 using coal::Matrix3s;
-using coal::Quatf;
+using coal::Quats;
 using coal::Transform3s;
 using coal::TriangleP;
 using coal::Vec3s;
@@ -109,7 +109,7 @@ void test_gjk_distance_triangle_triangle(
                      CoalScalar(3.7281499023437501));
       Q3_loc = Vec3s(CoalScalar(-10.926), CoalScalar(-1.2866180419921875),
                      CoalScalar(3.72335400390625));
-      Transform3s tf(Quatf(CoalScalar(-0.42437287410898855),
+      Transform3s tf(Quats(CoalScalar(-0.42437287410898855),
                            CoalScalar(-0.26862477561450587),
                            CoalScalar(-0.46249645019513175),
                            CoalScalar(0.73064726592483387)),
@@ -360,8 +360,8 @@ void test_gjk_unit_sphere(CoalScalar center_distance, Vec3s ray,
   sphere.setSweptSphereRadius(swept_sphere_radius);
 
   typedef Eigen::Matrix<CoalScalar, 4, 1> Vec4f;
-  Transform3s tf0(Quatf(Vec4f::Random().normalized()), Vec3s::Zero());
-  Transform3s tf1(Quatf(Vec4f::Random().normalized()), center_distance * ray);
+  Transform3s tf0(Quats(Vec4f::Random().normalized()), Vec3s::Zero());
+  Transform3s tf1(Quats(Vec4f::Random().normalized()), center_distance * ray);
 
   bool expect_collision = center_distance <= 2 * (r + swept_sphere_radius);
 

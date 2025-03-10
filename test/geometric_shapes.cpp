@@ -395,7 +395,7 @@ BOOST_AUTO_TEST_CASE(collide_boxbox) {
   // CoalScalar depth;
   Vec3s normal;
 
-  Quatf q;
+  Quats q;
   q = AngleAxis((CoalScalar)3.140 / 6, UnitZ);
 
   tf1 = Transform3s();

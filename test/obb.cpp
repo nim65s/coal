@@ -70,7 +70,7 @@ void randomTransform(Matrix3s& B, Vec3s& T, const Vec3s& a, const Vec3s& b,
   T = (Vec3s::Random() / sqrt(3)) * 1.5 * N;
   // T.setZero();
 
-  Quatf q;
+  Quats q;
   q.coeffs().setRandom();
   q.normalize();
   B = q;
@@ -1209,7 +1209,7 @@ BenchmarkResult benchmark_obb_case(const Matrix3s& B, const Vec3s& T,
     result.failure = false;
   }
   if (result.failure) {
-    std::cerr << "\nR = " << Quatf(B).coeffs().transpose().format(py_fmt)
+    std::cerr << "\nR = " << Quats(B).coeffs().transpose().format(py_fmt)
               << "\nT = " << T.transpose().format(py_fmt)
               << "\na = " << a.transpose().format(py_fmt)
               << "\nb = " << b.transpose().format(py_fmt)

@@ -182,7 +182,7 @@ bool defaultDistanceFunction(CollisionObject* o1, CollisionObject* o2,
 
 std::string getNodeTypeName(NODE_TYPE node_type);
 
-Quatf makeQuat(CoalScalar w, CoalScalar x, CoalScalar y, CoalScalar z);
+Quats makeQuat(CoalScalar w, CoalScalar x, CoalScalar y, CoalScalar z);
 
 std::ostream& operator<<(std::ostream& os, const Transform3s& tf);
 

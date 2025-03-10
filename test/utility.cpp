@@ -367,8 +367,8 @@ std::string getNodeTypeName(NODE_TYPE node_type) {
     return std::string("invalid");
 }
 
-Quatf makeQuat(CoalScalar w, CoalScalar x, CoalScalar y, CoalScalar z) {
-  Quatf q;
+Quats makeQuat(CoalScalar w, CoalScalar x, CoalScalar y, CoalScalar z) {
+  Quats q;
   q.w() = w;
   q.x() = x;
   q.y() = y;

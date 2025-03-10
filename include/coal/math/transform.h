@@ -44,9 +44,9 @@
 namespace coal {
 
 COAL_DEPRECATED typedef Eigen::Quaternion<CoalScalar> Quaternion3f;
-typedef Eigen::Quaternion<CoalScalar> Quatf;
+typedef Eigen::Quaternion<CoalScalar> Quats;
 
-static inline std::ostream& operator<<(std::ostream& o, const Quatf& q) {
+static inline std::ostream& operator<<(std::ostream& o, const Quats& q) {
   o << "(" << q.w() << " " << q.x() << " " << q.y() << " " << q.z() << ")";
   return o;
 }
@@ -75,14 +75,14 @@ class COAL_DLLAPI Transform3s {
 
   /// @brief Construct transform from rotation and translation
   template <typename Vector3Like>
-  Transform3s(const Quatf& q_, const Eigen::MatrixBase<Vector3Like>& T_)
+  Transform3s(const Quats& q_, const Eigen::MatrixBase<Vector3Like>& T_)
       : R(q_.toRotationMatrix()), T(T_) {}
 
   /// @brief Construct transform from rotation
   Transform3s(const Matrix3s& R_) : R(R_), T(Vec3s::Zero()) {}
 
   /// @brief Construct transform from rotation
-  Transform3s(const Quatf& q_) : R(q_), T(Vec3s::Zero()) {}
+  Transform3s(const Quats& q_) : R(q_), T(Vec3s::Zero()) {}
 
   /// @brief Construct transform from translation
   Transform3s(const Vec3s& T_) : R(Matrix3s::Identity()), T(T_) {}
@@ -116,7 +116,7 @@ class COAL_DLLAPI Transform3s {
   inline Matrix3s& rotation() { return R; }
 
   /// @brief get quaternion
-  inline Quatf getQuatRotation() const { return Quatf(R); }
+  inline Quats getQuatRotation() const { return Quats(R); }
 
   /// @brief set transform from rotation and translation
   template <typename Matrix3Like, typename Vector3Like>
@@ -127,7 +127,7 @@ class COAL_DLLAPI Transform3s {
   }
 
   /// @brief set transform from rotation and translation
-  inline void setTransform(const Quatf& q_, const Vec3s& T_) {
+  inline void setTransform(const Quats& q_, const Vec3s& T_) {
     R = q_.toRotationMatrix();
     T = T_;
   }
@@ -145,7 +145,7 @@ class COAL_DLLAPI Transform3s {
   }
 
   /// @brief set transform from rotation
-  inline void setQuatRotation(const Quatf& q_) { R = q_.toRotationMatrix(); }
+  inline void setQuatRotation(const Quats& q_) { R = q_.toRotationMatrix(); }
 
   /// @brief transform a given vector by the transform
   template <typename Derived>
@@ -221,14 +221,14 @@ class COAL_DLLAPI Transform3s {
 };
 
 template <typename Derived>
-inline Quatf fromAxisAngle(const Eigen::MatrixBase<Derived>& axis,
+inline Quats fromAxisAngle(const Eigen::MatrixBase<Derived>& axis,
                            CoalScalar angle) {
-  return Quatf(Eigen::AngleAxis<CoalScalar>(angle, axis));
+  return Quats(Eigen::AngleAxis<CoalScalar>(angle, axis));
 }
 
 /// @brief Uniformly random quaternion sphere.
 /// Code taken from Pinocchio (https://github.com/stack-of-tasks/pinocchio).
-inline Quatf uniformRandomQuaternion() {
+inline Quats uniformRandomQuaternion() {
   // Rotational part
   const CoalScalar u1 = (CoalScalar)rand() / CoalScalar(RAND_MAX);
   const CoalScalar u2 = (CoalScalar)rand() / CoalScalar(RAND_MAX);
@@ -243,7 +243,7 @@ inline Quatf uniformRandomQuaternion() {
   CoalScalar s3 = std::sin(2 * PI_value * u3);
   CoalScalar c3 = std::cos(2 * PI_value * u3);
 
-  Quatf q;
+  Quats q;
   q.w() = mult1 * s2;
   q.x() = mult1 * c2;
   q.y() = mult2 * s3;
@@ -252,7 +252,7 @@ inline Quatf uniformRandomQuaternion() {
 }
 
 inline void Transform3s::setRandom() {
-  const Quatf q = uniformRandomQuaternion();
+  const Quats q = uniformRandomQuaternion();
   this->rotation() = q.matrix();
   this->translation().setRandom();
 }
