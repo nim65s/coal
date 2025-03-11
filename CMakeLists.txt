@@ -72,6 +72,7 @@ option(
   "Make Coal retro-compatible with HPP-FCL."
   FALSE
 )
+option(COAL_USE_DOUBLE_PRECISION "Use double precision (64-bit) instead of single precision (32-bit)" TRUE)
 
 # Check if the submodule cmake have been initialized
 set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake")
