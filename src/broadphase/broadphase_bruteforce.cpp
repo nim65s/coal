@@ -39,6 +39,7 @@
 
 #include <iterator>
 #include <algorithm>
+#include "coal/tracy.hh"
 
 namespace coal {
 
@@ -86,6 +87,9 @@ void NaiveCollisionManager::getObjects(
 //==============================================================================
 void NaiveCollisionManager::collide(CollisionObject* obj,
                                     CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::NaiveCollisionManager::collide(CollisionObject*, "
+      "CollisionCallBackBase*)");
   callback->init();
   if (size() == 0) return;
 
@@ -97,6 +101,9 @@ void NaiveCollisionManager::collide(CollisionObject* obj,
 //==============================================================================
 void NaiveCollisionManager::distance(CollisionObject* obj,
                                      DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::NaiveCollisionManager::distance(CollisionObject*, "
+      "DistanceCallBackBase*)");
   callback->init();
   if (size() == 0) return;
 
@@ -110,6 +117,8 @@ void NaiveCollisionManager::distance(CollisionObject* obj,
 
 //==============================================================================
 void NaiveCollisionManager::collide(CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::NaiveCollisionManager::collide(CollisionCallBackBase*)");
   callback->init();
   if (size() == 0) return;
 
@@ -128,6 +137,8 @@ void NaiveCollisionManager::collide(CollisionCallBackBase* callback) const {
 
 //==============================================================================
 void NaiveCollisionManager::distance(DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::NaiveCollisionManager::distance(CollisionCallBackBase*)");
   callback->init();
   if (size() == 0) return;
 
@@ -148,6 +159,9 @@ void NaiveCollisionManager::distance(DistanceCallBackBase* callback) const {
 //==============================================================================
 void NaiveCollisionManager::collide(BroadPhaseCollisionManager* other_manager_,
                                     CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::NaiveCollisionManager::collide(BroadPhaseCollisionManager*, "
+      "CollisionCallBackBase*)");
   callback->init();
   NaiveCollisionManager* other_manager =
       static_cast<NaiveCollisionManager*>(other_manager_);
@@ -171,6 +185,9 @@ void NaiveCollisionManager::collide(BroadPhaseCollisionManager* other_manager_,
 //==============================================================================
 void NaiveCollisionManager::distance(BroadPhaseCollisionManager* other_manager_,
                                      DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::NaiveCollisionManager::distance(BroadPhaseCollisionManager*, "
+      "DistanceCallBackBase*)");
   callback->init();
   NaiveCollisionManager* other_manager =
       static_cast<NaiveCollisionManager*>(other_manager_);

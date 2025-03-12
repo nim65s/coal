@@ -36,6 +36,7 @@
 /** @author Jia Pan */
 
 #include "coal/broadphase/broadphase_dynamic_AABB_tree.h"
+#include "coal/tracy.hh"
 
 #ifdef COAL_HAVE_OCTOMAP
 #include "coal/octree.h"
@@ -663,6 +664,9 @@ void DynamicAABBTreeCollisionManager::getObjects(
 //==============================================================================
 void DynamicAABBTreeCollisionManager::collide(
     CollisionObject* obj, CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::DynamicAABBTreeCollisionManager::collide(CollisionObject*, "
+      "CollisionCallBackBase*)");
   callback->init();
   if (size() == 0) return;
   switch (obj->collisionGeometry()->getNodeType()) {
@@ -688,6 +692,9 @@ void DynamicAABBTreeCollisionManager::collide(
 //==============================================================================
 void DynamicAABBTreeCollisionManager::distance(
     CollisionObject* obj, DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::DynamicAABBTreeCollisionManager::distance(CollisionObject*, "
+      "DistanceCallBackBase*)");
   callback->init();
   if (size() == 0) return;
   Scalar min_dist = (std::numeric_limits<Scalar>::max)();
@@ -714,6 +721,8 @@ void DynamicAABBTreeCollisionManager::distance(
 //==============================================================================
 void DynamicAABBTreeCollisionManager::collide(
     CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::DynamicAABBTreeCollisionManager::collide(CollisionCallBackBase*)");
   callback->init();
   if (size() == 0) return;
   detail::dynamic_AABB_tree::selfCollisionRecurse(dtree.getRoot(), callback);
@@ -722,6 +731,8 @@ void DynamicAABBTreeCollisionManager::collide(
 //==============================================================================
 void DynamicAABBTreeCollisionManager::distance(
     DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::DynamicAABBTreeCollisionManager::distance(DistanceCallBackBase*)");
   callback->init();
   if (size() == 0) return;
   Scalar min_dist = (std::numeric_limits<Scalar>::max)();
@@ -733,6 +744,9 @@ void DynamicAABBTreeCollisionManager::distance(
 void DynamicAABBTreeCollisionManager::collide(
     BroadPhaseCollisionManager* other_manager_,
     CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::DynamicAABBTreeCollisionManager::collide("
+      "BroadPhaseCollisionManager*, CollisionCallBackBase*)");
   callback->init();
   DynamicAABBTreeCollisionManager* other_manager =
       static_cast<DynamicAABBTreeCollisionManager*>(other_manager_);
@@ -745,6 +759,9 @@ void DynamicAABBTreeCollisionManager::collide(
 void DynamicAABBTreeCollisionManager::distance(
     BroadPhaseCollisionManager* other_manager_,
     DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::DynamicAABBTreeCollisionManager::distance("
+      "BroadPhaseCollisionManager*, DistanceCallBackBase*)");
   callback->init();
   DynamicAABBTreeCollisionManager* other_manager =
       static_cast<DynamicAABBTreeCollisionManager*>(other_manager_);
