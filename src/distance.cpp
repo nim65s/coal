@@ -40,7 +40,6 @@
 #include "coal/distance_func_matrix.h"
 #include "coal/narrowphase/narrowphase.h"
 
-#include <iostream>
 
 namespace coal {
 
