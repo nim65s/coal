@@ -60,30 +60,12 @@
 #endif  // COAL_HAS_OCTOMAP
 
 namespace coal {
-#ifdef COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL
-// We keep the FCL_REAL typedef and the Vec[..]f typedefs for backward
-// compatibility.
-#ifdef COAL_USE_DOUBLE_PRECISION
-typedef double FCL_REAL;
-#else
-typedef float FCL_REAL;
-#endif
-typedef Eigen::Matrix<FCL_REAL, 3, 1> Vec3f;
-typedef Eigen::Matrix<FCL_REAL, 2, 1> Vec2f;
-typedef Eigen::Matrix<FCL_REAL, 6, 1> Vec6f;
-typedef Eigen::Matrix<FCL_REAL, Eigen::Dynamic, 1> VecXf;
-typedef Eigen::Matrix<FCL_REAL, 3, 3> Matrix3f;
-typedef Eigen::Matrix<FCL_REAL, Eigen::Dynamic, 3, Eigen::RowMajor> Matrixx3f;
-typedef Eigen::Matrix<FCL_REAL, Eigen::Dynamic, 2, Eigen::RowMajor> Matrixx2f;
-typedef Eigen::Matrix<FCL_REAL, Eigen::Dynamic, Eigen::Dynamic> MatrixXf;
-#endif
-
-#ifdef COAL_USE_DOUBLE_PRECISION
-COAL_DEPRECATED typedef double CoalScalar;
-typedef double Scalar;
-#else
+#ifdef COAL_USE_FLOAT_PRECISION
 COAL_DEPRECATED typedef float CoalScalar;
 typedef float Scalar;
+#else
+COAL_DEPRECATED typedef double CoalScalar;
+typedef double Scalar;
 #endif
 typedef Eigen::Matrix<Scalar, 3, 1> Vec3s;
 typedef Eigen::Matrix<Scalar, 2, 1> Vec2s;
@@ -96,6 +78,20 @@ typedef Eigen::Matrix<Eigen::DenseIndex, Eigen::Dynamic, 3, Eigen::RowMajor>
     Matrixx3i;
 typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> MatrixXs;
 typedef Eigen::Vector2i support_func_guess_t;
+
+#ifdef COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL
+// We keep the FCL_REAL typedef and the Vec[..]f typedefs for backward
+// compatibility.
+typedef Scalar FCL_REAL;
+typedef Vec3s Vec3f;
+typedef Vec2s Vec2f;
+typedef Vec6s Vec6f;
+typedef VecXs VecXf;
+typedef Matrix3s Matrix3f;
+typedef MatrixX3s Matrixx3f;
+typedef MatrixX2s Matrixx2f;
+typedef MatrixXs MatrixXf;
+#endif
 
 /// @brief Initial guess to use for the GJK algorithm
 /// DefaultGuess: Vec3s(1, 0, 0)

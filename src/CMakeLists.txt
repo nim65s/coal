@@ -250,8 +250,8 @@ if(COAL_ENABLE_LOGGING)
   )
 endif()
 
-if (COAL_USE_DOUBLE_PRECISION)
-  target_compile_definitions(${LIBRARY_NAME} PUBLIC COAL_USE_DOUBLE_PRECISION)
+if (COAL_USE_FLOAT_PRECISION)
+  target_compile_definitions(${LIBRARY_NAME} PUBLIC COAL_USE_FLOAT_PRECISION)
 endif()
 
 if(WIN32)
