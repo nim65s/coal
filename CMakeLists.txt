@@ -77,6 +77,11 @@ option(
   "Use float precision (32-bit) instead of the default double precision (64-bit)"
   FALSE
 )
+option(
+  COAL_BUILD_WITH_TRACY
+  "Build with tracy profiler for performance analysis"
+  FALSE
+)
 
 # Check if the submodule cmake have been initialized
 set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake")
@@ -131,6 +136,7 @@ include("${JRL_CMAKE_MODULES}/boost.cmake")
 include("${JRL_CMAKE_MODULES}/python.cmake")
 include("${JRL_CMAKE_MODULES}/apple.cmake")
 include("${JRL_CMAKE_MODULES}/ide.cmake")
+include("${JRL_CMAKE_MODULES}/tracy.cmake")
 include(CMakeDependentOption)
 
 set(
@@ -164,6 +170,24 @@ cmake_dependent_option(
 )
 
 ADD_PROJECT_DEPENDENCY(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.0")
+
+# -- tracy profiling (optional)
+if(COAL_BUILD_WITH_TRACY)
+  # assume it is installed somewhere
+  ADD_PROJECT_DEPENDENCY(Tracy REQUIRED)
+  set_target_properties(
+    Tracy::TracyClient
+    PROPERTIES POSITION_INDEPENDENT_CODE True
+  )
+  if(${Tracy_FOUND})
+    message(STATUS "Tracy found on your system at ${Tracy_DIR}")
+  else()
+    message(
+      FATAL_ERROR
+      "Coal support for tracy is enabled, but tracy was not found on your system."
+    )
+  endif()
+endif(COAL_BUILD_WITH_TRACY)
 
 if(BUILD_PYTHON_INTERFACE)
   set(PYTHON_COMPONENTS Interpreter Development NumPy)
