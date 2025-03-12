@@ -66,7 +66,16 @@ ConvexBase* ConvexBase::convexHull(const Vec3s* pts, unsigned int num_points,
   Qhull qh;
   const char* command =
       qhullCommand ? qhullCommand : (keepTriangles ? "Qt" : "");
-  qh.runQhull("", 3, static_cast<int>(num_points), pts[0].data(), command);
+
+  // TODO: add a ifdef not double precision here
+  using Vec3d = Eigen::Vector3d;
+  std::vector<Vec3d> qhull_pts;
+  qhull_pts.reserve(num_points);
+  for (size_t i = 0; i < num_points; ++i) {
+    qhull_pts.push_back(pts[i].template cast<double>());
+  }
+  qh.runQhull("", 3, static_cast<int>(num_points), qhull_pts[0].data(),
+              command);
 
   if (qh.qhullStatus() != qh_ERRnone) {
     if (qh.hasQhullMessage()) std::cerr << qh.qhullMessage() << std::endl;
@@ -89,7 +98,7 @@ ConvexBase* ConvexBase::convexHull(const Vec3s* pts, unsigned int num_points,
        v != vertexList.end(); ++v) {
     QhullPoint pt((*v).point());
     pts_to_vertices[(size_t)pt.id()] = (int)i_vertex;
-    (*vertices)[i_vertex] = Vec3s(pt[0], pt[1], pt[2]);
+    (*vertices)[i_vertex] = Vec3s(Scalar(pt[0]), Scalar(pt[1]), Scalar(pt[2]));
     ++i_vertex;
   }
   assert(i_vertex == nvertex);
@@ -217,7 +226,13 @@ void ConvexBase::buildDoubleDescription() {
 
   Qhull qh;
   const char* command = "Qt";
-  qh.runQhull("", 3, static_cast<int>(num_points), (*points)[0].data(),
+  using Vec3d = Eigen::Vector3d;
+  std::vector<Vec3d> qhull_pts;
+  qhull_pts.reserve(num_points);
+  for (size_t i = 0; i < num_points; ++i) {
+    qhull_pts.push_back((*points)[i].template cast<double>());
+  }
+  qh.runQhull("", 3, static_cast<int>(num_points), qhull_pts[0].data(),
               command);
 
   if (qh.qhullStatus() != qh_ERRnone) {
@@ -232,15 +247,16 @@ void ConvexBase::buildDoubleDescriptionFromQHullResult(const Qhull& qh) {
   num_normals_and_offsets = static_cast<unsigned int>(qh.facetCount());
   normals.reset(new std::vector<Vec3s>(num_normals_and_offsets));
   std::vector<Vec3s>& normals_ = *normals;
-  offsets.reset(new std::vector<double>(num_normals_and_offsets));
-  std::vector<double>& offsets_ = *offsets;
+  offsets.reset(new std::vector<Scalar>(num_normals_and_offsets));
+  std::vector<Scalar>& offsets_ = *offsets;
   unsigned int i_normal = 0;
   for (QhullFacet facet = qh.beginFacet(); facet != qh.endFacet();
        facet = facet.next()) {
     const orgQhull::QhullHyperplane& plane = facet.hyperplane();
-    normals_[i_normal] = Vec3s(plane.coordinates()[0], plane.coordinates()[1],
-                               plane.coordinates()[2]);
-    offsets_[i_normal] = plane.offset();
+    normals_[i_normal] =
+        Vec3s(Scalar(plane.coordinates()[0]), Scalar(plane.coordinates()[1]),
+              Scalar(plane.coordinates()[2]));
+    offsets_[i_normal] = Scalar(plane.offset());
     i_normal++;
   }
   assert(static_cast<int>(i_normal) == qh.facetCount());

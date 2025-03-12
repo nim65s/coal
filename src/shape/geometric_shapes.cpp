@@ -98,7 +98,7 @@ ConvexBase::ConvexBase(const ConvexBase& other)
     normals.reset();
 
   if (other.offsets.get() && other.offsets->size() > 0) {
-    offsets.reset(new std::vector<double>(*(other.offsets)));
+    offsets.reset(new std::vector<Scalar>(*(other.offsets)));
   } else
     offsets.reset();
 
@@ -114,13 +114,13 @@ void ConvexBase::computeCenter() {
   const std::vector<Vec3s>& points_ = *points;
   for (std::size_t i = 0; i < num_points; ++i)
     center += points_[i];  // TODO(jcarpent): vectorization
-  center /= num_points;
+  center /= Scalar(num_points);
 }
 
 void Halfspace::unitNormalTest() {
-  CoalScalar l = n.norm();
+  Scalar l = n.norm();
   if (l > 0) {
-    CoalScalar inv_l = 1.0 / l;
+    Scalar inv_l = Scalar(1) / l;
     n *= inv_l;
     d *= inv_l;
   } else {
@@ -130,9 +130,9 @@ void Halfspace::unitNormalTest() {
 }
 
 void Plane::unitNormalTest() {
-  CoalScalar l = n.norm();
+  Scalar l = n.norm();
   if (l > 0) {
-    CoalScalar inv_l = 1.0 / l;
+    Scalar inv_l = Scalar(1) / l;
     n *= inv_l;
     d *= inv_l;
   } else {
@@ -143,7 +143,7 @@ void Plane::unitNormalTest() {
 
 void Box::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -154,7 +154,7 @@ void Box::computeLocalAABB() {
 
 void Sphere::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -165,7 +165,7 @@ void Sphere::computeLocalAABB() {
 
 void Ellipsoid::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -176,7 +176,7 @@ void Ellipsoid::computeLocalAABB() {
 
 void Capsule::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -187,7 +187,7 @@ void Capsule::computeLocalAABB() {
 
 void Cone::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -198,7 +198,7 @@ void Cone::computeLocalAABB() {
 
 void Cylinder::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -209,7 +209,7 @@ void Cylinder::computeLocalAABB() {
 
 void ConvexBase::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -220,7 +220,7 @@ void ConvexBase::computeLocalAABB() {
 
 void Halfspace::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -231,7 +231,7 @@ void Halfspace::computeLocalAABB() {
 
 void Plane::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);
@@ -242,7 +242,7 @@ void Plane::computeLocalAABB() {
 
 void TriangleP::computeLocalAABB() {
   computeBV<AABB>(*this, Transform3s(), aabb_local);
-  const CoalScalar ssr = this->getSweptSphereRadius();
+  const Scalar ssr = this->getSweptSphereRadius();
   if (ssr > 0) {
     aabb_local.min_ -= Vec3s::Constant(ssr);
     aabb_local.max_ += Vec3s::Constant(ssr);

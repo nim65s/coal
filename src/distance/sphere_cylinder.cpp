@@ -47,7 +47,7 @@ struct GJKSolver;
 
 namespace internal {
 template <>
-CoalScalar ShapeShapeDistance<Sphere, Cylinder>(
+Scalar ShapeShapeDistance<Sphere, Cylinder>(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2, const GJKSolver*,
     const bool, Vec3s& p1, Vec3s& p2, Vec3s& normal) {
@@ -57,13 +57,13 @@ CoalScalar ShapeShapeDistance<Sphere, Cylinder>(
 }
 
 template <>
-CoalScalar ShapeShapeDistance<Cylinder, Sphere>(
+Scalar ShapeShapeDistance<Cylinder, Sphere>(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2, const GJKSolver*,
     const bool, Vec3s& p1, Vec3s& p2, Vec3s& normal) {
   const Cylinder& s1 = static_cast<const Cylinder&>(*o1);
   const Sphere& s2 = static_cast<const Sphere&>(*o2);
-  const CoalScalar distance =
+  const Scalar distance =
       details::sphereCylinderDistance(s2, tf2, s1, tf1, p2, p1, normal);
   normal = -normal;
   return distance;

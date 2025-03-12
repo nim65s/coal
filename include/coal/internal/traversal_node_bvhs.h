@@ -86,8 +86,8 @@ class BVHCollisionTraversalNode : public CollisionTraversalNodeBase {
 
   /// @brief Determine the traversal order, is the first BVTT subtree better
   bool firstOverSecond(unsigned int b1, unsigned int b2) const {
-    CoalScalar sz1 = model1->getBV(b1).bv.size();
-    CoalScalar sz2 = model2->getBV(b2).bv.size();
+    Scalar sz1 = model1->getBV(b1).bv.size();
+    Scalar sz2 = model2->getBV(b2).bv.size();
 
     bool l1 = model1->getBV(b1).isLeaf();
     bool l2 = model2->getBV(b2).isLeaf();
@@ -124,7 +124,7 @@ class BVHCollisionTraversalNode : public CollisionTraversalNodeBase {
   /// @brief statistical information
   mutable int num_bv_tests;
   mutable int num_leaf_tests;
-  mutable CoalScalar query_time_seconds;
+  mutable Scalar query_time_seconds;
 };
 
 /// @brief Traversal node for collision between two meshes
@@ -149,7 +149,7 @@ class MeshCollisionTraversalNode : public BVHCollisionTraversalNode<BV> {
   /// @retval sqrDistLowerBound square of a lower bound of the minimal
   ///         distance between bounding volumes.
   bool BVDisjoints(unsigned int b1, unsigned int b2,
-                   CoalScalar& sqrDistLowerBound) const {
+                   Scalar& sqrDistLowerBound) const {
     if (this->enable_statistics) this->num_bv_tests++;
     bool disjoint;
     if (RTIsIdentity)
@@ -181,7 +181,7 @@ class MeshCollisionTraversalNode : public BVHCollisionTraversalNode<BV> {
   ///       and the object are not colliding, the penetration depth is
   ///       negative.
   void leafCollides(unsigned int b1, unsigned int b2,
-                    CoalScalar& sqrDistLowerBound) const {
+                    Scalar& sqrDistLowerBound) const {
     if (this->enable_statistics) this->num_leaf_tests++;
 
     const BVNode<BV>& node1 = this->model1->getBV(b1);
@@ -210,11 +210,11 @@ class MeshCollisionTraversalNode : public BVHCollisionTraversalNode<BV> {
         this->request.enable_contact || (this->request.security_margin < 0);
     Vec3s p1, p2, normal;
     DistanceResult distanceResult;
-    CoalScalar distance = internal::ShapeShapeDistance<TriangleP, TriangleP>(
+    Scalar distance = internal::ShapeShapeDistance<TriangleP, TriangleP>(
         &tri1, this->tf1, &tri2, this->tf2, &solver, compute_penetration, p1,
         p2, normal);
 
-    const CoalScalar distToCollision = distance - this->request.security_margin;
+    const Scalar distToCollision = distance - this->request.security_margin;
 
     internal::updateDistanceLowerBoundFromLeaf(this->request, *(this->result),
                                                distToCollision, p1, p2, normal);
@@ -252,19 +252,19 @@ typedef MeshCollisionTraversalNode<OBBRSS, 0> MeshCollisionTraversalNodeOBBRSS;
 namespace details {
 template <typename BV>
 struct DistanceTraversalBVDistanceLowerBound_impl {
-  static CoalScalar run(const BVNode<BV>& b1, const BVNode<BV>& b2) {
+  static Scalar run(const BVNode<BV>& b1, const BVNode<BV>& b2) {
     return b1.distance(b2);
   }
-  static CoalScalar run(const Matrix3s& R, const Vec3s& T, const BVNode<BV>& b1,
-                        const BVNode<BV>& b2) {
+  static Scalar run(const Matrix3s& R, const Vec3s& T, const BVNode<BV>& b1,
+                    const BVNode<BV>& b2) {
     return distance(R, T, b1.bv, b2.bv);
   }
 };
 
 template <>
 struct DistanceTraversalBVDistanceLowerBound_impl<OBB> {
-  static CoalScalar run(const BVNode<OBB>& b1, const BVNode<OBB>& b2) {
-    CoalScalar sqrDistLowerBound;
+  static Scalar run(const BVNode<OBB>& b1, const BVNode<OBB>& b2) {
+    Scalar sqrDistLowerBound;
     CollisionRequest request(DISTANCE_LOWER_BOUND, 0);
     // request.break_distance = ?
     if (b1.overlap(b2, request, sqrDistLowerBound)) {
@@ -273,9 +273,9 @@ struct DistanceTraversalBVDistanceLowerBound_impl<OBB> {
     }
     return sqrt(sqrDistLowerBound);
   }
-  static CoalScalar run(const Matrix3s& R, const Vec3s& T,
-                        const BVNode<OBB>& b1, const BVNode<OBB>& b2) {
-    CoalScalar sqrDistLowerBound;
+  static Scalar run(const Matrix3s& R, const Vec3s& T, const BVNode<OBB>& b1,
+                    const BVNode<OBB>& b2) {
+    Scalar sqrDistLowerBound;
     CollisionRequest request(DISTANCE_LOWER_BOUND, 0);
     // request.break_distance = ?
     if (overlap(R, T, b1.bv, b2.bv, request, sqrDistLowerBound)) {
@@ -288,8 +288,8 @@ struct DistanceTraversalBVDistanceLowerBound_impl<OBB> {
 
 template <>
 struct DistanceTraversalBVDistanceLowerBound_impl<AABB> {
-  static CoalScalar run(const BVNode<AABB>& b1, const BVNode<AABB>& b2) {
-    CoalScalar sqrDistLowerBound;
+  static Scalar run(const BVNode<AABB>& b1, const BVNode<AABB>& b2) {
+    Scalar sqrDistLowerBound;
     CollisionRequest request(DISTANCE_LOWER_BOUND, 0);
     // request.break_distance = ?
     if (b1.overlap(b2, request, sqrDistLowerBound)) {
@@ -298,9 +298,9 @@ struct DistanceTraversalBVDistanceLowerBound_impl<AABB> {
     }
     return sqrt(sqrDistLowerBound);
   }
-  static CoalScalar run(const Matrix3s& R, const Vec3s& T,
-                        const BVNode<AABB>& b1, const BVNode<AABB>& b2) {
-    CoalScalar sqrDistLowerBound;
+  static Scalar run(const Matrix3s& R, const Vec3s& T, const BVNode<AABB>& b1,
+                    const BVNode<AABB>& b2) {
+    Scalar sqrDistLowerBound;
     CollisionRequest request(DISTANCE_LOWER_BOUND, 0);
     // request.break_distance = ?
     if (overlap(R, T, b1.bv, b2.bv, request, sqrDistLowerBound)) {
@@ -340,8 +340,8 @@ class BVHDistanceTraversalNode : public DistanceTraversalNodeBase {
 
   /// @brief Determine the traversal order, is the first BVTT subtree better
   bool firstOverSecond(unsigned int b1, unsigned int b2) const {
-    CoalScalar sz1 = model1->getBV(b1).bv.size();
-    CoalScalar sz2 = model2->getBV(b2).bv.size();
+    Scalar sz1 = model1->getBV(b1).bv.size();
+    Scalar sz2 = model2->getBV(b2).bv.size();
 
     bool l1 = model1->getBV(b1).isLeaf();
     bool l2 = model2->getBV(b2).isLeaf();
@@ -378,7 +378,7 @@ class BVHDistanceTraversalNode : public DistanceTraversalNodeBase {
   /// @brief statistical information
   mutable int num_bv_tests;
   mutable int num_leaf_tests;
-  mutable CoalScalar query_time_seconds;
+  mutable Scalar query_time_seconds;
 };
 
 /// @brief Traversal node for distance computation between two meshes
@@ -418,7 +418,7 @@ class MeshDistanceTraversalNode : public BVHDistanceTraversalNode<BV> {
   }
 
   /// @brief BV culling test in one BVTT node
-  CoalScalar BVDistanceLowerBound(unsigned int b1, unsigned int b2) const {
+  Scalar BVDistanceLowerBound(unsigned int b1, unsigned int b2) const {
     if (enable_statistics) num_bv_tests++;
     if (RTIsIdentity)
       return details::DistanceTraversalBVDistanceLowerBound_impl<BV>::run(
@@ -452,21 +452,21 @@ class MeshDistanceTraversalNode : public BVHDistanceTraversalNode<BV> {
     // nearest point pair
     Vec3s P1, P2, normal;
 
-    CoalScalar d2;
+    Scalar d2;
     if (RTIsIdentity)
       d2 = TriangleDistance::sqrTriDistance(t11, t12, t13, t21, t22, t23, P1,
                                             P2);
     else
       d2 = TriangleDistance::sqrTriDistance(t11, t12, t13, t21, t22, t23,
                                             RT._R(), RT._T(), P1, P2);
-    CoalScalar d = sqrt(d2);
+    Scalar d = sqrt(d2);
 
     this->result->update(d, this->model1, this->model2, primitive_id1,
                          primitive_id2, P1, P2, normal);
   }
 
   /// @brief Whether the traversal process can stop early
-  bool canStop(CoalScalar c) const {
+  bool canStop(Scalar c) const {
     if ((c >= this->result->min_distance - abs_err) &&
         (c * (1 + rel_err) >= this->result->min_distance))
       return true;
@@ -480,8 +480,8 @@ class MeshDistanceTraversalNode : public BVHDistanceTraversalNode<BV> {
   Triangle* tri_indices2;
 
   /// @brief relative and absolute error, default value is 0.01 for both terms
-  CoalScalar rel_err;
-  CoalScalar abs_err;
+  Scalar rel_err;
+  Scalar abs_err;
 
   details::RelativeTransformation<!bool(RTIsIdentity)> RT;
 
@@ -503,7 +503,7 @@ class MeshDistanceTraversalNode : public BVHDistanceTraversalNode<BV> {
     init_tri2_points[2] = vertices2[init_tri2[2]];
 
     Vec3s p1, p2, normal;
-    CoalScalar distance = sqrt(TriangleDistance::sqrTriDistance(
+    Scalar distance = sqrt(TriangleDistance::sqrTriDistance(
         init_tri1_points[0], init_tri1_points[1], init_tri1_points[2],
         init_tri2_points[0], init_tri2_points[1], init_tri2_points[2], RT._R(),
         RT._T(), p1, p2));

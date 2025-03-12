@@ -48,14 +48,14 @@ namespace coal {
 namespace details {
 
 void GJK::initialize() {
-  distance_upper_bound = (std::numeric_limits<CoalScalar>::max)();
+  distance_upper_bound = (std::numeric_limits<Scalar>::max)();
   gjk_variant = GJKVariant::DefaultGJK;
   convergence_criterion = GJKConvergenceCriterion::Default;
   convergence_criterion_type = GJKConvergenceCriterionType::Relative;
   reset(max_iterations, tolerance);
 }
 
-void GJK::reset(size_t max_iterations_, CoalScalar tolerance_) {
+void GJK::reset(size_t max_iterations_, Scalar tolerance_) {
   max_iterations = max_iterations_;
   tolerance = tolerance_;
   COAL_ASSERT(tolerance_ > 0, "Tolerance must be positive.",
@@ -106,7 +106,7 @@ void getClosestPoints(const GJK::Simplex& simplex, Vec3s& w0, Vec3s& w1) {
     case 2: {
       const Vec3s &a = vs[0]->w, a0 = vs[0]->w0, a1 = vs[0]->w1, b = vs[1]->w,
                   b0 = vs[1]->w0, b1 = vs[1]->w1;
-      CoalScalar la, lb;
+      Scalar la, lb;
       Vec3s N(b - a);
       la = N.dot(-a);
       if (la <= 0) {
@@ -158,12 +158,11 @@ template <bool Separated>
 void inflate(const MinkowskiDiff& shape, const Vec3s& normal, Vec3s& w0,
              Vec3s& w1) {
 #ifndef NDEBUG
-  const CoalScalar dummy_precision =
-      Eigen::NumTraits<CoalScalar>::dummy_precision();
+  const Scalar dummy_precision = Eigen::NumTraits<Scalar>::dummy_precision();
   assert((normal.norm() - 1) < dummy_precision);
 #endif
 
-  const Eigen::Array<CoalScalar, 1, 2>& I(shape.swept_sphere_radius);
+  const Eigen::Array<Scalar, 1, 2>& I(shape.swept_sphere_radius);
   Eigen::Array<bool, 1, 2> inflate(I > 0);
   if (!inflate.any()) return;
 
@@ -176,7 +175,7 @@ void inflate(const MinkowskiDiff& shape, const Vec3s& normal, Vec3s& w0,
 void GJK::getWitnessPointsAndNormal(const MinkowskiDiff& shape, Vec3s& w0,
                                     Vec3s& w1, Vec3s& normal) const {
   details::getClosestPoints(*simplex, w0, w1);
-  if ((w1 - w0).norm() > Eigen::NumTraits<CoalScalar>::dummy_precision()) {
+  if ((w1 - w0).norm() > Eigen::NumTraits<Scalar>::dummy_precision()) {
     normal = (w1 - w0).normalized();
   } else {
     normal = -this->ray.normalized();
@@ -186,10 +185,10 @@ void GJK::getWitnessPointsAndNormal(const MinkowskiDiff& shape, Vec3s& w0,
 
 GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
                           const support_func_guess_t& supportHint) {
-  CoalScalar alpha = 0;
+  Scalar alpha = 0;
   iterations = 0;
-  const CoalScalar swept_sphere_radius = shape_.swept_sphere_radius.sum();
-  const CoalScalar upper_bound = distance_upper_bound + swept_sphere_radius;
+  const Scalar swept_sphere_radius = shape_.swept_sphere_radius.sum();
+  const Scalar upper_bound = distance_upper_bound + swept_sphere_radius;
 
   free_v[0] = &store_v[0];
   free_v[1] = &store_v[1];
@@ -204,7 +203,7 @@ GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
   simplices[current].rank = 0;
   support_hint = supportHint;
 
-  CoalScalar rl = guess.norm();
+  Scalar rl = guess.norm();
   if (rl < tolerance) {
     ray = Vec3s(-1, 0, 0);
     rl = 1;
@@ -216,7 +215,7 @@ GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
   Vec3s w = ray;
   Vec3s dir = ray;
   Vec3s y;
-  CoalScalar momentum;
+  Scalar momentum;
   bool normalize_support_direction = shape->normalize_support_direction;
   do {
     vertex_id_t next = (vertex_id_t)(1 - current);
@@ -251,10 +250,9 @@ GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
         // Normalize heuristic for collision pairs involving convex but not
         // strictly-convex shapes This corresponds to most use cases.
         if (normalize_support_direction) {
-          momentum =
-              (CoalScalar(iterations) + 2) / (CoalScalar(iterations) + 3);
+          momentum = (Scalar(iterations) + 2) / (Scalar(iterations) + 3);
           y = momentum * ray + (1 - momentum) * w;
-          CoalScalar y_norm = y.norm();
+          Scalar y_norm = y.norm();
           // ray is the point of the Minkowski difference which currently the
           // closest to the origin. Therefore, y.norm() > ray.norm() Hence, if
           // check A above has not stopped the algorithm, we necessarily have
@@ -262,15 +260,14 @@ GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
           assert(y_norm > tolerance);
           dir = momentum * dir / dir.norm() + (1 - momentum) * y / y_norm;
         } else {
-          momentum =
-              (CoalScalar(iterations) + 1) / (CoalScalar(iterations) + 3);
+          momentum = (Scalar(iterations) + 1) / (Scalar(iterations) + 3);
           y = momentum * ray + (1 - momentum) * w;
           dir = momentum * dir + (1 - momentum) * y;
         }
         break;
 
       case PolyakAcceleration:
-        momentum = 1 / (CoalScalar(iterations) + 1);
+        momentum = 1 / (Scalar(iterations) + 1);
         dir = momentum * dir + (1 - momentum) * ray;
         break;
 
@@ -286,7 +283,7 @@ GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
     w = curr_simplex.vertex[curr_simplex.rank - 1]->w;
 
     // check B: no collision if omega > 0
-    CoalScalar omega = dir.dot(w) / dir.norm();
+    Scalar omega = dir.dot(w) / dir.norm();
     if (omega > upper_bound) {
       distance = omega - swept_sphere_radius;
       status = NoCollisionEarlyStopped;
@@ -295,7 +292,7 @@ GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
 
     // Check to remove acceleration
     if (current_gjk_variant != DefaultGJK) {
-      CoalScalar frank_wolfe_duality_gap = 2 * ray.dot(ray - w);
+      Scalar frank_wolfe_duality_gap = 2 * ray.dot(ray - w);
       if (frank_wolfe_duality_gap - tolerance <= 0) {
         removeVertex(simplices[current]);
         current_gjk_variant = DefaultGJK;  // move back to classic GJK
@@ -370,8 +367,8 @@ GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
   return status;
 }
 
-bool GJK::checkConvergence(const Vec3s& w, const CoalScalar& rl,
-                           CoalScalar& alpha, const CoalScalar& omega) const {
+bool GJK::checkConvergence(const Vec3s& w, const Scalar& rl, Scalar& alpha,
+                           const Scalar& omega) const {
   // x^* is the optimal solution (projection of origin onto the Minkowski
   // difference).
   //  x^k is the current iterate (x^k = `ray` in the code).
@@ -382,13 +379,13 @@ bool GJK::checkConvergence(const Vec3s& w, const CoalScalar& rl,
       // alpha is the distance to the best separating hyperplane found so far
       alpha = std::max(alpha, omega);
       // ||x^*|| - ||x^k|| <= diff
-      const CoalScalar diff = rl - alpha;
+      const Scalar diff = rl - alpha;
       return ((diff - (tolerance + tolerance * rl)) <= 0);
     } break;
 
     case DualityGap: {
       // ||x^* - x^k||^2 <= diff
-      const CoalScalar diff = 2 * ray.dot(ray - w);
+      const Scalar diff = 2 * ray.dot(ray - w);
       switch (convergence_criterion_type) {
         case Absolute:
           return ((diff - tolerance) <= 0);
@@ -406,7 +403,7 @@ bool GJK::checkConvergence(const Vec3s& w, const CoalScalar& rl,
       // alpha is the distance to the best separating hyperplane found so far
       alpha = std::max(alpha, omega);
       // ||x^* - x^k||^2 <= diff
-      const CoalScalar diff = rl * rl - alpha * alpha;
+      const Scalar diff = rl * rl - alpha * alpha;
       switch (convergence_criterion_type) {
         case Absolute:
           return ((diff - tolerance) <= 0);
@@ -502,7 +499,7 @@ inline void originToPoint(const GJK::Simplex& current, GJK::vertex_id_t a,
 
 inline void originToSegment(const GJK::Simplex& current, GJK::vertex_id_t a,
                             GJK::vertex_id_t b, const Vec3s& A, const Vec3s& B,
-                            const Vec3s& AB, const CoalScalar& ABdotAO,
+                            const Vec3s& AB, const Scalar& ABdotAO,
                             GJK::Simplex& next, Vec3s& ray) {
   // ray = - ( AB ^ AO ) ^ AB = (AB.B) A + (-AB.A) B
   ray = AB.dot(B) * A + ABdotAO * B;
@@ -517,7 +514,7 @@ inline void originToSegment(const GJK::Simplex& current, GJK::vertex_id_t a,
 
 inline bool originToTriangle(const GJK::Simplex& current, GJK::vertex_id_t a,
                              GJK::vertex_id_t b, GJK::vertex_id_t c,
-                             const Vec3s& ABC, const CoalScalar& ABCdotAO,
+                             const Vec3s& ABC, const Scalar& ABCdotAO,
                              GJK::Simplex& next, Vec3s& ray) {
   next.rank = 3;
   next.vertex[2] = current.vertex[a];
@@ -548,7 +545,7 @@ bool GJK::projectLineOrigin(const Simplex& current, Simplex& next) {
   const Vec3s& B = current.vertex[b]->w;
 
   const Vec3s AB = B - A;
-  const CoalScalar d = AB.dot(-A);
+  const Scalar d = AB.dot(-A);
   assert(d <= AB.squaredNorm());
 
   if (d == 0) {
@@ -577,14 +574,14 @@ bool GJK::projectTriangleOrigin(const Simplex& current, Simplex& next) {
 
   const Vec3s AB = B - A, AC = C - A, ABC = AB.cross(AC);
 
-  CoalScalar edgeAC2o = ABC.cross(AC).dot(-A);
+  Scalar edgeAC2o = ABC.cross(AC).dot(-A);
   if (edgeAC2o >= 0) {
-    CoalScalar towardsC = AC.dot(-A);
+    Scalar towardsC = AC.dot(-A);
     if (towardsC >= 0) {  // Region 1
       originToSegment(current, a, c, A, C, AC, towardsC, next, ray);
       free_v[nfree++] = current.vertex[b];
     } else {  // Region 4 or 5
-      CoalScalar towardsB = AB.dot(-A);
+      Scalar towardsB = AB.dot(-A);
       if (towardsB < 0) {  // Region 5
         // A is the closest to the origin
         originToPoint(current, a, A, next, ray);
@@ -594,9 +591,9 @@ bool GJK::projectTriangleOrigin(const Simplex& current, Simplex& next) {
       free_v[nfree++] = current.vertex[c];
     }
   } else {
-    CoalScalar edgeAB2o = AB.cross(ABC).dot(-A);
+    Scalar edgeAB2o = AB.cross(ABC).dot(-A);
     if (edgeAB2o >= 0) {  // Region 4 or 5
-      CoalScalar towardsB = AB.dot(-A);
+      Scalar towardsB = AB.dot(-A);
       if (towardsB < 0) {  // Region 5
         // A is the closest to the origin
         originToPoint(current, a, A, next, ray);
@@ -618,30 +615,30 @@ bool GJK::projectTetrahedraOrigin(const Simplex& current, Simplex& next) {
   const Vec3s& B(current.vertex[b]->w);
   const Vec3s& C(current.vertex[c]->w);
   const Vec3s& D(current.vertex[d]->w);
-  const CoalScalar aa = A.squaredNorm();
-  const CoalScalar da = D.dot(A);
-  const CoalScalar db = D.dot(B);
-  const CoalScalar dc = D.dot(C);
-  const CoalScalar dd = D.dot(D);
-  const CoalScalar da_aa = da - aa;
-  const CoalScalar ca = C.dot(A);
-  const CoalScalar cb = C.dot(B);
-  const CoalScalar cc = C.dot(C);
-  const CoalScalar& cd = dc;
-  const CoalScalar ca_aa = ca - aa;
-  const CoalScalar ba = B.dot(A);
-  const CoalScalar bb = B.dot(B);
-  const CoalScalar& bc = cb;
-  const CoalScalar& bd = db;
-  const CoalScalar ba_aa = ba - aa;
-  const CoalScalar ba_ca = ba - ca;
-  const CoalScalar ca_da = ca - da;
-  const CoalScalar da_ba = da - ba;
+  const Scalar aa = A.squaredNorm();
+  const Scalar da = D.dot(A);
+  const Scalar db = D.dot(B);
+  const Scalar dc = D.dot(C);
+  const Scalar dd = D.dot(D);
+  const Scalar da_aa = da - aa;
+  const Scalar ca = C.dot(A);
+  const Scalar cb = C.dot(B);
+  const Scalar cc = C.dot(C);
+  const Scalar& cd = dc;
+  const Scalar ca_aa = ca - aa;
+  const Scalar ba = B.dot(A);
+  const Scalar bb = B.dot(B);
+  const Scalar& bc = cb;
+  const Scalar& bd = db;
+  const Scalar ba_aa = ba - aa;
+  const Scalar ba_ca = ba - ca;
+  const Scalar ca_da = ca - da;
+  const Scalar da_ba = da - ba;
   const Vec3s a_cross_b = A.cross(B);
   const Vec3s a_cross_c = A.cross(C);
 
-  const CoalScalar dummy_precision(
-      3 * std::sqrt(std::numeric_limits<CoalScalar>::epsilon()));
+  const Scalar dummy_precision(
+      3 * std::sqrt(std::numeric_limits<Scalar>::epsilon()));
   COAL_UNUSED_VARIABLE(dummy_precision);
 
 #define REGION_INSIDE()               \
@@ -1012,7 +1009,7 @@ bool GJK::projectTetrahedraOrigin(const Simplex& current, Simplex& next) {
 
 void EPA::initialize() { reset(max_iterations, tolerance); }
 
-void EPA::reset(size_t max_iterations_, CoalScalar tolerance_) {
+void EPA::reset(size_t max_iterations_, Scalar tolerance_) {
   max_iterations = max_iterations_;
   tolerance = tolerance_;
   // EPA creates only 2 faces and 1 vertex per iteration.
@@ -1038,26 +1035,27 @@ void EPA::reset(size_t max_iterations_, CoalScalar tolerance_) {
 }
 
 bool EPA::getEdgeDist(SimplexFace* face, const SimplexVertex& a,
-                      const SimplexVertex& b, CoalScalar& dist) {
+                      const SimplexVertex& b, Scalar& dist) {
   Vec3s ab = b.w - a.w;
   Vec3s n_ab = ab.cross(face->n);
-  CoalScalar a_dot_nab = a.w.dot(n_ab);
+  Scalar a_dot_nab = a.w.dot(n_ab);
 
   if (a_dot_nab < 0)  // the origin is on the outside part of ab
   {
     // following is similar to projectOrigin for two points
     // however, as we dont need to compute the parameterization, dont need to
     // compute 0 or 1
-    CoalScalar a_dot_ab = a.w.dot(ab);
-    CoalScalar b_dot_ab = b.w.dot(ab);
+    Scalar a_dot_ab = a.w.dot(ab);
+    Scalar b_dot_ab = b.w.dot(ab);
 
     if (a_dot_ab > 0)
       dist = a.w.norm();
     else if (b_dot_ab < 0)
       dist = b.w.norm();
     else {
-      dist = std::sqrt(std::max(
-          a.w.squaredNorm() - a_dot_ab * a_dot_ab / ab.squaredNorm(), 0.));
+      dist = std::sqrt(
+          std::max(a.w.squaredNorm() - a_dot_ab * a_dot_ab / ab.squaredNorm(),
+                   Scalar(0)));
     }
 
     return true;
@@ -1081,15 +1079,15 @@ EPA::SimplexFace* EPA::newFace(size_t id_a, size_t id_b, size_t id_c,
     const SimplexVertex& c = sv_store[id_c];
     face->n = (b.w - a.w).cross(c.w - a.w);
 
-    if (face->n.norm() > Eigen::NumTraits<CoalScalar>::epsilon()) {
+    if (face->n.norm() > Eigen::NumTraits<Scalar>::epsilon()) {
       face->n.normalize();
 
       // If the origin projects outside the face, skip it in the
       // `findClosestFace` method.
       // The origin always projects inside the closest face.
-      CoalScalar a_dot_nab = a.w.dot((b.w - a.w).cross(face->n));
-      CoalScalar b_dot_nbc = b.w.dot((c.w - b.w).cross(face->n));
-      CoalScalar c_dot_nca = c.w.dot((a.w - c.w).cross(face->n));
+      Scalar a_dot_nab = a.w.dot((b.w - a.w).cross(face->n));
+      Scalar b_dot_nbc = b.w.dot((c.w - b.w).cross(face->n));
+      Scalar c_dot_nca = c.w.dot((a.w - c.w).cross(face->n));
       if (a_dot_nab >= -tolerance &&  //
           b_dot_nbc >= -tolerance &&  //
           c_dot_nca >= -tolerance) {
@@ -1098,7 +1096,7 @@ EPA::SimplexFace* EPA::newFace(size_t id_a, size_t id_b, size_t id_c,
       } else {
         // We will never check this face, so we don't care about
         // its true distance to the origin.
-        face->d = std::numeric_limits<CoalScalar>::max();
+        face->d = std::numeric_limits<Scalar>::max();
         face->ignore = true;
       }
 
@@ -1141,10 +1139,10 @@ EPA::SimplexFace* EPA::newFace(size_t id_a, size_t id_b, size_t id_c,
 /** @brief Find the best polytope face to split */
 EPA::SimplexFace* EPA::findClosestFace() {
   SimplexFace* minf = hull.root;
-  CoalScalar mind = std::numeric_limits<CoalScalar>::max();
+  Scalar mind = std::numeric_limits<Scalar>::max();
   for (SimplexFace* f = minf; f; f = f->next_face) {
     if (f->ignore) continue;
-    CoalScalar sqd = f->d * f->d;
+    Scalar sqd = f->d * f->d;
     if (sqd < mind) {
       minf = f;
       mind = sqd;
@@ -1247,8 +1245,8 @@ EPA::Status EPA::evaluate(GJK& gjk, const Vec3s& guess) {
         const SimplexVertex& vf1 = sv_store[closest_face->vertex_id[0]];
         const SimplexVertex& vf2 = sv_store[closest_face->vertex_id[1]];
         const SimplexVertex& vf3 = sv_store[closest_face->vertex_id[2]];
-        CoalScalar fdist = closest_face->n.dot(w.w - vf1.w);
-        CoalScalar wnorm = w.w.norm();
+        Scalar fdist = closest_face->n.dot(w.w - vf1.w);
+        Scalar wnorm = w.w.norm();
         // TODO(louis): we might want to use tol_abs and tol_rel; this might
         // obfuscate the code for the user though.
         if (fdist <= tolerance + tolerance * wnorm) {
@@ -1305,7 +1303,7 @@ EPA::Status EPA::evaluate(GJK& gjk, const Vec3s& guess) {
   // TODO: define a better normal
   assert(simplex.rank == 1 && simplex.vertex[0]->w.isZero(gjk.getTolerance()));
   normal = -guess;
-  CoalScalar nl = normal.norm();
+  Scalar nl = normal.norm();
   if (nl > 0)
     normal /= nl;
   else
@@ -1408,8 +1406,8 @@ bool EPA::expand(size_t pass, const SimplexVertex& w, SimplexFace* f, size_t e,
   // recursive nature of `expand`, it is safer to go through the first case.
   // This is because `expand` can potentially loop indefinitly if the
   // Minkowski difference is very flat (hence the check above).
-  const CoalScalar dummy_precision(
-      3 * std::sqrt(std::numeric_limits<CoalScalar>::epsilon()));
+  const Scalar dummy_precision(
+      3 * std::sqrt(std::numeric_limits<Scalar>::epsilon()));
   const SimplexVertex& vf = sv_store[f->vertex_id[e]];
   if (f->n.dot(w.w - vf.w) < dummy_precision) {
     // case 1: the support point is "below" `f`.
@@ -1452,7 +1450,7 @@ bool EPA::expand(size_t pass, const SimplexVertex& w, SimplexFace* f, size_t e,
 void EPA::getWitnessPointsAndNormal(const MinkowskiDiff& shape, Vec3s& w0,
                                     Vec3s& w1, Vec3s& normal) const {
   details::getClosestPoints(result, w0, w1);
-  if ((w0 - w1).norm() > Eigen::NumTraits<CoalScalar>::dummy_precision()) {
+  if ((w0 - w1).norm() > Eigen::NumTraits<Scalar>::dummy_precision()) {
     if (this->depth >= 0) {
       // The shapes are in collision.
       normal = (w0 - w1).normalized();

@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Formatted all CMake listfiles using gersemi, add gersemi to pre-commit configuration ([#657](https://github.com/coal-library/coal/pull/657/files))
+- Float precision ([#665](https://github.com/coal-library/coal/pull/665))
+  - Rename `CoalScalar` to `Scalar`
+  - Add option to switch between (default) double precision and float precision
+  - Changed all the uses of `double` to `Scalar` in Coal
+  - Fixed all the compilation warnings when compiling the library using float precision
 
 ## [3.0.1] - 2025-02-12
 

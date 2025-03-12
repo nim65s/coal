@@ -45,9 +45,9 @@ namespace details {
 
 std::vector<Vec3s> getBoundVertices(const Box& box, const Transform3s& tf) {
   std::vector<Vec3s> result(8);
-  CoalScalar a = box.halfSide[0];
-  CoalScalar b = box.halfSide[1];
-  CoalScalar c = box.halfSide[2];
+  Scalar a = box.halfSide[0];
+  Scalar b = box.halfSide[1];
+  Scalar c = box.halfSide[2];
   result[0] = tf.transform(Vec3s(a, b, c));
   result[1] = tf.transform(Vec3s(a, b, -c));
   result[2] = tf.transform(Vec3s(a, -b, c));
@@ -64,11 +64,11 @@ std::vector<Vec3s> getBoundVertices(const Box& box, const Transform3s& tf) {
 std::vector<Vec3s> getBoundVertices(const Sphere& sphere,
                                     const Transform3s& tf) {
   std::vector<Vec3s> result(12);
-  const CoalScalar m = (1 + sqrt(5.0)) / 2.0;
-  CoalScalar edge_size = sphere.radius * 6 / (sqrt(27.0) + sqrt(15.0));
+  const Scalar m = (1 + sqrt(Scalar(5))) / Scalar(2);
+  Scalar edge_size = sphere.radius * 6 / (sqrt(Scalar(27)) + sqrt(Scalar(15)));
 
-  CoalScalar a = edge_size;
-  CoalScalar b = m * edge_size;
+  Scalar a = edge_size;
+  Scalar b = m * edge_size;
   result[0] = tf.transform(Vec3s(0, a, b));
   result[1] = tf.transform(Vec3s(0, -a, b));
   result[2] = tf.transform(Vec3s(0, a, -b));
@@ -89,21 +89,21 @@ std::vector<Vec3s> getBoundVertices(const Sphere& sphere,
 std::vector<Vec3s> getBoundVertices(const Ellipsoid& ellipsoid,
                                     const Transform3s& tf) {
   std::vector<Vec3s> result(12);
-  const CoalScalar phi = (1 + sqrt(5.0)) / 2.0;
+  const Scalar phi = (1 + sqrt(Scalar(5))) / Scalar(2);
 
-  const CoalScalar a = sqrt(3.0) / (phi * phi);
-  const CoalScalar b = phi * a;
+  const Scalar a = sqrt(Scalar(3)) / (phi * phi);
+  const Scalar b = phi * a;
 
-  const CoalScalar& A = ellipsoid.radii[0];
-  const CoalScalar& B = ellipsoid.radii[1];
-  const CoalScalar& C = ellipsoid.radii[2];
+  const Scalar& A = ellipsoid.radii[0];
+  const Scalar& B = ellipsoid.radii[1];
+  const Scalar& C = ellipsoid.radii[2];
 
-  CoalScalar Aa = A * a;
-  CoalScalar Ab = A * b;
-  CoalScalar Ba = B * a;
-  CoalScalar Bb = B * b;
-  CoalScalar Ca = C * a;
-  CoalScalar Cb = C * b;
+  Scalar Aa = A * a;
+  Scalar Ab = A * b;
+  Scalar Ba = B * a;
+  Scalar Bb = B * b;
+  Scalar Ca = C * a;
+  Scalar Cb = C * b;
   result[0] = tf.transform(Vec3s(0, Ba, Cb));
   result[1] = tf.transform(Vec3s(0, -Ba, Cb));
   result[2] = tf.transform(Vec3s(0, Ba, -Cb));
@@ -123,13 +123,13 @@ std::vector<Vec3s> getBoundVertices(const Ellipsoid& ellipsoid,
 std::vector<Vec3s> getBoundVertices(const Capsule& capsule,
                                     const Transform3s& tf) {
   std::vector<Vec3s> result(36);
-  const CoalScalar m = (1 + sqrt(5.0)) / 2.0;
+  const Scalar m = (1 + sqrt(Scalar(5))) / Scalar(2);
 
-  CoalScalar hl = capsule.halfLength;
-  CoalScalar edge_size = capsule.radius * 6 / (sqrt(27.0) + sqrt(15.0));
-  CoalScalar a = edge_size;
-  CoalScalar b = m * edge_size;
-  CoalScalar r2 = capsule.radius * 2 / sqrt(3.0);
+  Scalar hl = capsule.halfLength;
+  Scalar edge_size = capsule.radius * 6 / (sqrt(Scalar(27)) + sqrt(Scalar(15)));
+  Scalar a = edge_size;
+  Scalar b = m * edge_size;
+  Scalar r2 = capsule.radius * 2 / sqrt(Scalar(3));
 
   result[0] = tf.transform(Vec3s(0, a, b + hl));
   result[1] = tf.transform(Vec3s(0, -a, b + hl));
@@ -157,8 +157,8 @@ std::vector<Vec3s> getBoundVertices(const Capsule& capsule,
   result[22] = tf.transform(Vec3s(-b, 0, a - hl));
   result[23] = tf.transform(Vec3s(-b, 0, -a - hl));
 
-  CoalScalar c = 0.5 * r2;
-  CoalScalar d = capsule.radius;
+  Scalar c = Scalar(0.5) * r2;
+  Scalar d = capsule.radius;
   result[24] = tf.transform(Vec3s(r2, 0, hl));
   result[25] = tf.transform(Vec3s(c, d, hl));
   result[26] = tf.transform(Vec3s(-c, d, hl));
@@ -179,10 +179,10 @@ std::vector<Vec3s> getBoundVertices(const Capsule& capsule,
 std::vector<Vec3s> getBoundVertices(const Cone& cone, const Transform3s& tf) {
   std::vector<Vec3s> result(7);
 
-  CoalScalar hl = cone.halfLength;
-  CoalScalar r2 = cone.radius * 2 / sqrt(3.0);
-  CoalScalar a = 0.5 * r2;
-  CoalScalar b = cone.radius;
+  Scalar hl = cone.halfLength;
+  Scalar r2 = cone.radius * 2 / sqrt(Scalar(3));
+  Scalar a = Scalar(0.5) * r2;
+  Scalar b = cone.radius;
 
   result[0] = tf.transform(Vec3s(r2, 0, -hl));
   result[1] = tf.transform(Vec3s(a, b, -hl));
@@ -200,10 +200,10 @@ std::vector<Vec3s> getBoundVertices(const Cylinder& cylinder,
                                     const Transform3s& tf) {
   std::vector<Vec3s> result(12);
 
-  CoalScalar hl = cylinder.halfLength;
-  CoalScalar r2 = cylinder.radius * 2 / sqrt(3.0);
-  CoalScalar a = 0.5 * r2;
-  CoalScalar b = cylinder.radius;
+  Scalar hl = cylinder.halfLength;
+  Scalar r2 = cylinder.radius * 2 / sqrt(Scalar(3));
+  Scalar a = Scalar(0.5) * r2;
+  Scalar b = cylinder.radius;
 
   result[0] = tf.transform(Vec3s(r2, 0, -hl));
   result[1] = tf.transform(Vec3s(a, b, -hl));
@@ -253,7 +253,7 @@ Halfspace transform(const Halfspace& a, const Transform3s& tf) {
   ///   and d' = d + n' * T
 
   Vec3s n = tf.getRotation() * a.n;
-  CoalScalar d = a.d + n.dot(tf.getTranslation());
+  Scalar d = a.d + n.dot(tf.getTranslation());
   Halfspace result(n, d);
   result.setSweptSphereRadius(a.getSweptSphereRadius());
 
@@ -268,7 +268,7 @@ Plane transform(const Plane& a, const Transform3s& tf) {
   ///   and d' = d + n' * T
 
   Vec3s n = tf.getRotation() * a.n;
-  CoalScalar d = a.d + n.dot(tf.getTranslation());
+  Scalar d = a.d + n.dot(tf.getTranslation());
   Plane result(n, d);
   result.setSweptSphereRadius(a.getSweptSphereRadius());
 
@@ -280,7 +280,7 @@ std::array<Halfspace, 2> transformToHalfspaces(const Plane& a,
   // A plane can be represented by two halfspaces
 
   Vec3s n = tf.getRotation() * a.n;
-  CoalScalar d = a.d + n.dot(tf.getTranslation());
+  Scalar d = a.d + n.dot(tf.getTranslation());
   std::array<Halfspace, 2> result = {Halfspace(n, d), Halfspace(-n, -d)};
   result[0].setSweptSphereRadius(a.getSweptSphereRadius());
   result[1].setSweptSphereRadius(a.getSweptSphereRadius());
@@ -334,12 +334,12 @@ void computeBV<AABB, Cone>(const Cone& s, const Transform3s& tf, AABB& bv) {
   const Matrix3s& R = tf.getRotation();
   const Vec3s& T = tf.getTranslation();
 
-  CoalScalar x_range = fabs(R(0, 0) * s.radius) + fabs(R(0, 1) * s.radius) +
-                       fabs(R(0, 2) * s.halfLength);
-  CoalScalar y_range = fabs(R(1, 0) * s.radius) + fabs(R(1, 1) * s.radius) +
-                       fabs(R(1, 2) * s.halfLength);
-  CoalScalar z_range = fabs(R(2, 0) * s.radius) + fabs(R(2, 1) * s.radius) +
-                       fabs(R(2, 2) * s.halfLength);
+  Scalar x_range = fabs(R(0, 0) * s.radius) + fabs(R(0, 1) * s.radius) +
+                   fabs(R(0, 2) * s.halfLength);
+  Scalar y_range = fabs(R(1, 0) * s.radius) + fabs(R(1, 1) * s.radius) +
+                   fabs(R(1, 2) * s.halfLength);
+  Scalar z_range = fabs(R(2, 0) * s.radius) + fabs(R(2, 1) * s.radius) +
+                   fabs(R(2, 2) * s.halfLength);
 
   Vec3s v_delta(x_range, y_range, z_range);
   bv.max_ = T + v_delta;
@@ -352,12 +352,12 @@ void computeBV<AABB, Cylinder>(const Cylinder& s, const Transform3s& tf,
   const Matrix3s& R = tf.getRotation();
   const Vec3s& T = tf.getTranslation();
 
-  CoalScalar x_range = fabs(R(0, 0) * s.radius) + fabs(R(0, 1) * s.radius) +
-                       fabs(R(0, 2) * s.halfLength);
-  CoalScalar y_range = fabs(R(1, 0) * s.radius) + fabs(R(1, 1) * s.radius) +
-                       fabs(R(1, 2) * s.halfLength);
-  CoalScalar z_range = fabs(R(2, 0) * s.radius) + fabs(R(2, 1) * s.radius) +
-                       fabs(R(2, 2) * s.halfLength);
+  Scalar x_range = fabs(R(0, 0) * s.radius) + fabs(R(0, 1) * s.radius) +
+                   fabs(R(0, 2) * s.halfLength);
+  Scalar y_range = fabs(R(1, 0) * s.radius) + fabs(R(1, 1) * s.radius) +
+                   fabs(R(1, 2) * s.halfLength);
+  Scalar z_range = fabs(R(2, 0) * s.radius) + fabs(R(2, 1) * s.radius) +
+                   fabs(R(2, 2) * s.halfLength);
 
   Vec3s v_delta(x_range, y_range, z_range);
   bv.max_ = T + v_delta;
@@ -391,24 +391,24 @@ void computeBV<AABB, Halfspace>(const Halfspace& s, const Transform3s& tf,
                                 AABB& bv) {
   Halfspace new_s = transform(s, tf);
   const Vec3s& n = new_s.n;
-  const CoalScalar& d = new_s.d;
+  const Scalar& d = new_s.d;
 
   AABB bv_;
-  bv_.min_ = Vec3s::Constant(-(std::numeric_limits<CoalScalar>::max)());
-  bv_.max_ = Vec3s::Constant((std::numeric_limits<CoalScalar>::max)());
-  if (n[1] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  bv_.min_ = Vec3s::Constant(-(std::numeric_limits<Scalar>::max)());
+  bv_.max_ = Vec3s::Constant((std::numeric_limits<Scalar>::max)());
+  if (n[1] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     // normal aligned with x axis
     if (n[0] < 0)
       bv_.min_[0] = -d;
     else if (n[0] > 0)
       bv_.max_[0] = d;
-  } else if (n[0] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     // normal aligned with y axis
     if (n[1] < 0)
       bv_.min_[1] = -d;
     else if (n[1] > 0)
       bv_.max_[1] = d;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == (Scalar)0.0) {
     // normal aligned with z axis
     if (n[2] < 0)
       bv_.min_[2] = -d;
@@ -423,26 +423,26 @@ template <>
 void computeBV<AABB, Plane>(const Plane& s, const Transform3s& tf, AABB& bv) {
   Plane new_s = transform(s, tf);
   const Vec3s& n = new_s.n;
-  const CoalScalar& d = new_s.d;
+  const Scalar& d = new_s.d;
 
   AABB bv_;
-  bv_.min_ = Vec3s::Constant(-(std::numeric_limits<CoalScalar>::max)());
-  bv_.max_ = Vec3s::Constant((std::numeric_limits<CoalScalar>::max)());
-  if (n[1] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  bv_.min_ = Vec3s::Constant(-(std::numeric_limits<Scalar>::max)());
+  bv_.max_ = Vec3s::Constant((std::numeric_limits<Scalar>::max)());
+  if (n[1] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     // normal aligned with x axis
     if (n[0] < 0) {
       bv_.min_[0] = bv_.max_[0] = -d;
     } else if (n[0] > 0) {
       bv_.min_[0] = bv_.max_[0] = d;
     }
-  } else if (n[0] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     // normal aligned with y axis
     if (n[1] < 0) {
       bv_.min_[1] = bv_.max_[1] = -d;
     } else if (n[1] > 0) {
       bv_.min_[1] = bv_.max_[1] = d;
     }
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == (Scalar)0.0) {
     // normal aligned with z axis
     if (n[2] < 0) {
       bv_.min_[2] = bv_.max_[2] = -d;
@@ -551,7 +551,7 @@ void computeBV<OBB, Halfspace>(const Halfspace& s, const Transform3s&,
   /// Half space can only have very rough OBB
   bv.axes.setIdentity();
   bv.To.setZero();
-  bv.extent.setConstant(((std::numeric_limits<CoalScalar>::max)()));
+  bv.extent.setConstant(((std::numeric_limits<Scalar>::max)()));
 }
 
 template <>
@@ -565,7 +565,7 @@ void computeBV<RSS, Halfspace>(const Halfspace& s, const Transform3s&,
   bv.axes.setIdentity();
   bv.Tr.setZero();
   bv.length[0] = bv.length[1] = bv.radius =
-      (std::numeric_limits<CoalScalar>::max)();
+      (std::numeric_limits<Scalar>::max)();
 }
 
 template <>
@@ -589,7 +589,7 @@ void computeBV<kIOS, Halfspace>(const Halfspace& s, const Transform3s& tf,
   bv.num_spheres = 1;
   computeBV<OBB, Halfspace>(s, tf, bv.obb);
   bv.spheres[0].o = Vec3s();
-  bv.spheres[0].r = (std::numeric_limits<CoalScalar>::max)();
+  bv.spheres[0].r = (std::numeric_limits<Scalar>::max)();
 }
 
 template <>
@@ -601,50 +601,50 @@ void computeBV<KDOP<16>, Halfspace>(const Halfspace& s, const Transform3s& tf,
   }
   Halfspace new_s = transform(s, tf);
   const Vec3s& n = new_s.n;
-  const CoalScalar& d = new_s.d;
+  const Scalar& d = new_s.d;
 
   const short D = 8;
   for (short i = 0; i < D; ++i)
-    bv.dist(i) = -(std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = -(std::numeric_limits<Scalar>::max)();
   for (short i = D; i < 2 * D; ++i)
-    bv.dist(i) = (std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = (std::numeric_limits<Scalar>::max)();
 
-  if (n[1] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  if (n[1] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D) = d;
     else
       bv.dist(0) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(D + 1) = d;
     else
       bv.dist(1) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == (Scalar)0.0) {
     if (n[2] > 0)
       bv.dist(D + 2) = d;
     else
       bv.dist(2) = -d;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] == n[1]) {
+  } else if (n[2] == (Scalar)0.0 && n[0] == n[1]) {
     if (n[0] > 0)
       bv.dist(D + 3) = n[0] * d * 2;
     else
       bv.dist(3) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] == n[2]) {
+  } else if (n[1] == (Scalar)0.0 && n[0] == n[2]) {
     if (n[1] > 0)
       bv.dist(D + 4) = n[0] * d * 2;
     else
       bv.dist(4) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == n[2]) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == n[2]) {
     if (n[1] > 0)
       bv.dist(D + 5) = n[1] * d * 2;
     else
       bv.dist(5) = n[1] * d * 2;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] + n[1] == (CoalScalar)0.0) {
+  } else if (n[2] == (Scalar)0.0 && n[0] + n[1] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D + 6) = n[0] * d * 2;
     else
       bv.dist(6) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] + n[2] == (CoalScalar)0.0) {
+  } else if (n[1] == (Scalar)0.0 && n[0] + n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D + 7) = n[0] * d * 2;
     else
@@ -661,56 +661,56 @@ void computeBV<KDOP<18>, Halfspace>(const Halfspace& s, const Transform3s& tf,
   }
   Halfspace new_s = transform(s, tf);
   const Vec3s& n = new_s.n;
-  const CoalScalar& d = new_s.d;
+  const Scalar& d = new_s.d;
 
   const short D = 9;
 
   for (short i = 0; i < D; ++i)
-    bv.dist(i) = -(std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = -(std::numeric_limits<Scalar>::max)();
   for (short i = D; i < 2 * D; ++i)
-    bv.dist(i) = (std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = (std::numeric_limits<Scalar>::max)();
 
-  if (n[1] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  if (n[1] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D) = d;
     else
       bv.dist(0) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(D + 1) = d;
     else
       bv.dist(1) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == (Scalar)0.0) {
     if (n[2] > 0)
       bv.dist(D + 2) = d;
     else
       bv.dist(2) = -d;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] == n[1]) {
+  } else if (n[2] == (Scalar)0.0 && n[0] == n[1]) {
     if (n[0] > 0)
       bv.dist(D + 3) = n[0] * d * 2;
     else
       bv.dist(3) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] == n[2]) {
+  } else if (n[1] == (Scalar)0.0 && n[0] == n[2]) {
     if (n[1] > 0)
       bv.dist(D + 4) = n[0] * d * 2;
     else
       bv.dist(4) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == n[2]) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == n[2]) {
     if (n[1] > 0)
       bv.dist(D + 5) = n[1] * d * 2;
     else
       bv.dist(5) = n[1] * d * 2;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] + n[1] == (CoalScalar)0.0) {
+  } else if (n[2] == (Scalar)0.0 && n[0] + n[1] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D + 6) = n[0] * d * 2;
     else
       bv.dist(6) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] + n[2] == (CoalScalar)0.0) {
+  } else if (n[1] == (Scalar)0.0 && n[0] + n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D + 7) = n[0] * d * 2;
     else
       bv.dist(7) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] + n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] + n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(D + 8) = n[1] * d * 2;
     else
@@ -727,71 +727,71 @@ void computeBV<KDOP<24>, Halfspace>(const Halfspace& s, const Transform3s& tf,
   }
   Halfspace new_s = transform(s, tf);
   const Vec3s& n = new_s.n;
-  const CoalScalar& d = new_s.d;
+  const Scalar& d = new_s.d;
 
   const short D = 12;
 
   for (short i = 0; i < D; ++i)
-    bv.dist(i) = -(std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = -(std::numeric_limits<Scalar>::max)();
   for (short i = D; i < 2 * D; ++i)
-    bv.dist(i) = (std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = (std::numeric_limits<Scalar>::max)();
 
-  if (n[1] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  if (n[1] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D) = d;
     else
       bv.dist(0) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(D + 1) = d;
     else
       bv.dist(1) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == (Scalar)0.0) {
     if (n[2] > 0)
       bv.dist(D + 2) = d;
     else
       bv.dist(2) = -d;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] == n[1]) {
+  } else if (n[2] == (Scalar)0.0 && n[0] == n[1]) {
     if (n[0] > 0)
       bv.dist(D + 3) = n[0] * d * 2;
     else
       bv.dist(3) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] == n[2]) {
+  } else if (n[1] == (Scalar)0.0 && n[0] == n[2]) {
     if (n[1] > 0)
       bv.dist(D + 4) = n[0] * d * 2;
     else
       bv.dist(4) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == n[2]) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == n[2]) {
     if (n[1] > 0)
       bv.dist(D + 5) = n[1] * d * 2;
     else
       bv.dist(5) = n[1] * d * 2;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] + n[1] == (CoalScalar)0.0) {
+  } else if (n[2] == (Scalar)0.0 && n[0] + n[1] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D + 6) = n[0] * d * 2;
     else
       bv.dist(6) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] + n[2] == (CoalScalar)0.0) {
+  } else if (n[1] == (Scalar)0.0 && n[0] + n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D + 7) = n[0] * d * 2;
     else
       bv.dist(7) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] + n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] + n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(D + 8) = n[1] * d * 2;
     else
       bv.dist(8) = n[1] * d * 2;
-  } else if (n[0] + n[2] == (CoalScalar)0.0 && n[0] + n[1] == (CoalScalar)0.0) {
+  } else if (n[0] + n[2] == (Scalar)0.0 && n[0] + n[1] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D + 9) = n[0] * d * 3;
     else
       bv.dist(9) = n[0] * d * 3;
-  } else if (n[0] + n[1] == (CoalScalar)0.0 && n[1] + n[2] == (CoalScalar)0.0) {
+  } else if (n[0] + n[1] == (Scalar)0.0 && n[1] + n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(D + 10) = n[0] * d * 3;
     else
       bv.dist(10) = n[0] * d * 3;
-  } else if (n[0] + n[1] == (CoalScalar)0.0 && n[0] + n[2] == (CoalScalar)0.0) {
+  } else if (n[0] + n[1] == (Scalar)0.0 && n[0] + n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(D + 11) = n[1] * d * 3;
     else
@@ -809,8 +809,8 @@ void computeBV<OBB, Plane>(const Plane& s, const Transform3s& tf, OBB& bv) {
   generateCoordinateSystem(n, bv.axes.col(1), bv.axes.col(2));
   bv.axes.col(0).noalias() = n;
 
-  bv.extent << 0, (std::numeric_limits<CoalScalar>::max)(),
-      (std::numeric_limits<CoalScalar>::max)();
+  bv.extent << 0, (std::numeric_limits<Scalar>::max)(),
+      (std::numeric_limits<Scalar>::max)();
 
   Vec3s p = s.n * s.d;
   bv.To =
@@ -828,8 +828,8 @@ void computeBV<RSS, Plane>(const Plane& s, const Transform3s& tf, RSS& bv) {
   generateCoordinateSystem(n, bv.axes.col(1), bv.axes.col(2));
   bv.axes.col(0).noalias() = n;
 
-  bv.length[0] = (std::numeric_limits<CoalScalar>::max)();
-  bv.length[1] = (std::numeric_limits<CoalScalar>::max)();
+  bv.length[0] = (std::numeric_limits<Scalar>::max)();
+  bv.length[1] = (std::numeric_limits<Scalar>::max)();
 
   bv.radius = 0;
 
@@ -857,7 +857,7 @@ void computeBV<kIOS, Plane>(const Plane& s, const Transform3s& tf, kIOS& bv) {
   bv.num_spheres = 1;
   computeBV<OBB, Plane>(s, tf, bv.obb);
   bv.spheres[0].o = Vec3s();
-  bv.spheres[0].r = (std::numeric_limits<CoalScalar>::max)();
+  bv.spheres[0].r = (std::numeric_limits<Scalar>::max)();
 }
 
 template <>
@@ -869,39 +869,39 @@ void computeBV<KDOP<16>, Plane>(const Plane& s, const Transform3s& tf,
   }
   Plane new_s = transform(s, tf);
   const Vec3s& n = new_s.n;
-  const CoalScalar& d = new_s.d;
+  const Scalar& d = new_s.d;
 
   const short D = 8;
 
   for (short i = 0; i < D; ++i)
-    bv.dist(i) = -(std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = -(std::numeric_limits<Scalar>::max)();
   for (short i = D; i < 2 * D; ++i)
-    bv.dist(i) = (std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = (std::numeric_limits<Scalar>::max)();
 
-  if (n[1] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  if (n[1] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(0) = bv.dist(D) = d;
     else
       bv.dist(0) = bv.dist(D) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(1) = bv.dist(D + 1) = d;
     else
       bv.dist(1) = bv.dist(D + 1) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == (Scalar)0.0) {
     if (n[2] > 0)
       bv.dist(2) = bv.dist(D + 2) = d;
     else
       bv.dist(2) = bv.dist(D + 2) = -d;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] == n[1]) {
+  } else if (n[2] == (Scalar)0.0 && n[0] == n[1]) {
     bv.dist(3) = bv.dist(D + 3) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] == n[2]) {
+  } else if (n[1] == (Scalar)0.0 && n[0] == n[2]) {
     bv.dist(4) = bv.dist(D + 4) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == n[2]) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == n[2]) {
     bv.dist(6) = bv.dist(D + 5) = n[1] * d * 2;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] + n[1] == (CoalScalar)0.0) {
+  } else if (n[2] == (Scalar)0.0 && n[0] + n[1] == (Scalar)0.0) {
     bv.dist(6) = bv.dist(D + 6) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] + n[2] == (CoalScalar)0.0) {
+  } else if (n[1] == (Scalar)0.0 && n[0] + n[2] == (Scalar)0.0) {
     bv.dist(7) = bv.dist(D + 7) = n[0] * d * 2;
   }
 }
@@ -915,41 +915,41 @@ void computeBV<KDOP<18>, Plane>(const Plane& s, const Transform3s& tf,
   }
   Plane new_s = transform(s, tf);
   const Vec3s& n = new_s.n;
-  const CoalScalar& d = new_s.d;
+  const Scalar& d = new_s.d;
 
   const short D = 9;
 
   for (short i = 0; i < D; ++i)
-    bv.dist(i) = -(std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = -(std::numeric_limits<Scalar>::max)();
   for (short i = D; i < 2 * D; ++i)
-    bv.dist(i) = (std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = (std::numeric_limits<Scalar>::max)();
 
-  if (n[1] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  if (n[1] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(0) = bv.dist(D) = d;
     else
       bv.dist(0) = bv.dist(D) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(1) = bv.dist(D + 1) = d;
     else
       bv.dist(1) = bv.dist(D + 1) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == (Scalar)0.0) {
     if (n[2] > 0)
       bv.dist(2) = bv.dist(D + 2) = d;
     else
       bv.dist(2) = bv.dist(D + 2) = -d;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] == n[1]) {
+  } else if (n[2] == (Scalar)0.0 && n[0] == n[1]) {
     bv.dist(3) = bv.dist(D + 3) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] == n[2]) {
+  } else if (n[1] == (Scalar)0.0 && n[0] == n[2]) {
     bv.dist(4) = bv.dist(D + 4) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == n[2]) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == n[2]) {
     bv.dist(5) = bv.dist(D + 5) = n[1] * d * 2;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] + n[1] == (CoalScalar)0.0) {
+  } else if (n[2] == (Scalar)0.0 && n[0] + n[1] == (Scalar)0.0) {
     bv.dist(6) = bv.dist(D + 6) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] + n[2] == (CoalScalar)0.0) {
+  } else if (n[1] == (Scalar)0.0 && n[0] + n[2] == (Scalar)0.0) {
     bv.dist(7) = bv.dist(D + 7) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] + n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] + n[2] == (Scalar)0.0) {
     bv.dist(8) = bv.dist(D + 8) = n[1] * d * 2;
   }
 }
@@ -963,47 +963,47 @@ void computeBV<KDOP<24>, Plane>(const Plane& s, const Transform3s& tf,
   }
   Plane new_s = transform(s, tf);
   const Vec3s& n = new_s.n;
-  const CoalScalar& d = new_s.d;
+  const Scalar& d = new_s.d;
 
   const short D = 12;
 
   for (short i = 0; i < D; ++i)
-    bv.dist(i) = -(std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = -(std::numeric_limits<Scalar>::max)();
   for (short i = D; i < 2 * D; ++i)
-    bv.dist(i) = (std::numeric_limits<CoalScalar>::max)();
+    bv.dist(i) = (std::numeric_limits<Scalar>::max)();
 
-  if (n[1] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  if (n[1] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[0] > 0)
       bv.dist(0) = bv.dist(D) = d;
     else
       bv.dist(0) = bv.dist(D) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[2] == (Scalar)0.0) {
     if (n[1] > 0)
       bv.dist(1) = bv.dist(D + 1) = d;
     else
       bv.dist(1) = bv.dist(D + 1) = -d;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == (Scalar)0.0) {
     if (n[2] > 0)
       bv.dist(2) = bv.dist(D + 2) = d;
     else
       bv.dist(2) = bv.dist(D + 2) = -d;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] == n[1]) {
+  } else if (n[2] == (Scalar)0.0 && n[0] == n[1]) {
     bv.dist(3) = bv.dist(D + 3) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] == n[2]) {
+  } else if (n[1] == (Scalar)0.0 && n[0] == n[2]) {
     bv.dist(4) = bv.dist(D + 4) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] == n[2]) {
+  } else if (n[0] == (Scalar)0.0 && n[1] == n[2]) {
     bv.dist(5) = bv.dist(D + 5) = n[1] * d * 2;
-  } else if (n[2] == (CoalScalar)0.0 && n[0] + n[1] == (CoalScalar)0.0) {
+  } else if (n[2] == (Scalar)0.0 && n[0] + n[1] == (Scalar)0.0) {
     bv.dist(6) = bv.dist(D + 6) = n[0] * d * 2;
-  } else if (n[1] == (CoalScalar)0.0 && n[0] + n[2] == (CoalScalar)0.0) {
+  } else if (n[1] == (Scalar)0.0 && n[0] + n[2] == (Scalar)0.0) {
     bv.dist(7) = bv.dist(D + 7) = n[0] * d * 2;
-  } else if (n[0] == (CoalScalar)0.0 && n[1] + n[2] == (CoalScalar)0.0) {
+  } else if (n[0] == (Scalar)0.0 && n[1] + n[2] == (Scalar)0.0) {
     bv.dist(8) = bv.dist(D + 8) = n[1] * d * 2;
-  } else if (n[0] + n[2] == (CoalScalar)0.0 && n[0] + n[1] == (CoalScalar)0.0) {
+  } else if (n[0] + n[2] == (Scalar)0.0 && n[0] + n[1] == (Scalar)0.0) {
     bv.dist(9) = bv.dist(D + 9) = n[0] * d * 3;
-  } else if (n[0] + n[1] == (CoalScalar)0.0 && n[1] + n[2] == (CoalScalar)0.0) {
+  } else if (n[0] + n[1] == (Scalar)0.0 && n[1] + n[2] == (Scalar)0.0) {
     bv.dist(10) = bv.dist(D + 10) = n[0] * d * 3;
-  } else if (n[0] + n[1] == (CoalScalar)0.0 && n[0] + n[2] == (CoalScalar)0.0) {
+  } else if (n[0] + n[1] == (Scalar)0.0 && n[0] + n[2] == (Scalar)0.0) {
     bv.dist(11) = bv.dist(D + 11) = n[1] * d * 3;
   }
 }

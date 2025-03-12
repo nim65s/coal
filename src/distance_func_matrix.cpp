@@ -48,10 +48,10 @@ namespace coal {
 #ifdef COAL_HAS_OCTOMAP
 
 template <typename TypeA, typename TypeB>
-CoalScalar Distance(const CollisionGeometry* o1, const Transform3s& tf1,
-                    const CollisionGeometry* o2, const Transform3s& tf2,
-                    const GJKSolver* nsolver, const DistanceRequest& request,
-                    DistanceResult& result) {
+Scalar Distance(const CollisionGeometry* o1, const Transform3s& tf1,
+                const CollisionGeometry* o2, const Transform3s& tf2,
+                const GJKSolver* nsolver, const DistanceRequest& request,
+                DistanceResult& result) {
   if (request.isSatisfied(result)) return result.min_distance;
   typename TraversalTraitsDistance<TypeA, TypeB>::CollisionTraversal_t node;
   const TypeA* obj1 = static_cast<const TypeA*>(o1);
@@ -66,7 +66,7 @@ CoalScalar Distance(const CollisionGeometry* o1, const Transform3s& tf1,
 
 #endif
 
-COAL_LOCAL CoalScalar distance_function_not_implemented(
+COAL_LOCAL Scalar distance_function_not_implemented(
     const CollisionGeometry* o1, const Transform3s& /*tf1*/,
     const CollisionGeometry* o2, const Transform3s& /*tf2*/,
     const GJKSolver* /*nsolver*/, const DistanceRequest& /*request*/,
@@ -83,7 +83,7 @@ COAL_LOCAL CoalScalar distance_function_not_implemented(
 }
 
 template <typename T_BVH, typename T_SH>
-struct COAL_LOCAL BVHShapeDistancer{static CoalScalar distance(
+struct COAL_LOCAL BVHShapeDistancer{static Scalar distance(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2,
     const GJKSolver* nsolver, const DistanceRequest& request,
@@ -108,13 +108,13 @@ namespace details {
 
 template <typename OrientedMeshShapeDistanceTraversalNode, typename T_BVH,
           typename T_SH>
-CoalScalar orientedBVHShapeDistance(const CollisionGeometry* o1,
-                                    const Transform3s& tf1,
-                                    const CollisionGeometry* o2,
-                                    const Transform3s& tf2,
-                                    const GJKSolver* nsolver,
-                                    const DistanceRequest& request,
-                                    DistanceResult& result) {
+Scalar orientedBVHShapeDistance(const CollisionGeometry* o1,
+                                const Transform3s& tf1,
+                                const CollisionGeometry* o2,
+                                const Transform3s& tf2,
+                                const GJKSolver* nsolver,
+                                const DistanceRequest& request,
+                                DistanceResult& result) {
   if (request.isSatisfied(result)) return result.min_distance;
   OrientedMeshShapeDistanceTraversalNode node;
   const BVHModel<T_BVH>* obj1 = static_cast<const BVHModel<T_BVH>*>(o1);
@@ -130,12 +130,11 @@ CoalScalar orientedBVHShapeDistance(const CollisionGeometry* o1,
 
 template <typename T_SH>
 struct COAL_LOCAL BVHShapeDistancer<RSS, T_SH> {
-  static CoalScalar distance(const CollisionGeometry* o1,
-                             const Transform3s& tf1,
-                             const CollisionGeometry* o2,
-                             const Transform3s& tf2, const GJKSolver* nsolver,
-                             const DistanceRequest& request,
-                             DistanceResult& result) {
+  static Scalar distance(const CollisionGeometry* o1, const Transform3s& tf1,
+                         const CollisionGeometry* o2, const Transform3s& tf2,
+                         const GJKSolver* nsolver,
+                         const DistanceRequest& request,
+                         DistanceResult& result) {
     return details::orientedBVHShapeDistance<
         MeshShapeDistanceTraversalNodeRSS<T_SH>, RSS, T_SH>(
         o1, tf1, o2, tf2, nsolver, request, result);
@@ -144,12 +143,11 @@ struct COAL_LOCAL BVHShapeDistancer<RSS, T_SH> {
 
 template <typename T_SH>
 struct COAL_LOCAL BVHShapeDistancer<kIOS, T_SH> {
-  static CoalScalar distance(const CollisionGeometry* o1,
-                             const Transform3s& tf1,
-                             const CollisionGeometry* o2,
-                             const Transform3s& tf2, const GJKSolver* nsolver,
-                             const DistanceRequest& request,
-                             DistanceResult& result) {
+  static Scalar distance(const CollisionGeometry* o1, const Transform3s& tf1,
+                         const CollisionGeometry* o2, const Transform3s& tf2,
+                         const GJKSolver* nsolver,
+                         const DistanceRequest& request,
+                         DistanceResult& result) {
     return details::orientedBVHShapeDistance<
         MeshShapeDistanceTraversalNodekIOS<T_SH>, kIOS, T_SH>(
         o1, tf1, o2, tf2, nsolver, request, result);
@@ -158,12 +156,11 @@ struct COAL_LOCAL BVHShapeDistancer<kIOS, T_SH> {
 
 template <typename T_SH>
 struct COAL_LOCAL BVHShapeDistancer<OBBRSS, T_SH> {
-  static CoalScalar distance(const CollisionGeometry* o1,
-                             const Transform3s& tf1,
-                             const CollisionGeometry* o2,
-                             const Transform3s& tf2, const GJKSolver* nsolver,
-                             const DistanceRequest& request,
-                             DistanceResult& result) {
+  static Scalar distance(const CollisionGeometry* o1, const Transform3s& tf1,
+                         const CollisionGeometry* o2, const Transform3s& tf2,
+                         const GJKSolver* nsolver,
+                         const DistanceRequest& request,
+                         DistanceResult& result) {
     return details::orientedBVHShapeDistance<
         MeshShapeDistanceTraversalNodeOBBRSS<T_SH>, OBBRSS, T_SH>(
         o1, tf1, o2, tf2, nsolver, request, result);
@@ -171,7 +168,7 @@ struct COAL_LOCAL BVHShapeDistancer<OBBRSS, T_SH> {
 };
 
 template <typename T_HF, typename T_SH>
-struct COAL_LOCAL HeightFieldShapeDistancer{static CoalScalar distance(
+struct COAL_LOCAL HeightFieldShapeDistancer{static Scalar distance(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2,
     const GJKSolver* nsolver, const DistanceRequest& request,
@@ -200,9 +197,9 @@ return result.min_distance;
 ;
 
 template <typename T_BVH>
-CoalScalar BVHDistance(const CollisionGeometry* o1, const Transform3s& tf1,
-                       const CollisionGeometry* o2, const Transform3s& tf2,
-                       const DistanceRequest& request, DistanceResult& result) {
+Scalar BVHDistance(const CollisionGeometry* o1, const Transform3s& tf1,
+                   const CollisionGeometry* o2, const Transform3s& tf2,
+                   const DistanceRequest& request, DistanceResult& result) {
   if (request.isSatisfied(result)) return result.min_distance;
   MeshDistanceTraversalNode<T_BVH> node;
   const BVHModel<T_BVH>* obj1 = static_cast<const BVHModel<T_BVH>*>(o1);
@@ -222,12 +219,10 @@ CoalScalar BVHDistance(const CollisionGeometry* o1, const Transform3s& tf1,
 
 namespace details {
 template <typename OrientedMeshDistanceTraversalNode, typename T_BVH>
-CoalScalar orientedMeshDistance(const CollisionGeometry* o1,
-                                const Transform3s& tf1,
-                                const CollisionGeometry* o2,
-                                const Transform3s& tf2,
-                                const DistanceRequest& request,
-                                DistanceResult& result) {
+Scalar orientedMeshDistance(const CollisionGeometry* o1, const Transform3s& tf1,
+                            const CollisionGeometry* o2, const Transform3s& tf2,
+                            const DistanceRequest& request,
+                            DistanceResult& result) {
   if (request.isSatisfied(result)) return result.min_distance;
   OrientedMeshDistanceTraversalNode node;
   const BVHModel<T_BVH>* obj1 = static_cast<const BVHModel<T_BVH>*>(o1);
@@ -242,41 +237,37 @@ CoalScalar orientedMeshDistance(const CollisionGeometry* o1,
 }  // namespace details
 
 template <>
-CoalScalar BVHDistance<RSS>(const CollisionGeometry* o1, const Transform3s& tf1,
-                            const CollisionGeometry* o2, const Transform3s& tf2,
-                            const DistanceRequest& request,
-                            DistanceResult& result) {
+Scalar BVHDistance<RSS>(const CollisionGeometry* o1, const Transform3s& tf1,
+                        const CollisionGeometry* o2, const Transform3s& tf2,
+                        const DistanceRequest& request,
+                        DistanceResult& result) {
   return details::orientedMeshDistance<MeshDistanceTraversalNodeRSS, RSS>(
       o1, tf1, o2, tf2, request, result);
 }
 
 template <>
-CoalScalar BVHDistance<kIOS>(const CollisionGeometry* o1,
-                             const Transform3s& tf1,
-                             const CollisionGeometry* o2,
-                             const Transform3s& tf2,
-                             const DistanceRequest& request,
-                             DistanceResult& result) {
+Scalar BVHDistance<kIOS>(const CollisionGeometry* o1, const Transform3s& tf1,
+                         const CollisionGeometry* o2, const Transform3s& tf2,
+                         const DistanceRequest& request,
+                         DistanceResult& result) {
   return details::orientedMeshDistance<MeshDistanceTraversalNodekIOS, kIOS>(
       o1, tf1, o2, tf2, request, result);
 }
 
 template <>
-CoalScalar BVHDistance<OBBRSS>(const CollisionGeometry* o1,
-                               const Transform3s& tf1,
-                               const CollisionGeometry* o2,
-                               const Transform3s& tf2,
-                               const DistanceRequest& request,
-                               DistanceResult& result) {
+Scalar BVHDistance<OBBRSS>(const CollisionGeometry* o1, const Transform3s& tf1,
+                           const CollisionGeometry* o2, const Transform3s& tf2,
+                           const DistanceRequest& request,
+                           DistanceResult& result) {
   return details::orientedMeshDistance<MeshDistanceTraversalNodeOBBRSS, OBBRSS>(
       o1, tf1, o2, tf2, request, result);
 }
 
 template <typename T_BVH>
-CoalScalar BVHDistance(const CollisionGeometry* o1, const Transform3s& tf1,
-                       const CollisionGeometry* o2, const Transform3s& tf2,
-                       const GJKSolver* /*nsolver*/,
-                       const DistanceRequest& request, DistanceResult& result) {
+Scalar BVHDistance(const CollisionGeometry* o1, const Transform3s& tf1,
+                   const CollisionGeometry* o2, const Transform3s& tf2,
+                   const GJKSolver* /*nsolver*/, const DistanceRequest& request,
+                   DistanceResult& result) {
   return BVHDistance<T_BVH>(o1, tf1, o2, tf2, request, result);
 }
 

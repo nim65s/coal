@@ -83,7 +83,7 @@ void computeSplitVector<OBBRSS>(const OBBRSS& bv, Vec3s& split_vector) {
 }
 
 template <typename BV>
-void computeSplitValue_bvcenter(const BV& bv, CoalScalar& split_value) {
+void computeSplitValue_bvcenter(const BV& bv, Scalar& split_value) {
   Vec3s center = bv.center();
   split_value = center[0];
 }
@@ -92,8 +92,7 @@ template <typename BV>
 void computeSplitValue_mean(const BV&, Vec3s* vertices, Triangle* triangles,
                             unsigned int* primitive_indices,
                             unsigned int num_primitives, BVHModelType type,
-                            const Vec3s& split_vector,
-                            CoalScalar& split_value) {
+                            const Vec3s& split_vector, Scalar& split_value) {
   if (type == BVH_MODEL_TRIANGLES) {
     Vec3s c(Vec3s::Zero());
 
@@ -105,15 +104,15 @@ void computeSplitValue_mean(const BV&, Vec3s* vertices, Triangle* triangles,
 
       c += p1 + p2 + p3;
     }
-    split_value = c.dot(split_vector) / (3 * num_primitives);
+    split_value = c.dot(split_vector) / Scalar(3 * num_primitives);
   } else if (type == BVH_MODEL_POINTCLOUD) {
-    CoalScalar sum = 0;
+    Scalar sum = 0;
     for (unsigned int i = 0; i < num_primitives; ++i) {
       const Vec3s& p = vertices[primitive_indices[i]];
       sum += p.dot(split_vector);
     }
 
-    split_value = sum / num_primitives;
+    split_value = sum / Scalar(num_primitives);
   }
 }
 
@@ -121,9 +120,8 @@ template <typename BV>
 void computeSplitValue_median(const BV&, Vec3s* vertices, Triangle* triangles,
                               unsigned int* primitive_indices,
                               unsigned int num_primitives, BVHModelType type,
-                              const Vec3s& split_vector,
-                              CoalScalar& split_value) {
-  std::vector<CoalScalar> proj(num_primitives);
+                              const Vec3s& split_vector, Scalar& split_value) {
+  std::vector<Scalar> proj(num_primitives);
 
   if (type == BVH_MODEL_TRIANGLES) {
     for (unsigned int i = 0; i < num_primitives; ++i) {

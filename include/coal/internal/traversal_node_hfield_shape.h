@@ -63,10 +63,10 @@ Convex<Quadrilateral> buildConvexQuadrilateral(const HFNode<BV>& node,
   const VecXs& x_grid = model.getXGrid();
   const VecXs& y_grid = model.getYGrid();
 
-  const CoalScalar min_height = model.getMinHeight();
+  const Scalar min_height = model.getMinHeight();
 
-  const CoalScalar x0 = x_grid[node.x_id], x1 = x_grid[node.x_id + 1],
-                   y0 = y_grid[node.y_id], y1 = y_grid[node.y_id + 1];
+  const Scalar x0 = x_grid[node.x_id], x1 = x_grid[node.x_id + 1],
+               y0 = y_grid[node.y_id], y1 = y_grid[node.y_id + 1];
   const Eigen::Block<const MatrixXs, 2, 2> cell =
       heights.block<2, 2>(node.y_id, node.x_id);
 
@@ -126,11 +126,11 @@ void buildConvexTriangles(const HFNode<BV>& node, const HeightField<BV>& model,
   const VecXs& x_grid = model.getXGrid();
   const VecXs& y_grid = model.getYGrid();
 
-  const CoalScalar min_height = model.getMinHeight();
+  const Scalar min_height = model.getMinHeight();
 
-  const CoalScalar x0 = x_grid[node.x_id], x1 = x_grid[node.x_id + 1],
-                   y0 = y_grid[node.y_id], y1 = y_grid[node.y_id + 1];
-  const CoalScalar max_height = node.max_height;
+  const Scalar x0 = x_grid[node.x_id], x1 = x_grid[node.x_id + 1],
+               y0 = y_grid[node.y_id], y1 = y_grid[node.y_id + 1];
+  const Scalar max_height = node.max_height;
   const Eigen::Block<const MatrixXs, 2, 2> cell =
       heights.block<2, 2>(node.y_id, node.x_id);
 
@@ -279,18 +279,18 @@ inline Vec3s projectPointOnTriangle(const Vec3s& contact_point,
   return contact_point_projected;
 }
 
-inline CoalScalar distanceContactPointToTriangle(
-    const Vec3s& contact_point, const Triangle& triangle,
-    const std::vector<Vec3s>& points) {
+inline Scalar distanceContactPointToTriangle(const Vec3s& contact_point,
+                                             const Triangle& triangle,
+                                             const std::vector<Vec3s>& points) {
   const Vec3s contact_point_projected =
       projectPointOnTriangle(contact_point, triangle, points);
   return (contact_point_projected - contact_point).norm();
 }
 
-inline CoalScalar distanceContactPointToFace(const size_t face_id,
-                                             const Vec3s& contact_point,
-                                             const Convex<Triangle>& convex,
-                                             size_t& closest_face_id) {
+inline Scalar distanceContactPointToFace(const size_t face_id,
+                                         const Vec3s& contact_point,
+                                         const Convex<Triangle>& convex,
+                                         size_t& closest_face_id) {
   assert((face_id >= 0 && face_id < 8) && "face_id should be in [0;7]");
 
   const std::vector<Vec3s>& points = *(convex.points);
@@ -300,11 +300,11 @@ inline CoalScalar distanceContactPointToFace(const size_t face_id,
     return distanceContactPointToTriangle(contact_point, triangle, points);
   } else {
     const Triangle& triangle1 = (*(convex.polygons))[face_id];
-    const CoalScalar distance_to_triangle1 =
+    const Scalar distance_to_triangle1 =
         distanceContactPointToTriangle(contact_point, triangle1, points);
 
     const Triangle& triangle2 = (*(convex.polygons))[face_id + 1];
-    const CoalScalar distance_to_triangle2 =
+    const Scalar distance_to_triangle2 =
         distanceContactPointToTriangle(contact_point, triangle2, points);
 
     if (distance_to_triangle1 > distance_to_triangle2) {
@@ -320,10 +320,10 @@ inline CoalScalar distanceContactPointToFace(const size_t face_id,
 template <typename Polygone, typename Shape>
 bool binCorrection(const Convex<Polygone>& convex,
                    const int convex_active_faces, const Shape& shape,
-                   const Transform3s& shape_pose, CoalScalar& distance,
+                   const Transform3s& shape_pose, Scalar& distance,
                    Vec3s& contact_1, Vec3s& contact_2, Vec3s& normal,
                    Vec3s& face_normal, const bool is_collision) {
-  const CoalScalar prec = 1e-12;
+  const Scalar prec = Scalar(1e-12);
   const std::vector<Vec3s>& points = *(convex.points);
 
   bool hfield_witness_is_on_bin_side = true;
@@ -341,12 +341,11 @@ bool binCorrection(const Convex<Polygone>& convex,
   if (convex_active_faces & 8) active_faces.push_back(6);
 
   Triangle face_triangle;
-  CoalScalar shortest_distance_to_face =
-      (std::numeric_limits<CoalScalar>::max)();
+  Scalar shortest_distance_to_face = (std::numeric_limits<Scalar>::max)();
   face_normal = normal;
   for (const size_t active_face : active_faces) {
     size_t closest_face_id;
-    const CoalScalar distance_to_face = distanceContactPointToFace(
+    const Scalar distance_to_face = distanceContactPointToFace(
         active_face, contact_1, convex, closest_face_id);
 
     const bool contact_point_is_on_face = distance_to_face <= prec;
@@ -379,9 +378,9 @@ bool binCorrection(const Convex<Polygone>& convex,
         shape_pose.rotation() * _support + shape_pose.translation();
 
     // Project support into the inclined bin having triangle
-    const CoalScalar offset_plane = face_normal.dot(face_pointA);
+    const Scalar offset_plane = face_normal.dot(face_pointA);
     const Plane projection_plane(face_normal, offset_plane);
-    const CoalScalar distance_support_projection_plane =
+    const Scalar distance_support_projection_plane =
         projection_plane.signedDistance(support);
 
     const Vec3s projected_support =
@@ -404,9 +403,9 @@ bool shapeDistance(const GJKSolver* nsolver, const CollisionRequest& request,
                    const int convex1_active_faces,
                    const Convex<Polygone>& convex2,
                    const int convex2_active_faces, const Transform3s& tf1,
-                   const Shape& shape, const Transform3s& tf2,
-                   CoalScalar& distance, Vec3s& c1, Vec3s& c2, Vec3s& normal,
-                   Vec3s& normal_top, bool& hfield_witness_is_on_bin_side) {
+                   const Shape& shape, const Transform3s& tf2, Scalar& distance,
+                   Vec3s& c1, Vec3s& c2, Vec3s& normal, Vec3s& normal_top,
+                   bool& hfield_witness_is_on_bin_side) {
   enum { RTIsIdentity = Options & RelativeTransformationIsIdentity };
 
   const Transform3s Id;
@@ -418,7 +417,7 @@ bool shapeDistance(const GJKSolver* nsolver, const CollisionRequest& request,
   const bool compute_penetration = true;
   Vec3s contact1_1, contact1_2, contact2_1, contact2_2;
   Vec3s normal1, normal1_top, normal2, normal2_top;
-  CoalScalar distance1, distance2;
+  Scalar distance1, distance2;
 
   if (RTIsIdentity) {
     distance1 = internal::ShapeShapeDistance<Convex<Polygone>, Shape>(
@@ -516,7 +515,7 @@ class HeightFieldShapeCollisionTraversalNode
     : public CollisionTraversalNodeBase {
  public:
   typedef CollisionTraversalNodeBase Base;
-  typedef Eigen::Array<CoalScalar, 1, 2> Array2d;
+  typedef Eigen::Array<Scalar, 1, 2> Array2d;
 
   enum {
     Options = _Options,
@@ -557,7 +556,7 @@ class HeightFieldShapeCollisionTraversalNode
   ///         distance between bounding volumes.
   /// @brief BV culling test in one BVTT node
   bool BVDisjoints(unsigned int b1, unsigned int /*b2*/,
-                   CoalScalar& sqrDistLowerBound) const {
+                   Scalar& sqrDistLowerBound) const {
     if (this->enable_statistics) this->num_bv_tests++;
 
     bool disjoint;
@@ -581,7 +580,7 @@ class HeightFieldShapeCollisionTraversalNode
 
   /// @brief Intersection testing between leaves (one Convex and one shape)
   void leafCollides(unsigned int b1, unsigned int /*b2*/,
-                    CoalScalar& sqrDistLowerBound) const {
+                    Scalar& sqrDistLowerBound) const {
     count++;
     if (this->enable_statistics) this->num_leaf_tests++;
     const HFNode<BV>& node = this->model1->getBV(b1);
@@ -607,7 +606,7 @@ class HeightFieldShapeCollisionTraversalNode
       convex2.computeLocalAABB();
     }
 
-    CoalScalar distance;
+    Scalar distance;
     //    Vec3s contact_point, normal;
     Vec3s c1, c2, normal, normal_face;
     bool hfield_witness_is_on_bin_side;
@@ -617,7 +616,7 @@ class HeightFieldShapeCollisionTraversalNode
         convex2_active_faces, this->tf1, *(this->model2), this->tf2, distance,
         c1, c2, normal, normal_face, hfield_witness_is_on_bin_side);
 
-    CoalScalar distToCollision = distance - this->request.security_margin;
+    Scalar distToCollision = distance - this->request.security_margin;
     if (distToCollision <= this->request.collision_distance_threshold) {
       sqrDistLowerBound = 0;
       if (this->result->numContacts() < this->request.num_max_contacts) {
@@ -648,7 +647,7 @@ class HeightFieldShapeCollisionTraversalNode
 
   mutable int num_bv_tests;
   mutable int num_leaf_tests;
-  mutable CoalScalar query_time_seconds;
+  mutable Scalar query_time_seconds;
   mutable int count;
 };
 
@@ -697,7 +696,7 @@ class HeightFieldShapeDistanceTraversalNode : public DistanceTraversalNodeBase {
   }
 
   /// @brief BV culling test in one BVTT node
-  CoalScalar BVDistanceLowerBound(unsigned int b1, unsigned int /*b2*/) const {
+  Scalar BVDistanceLowerBound(unsigned int b1, unsigned int /*b2*/) const {
     return model1->getBV(b1).bv.distance(
         model2_bv);  // TODO(jcarpent): tf1 is not taken into account here.
   }
@@ -716,7 +715,7 @@ class HeightFieldShapeDistanceTraversalNode : public DistanceTraversalNodeBase {
         details::buildConvexQuadrilateral(node, *this->model1);
 
     Vec3s p1, p2, normal;
-    const CoalScalar distance =
+    const Scalar distance =
         internal::ShapeShapeDistance<ConvexQuadrilateral, S>(
             &convex, this->tf1, this->model2, this->tf2, this->nsolver,
             this->request.enable_signed_distance, p1, p2, normal);
@@ -726,15 +725,15 @@ class HeightFieldShapeDistanceTraversalNode : public DistanceTraversalNodeBase {
   }
 
   /// @brief Whether the traversal process can stop early
-  bool canStop(CoalScalar c) const {
+  bool canStop(Scalar c) const {
     if ((c >= this->result->min_distance - abs_err) &&
         (c * (1 + rel_err) >= this->result->min_distance))
       return true;
     return false;
   }
 
-  CoalScalar rel_err;
-  CoalScalar abs_err;
+  Scalar rel_err;
+  Scalar abs_err;
 
   const GJKSolver* nsolver;
 
@@ -744,7 +743,7 @@ class HeightFieldShapeDistanceTraversalNode : public DistanceTraversalNodeBase {
 
   mutable int num_bv_tests;
   mutable int num_leaf_tests;
-  mutable CoalScalar query_time_seconds;
+  mutable Scalar query_time_seconds;
 };
 
 /// @}

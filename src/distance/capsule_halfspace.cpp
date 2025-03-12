@@ -47,20 +47,20 @@ struct GJKSolver;
 
 namespace internal {
 template <>
-CoalScalar ShapeShapeDistance<Capsule, Halfspace>(
+Scalar ShapeShapeDistance<Capsule, Halfspace>(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2, const GJKSolver*,
     const bool, Vec3s& p1, Vec3s& p2, Vec3s& normal) {
   const Capsule& s1 = static_cast<const Capsule&>(*o1);
   const Halfspace& s2 = static_cast<const Halfspace&>(*o2);
-  const CoalScalar distance =
+  const Scalar distance =
       details::halfspaceDistance(s2, tf2, s1, tf1, p2, p1, normal);
   normal = -normal;
   return distance;
 }
 
 template <>
-CoalScalar ShapeShapeDistance<Halfspace, Capsule>(
+Scalar ShapeShapeDistance<Halfspace, Capsule>(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2, const GJKSolver*,
     const bool, Vec3s& p1, Vec3s& p2, Vec3s& normal) {

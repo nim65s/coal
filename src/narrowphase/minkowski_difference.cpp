@@ -49,7 +49,7 @@ void getSupportTpl(const Shape0* s0, const Shape1* s1, const Matrix3s& oR1,
                    const Vec3s& ot1, const Vec3s& dir, Vec3s& support0,
                    Vec3s& support1, support_func_guess_t& hint,
                    ShapeSupportData data[2]) {
-  assert(dir.norm() > Eigen::NumTraits<CoalScalar>::epsilon());
+  assert(dir.norm() > Eigen::NumTraits<Scalar>::epsilon());
   getShapeSupport<_SupportOptions>(s0, dir, support0, hint[0], data[0]);
 
   if (TransformIsIdentity) {
@@ -77,8 +77,7 @@ void getSupportFuncTpl(const MinkowskiDiff& md, const Vec3s& dir,
 template <typename Shape0, int _SupportOptions>
 MinkowskiDiff::GetSupportFunction makeGetSupportFunction1(
     const ShapeBase* s1, bool identity,
-    Eigen::Array<CoalScalar, 1, 2>& swept_sphere_radius,
-    ShapeSupportData data[2]) {
+    Eigen::Array<Scalar, 1, 2>& swept_sphere_radius, ShapeSupportData data[2]) {
   if (_SupportOptions == SupportOptions::WithSweptSphere) {
     // No need to store the information of swept sphere radius
     swept_sphere_radius[1] = 0;
@@ -158,8 +157,7 @@ MinkowskiDiff::GetSupportFunction makeGetSupportFunction1(
 template <int _SupportOptions>
 MinkowskiDiff::GetSupportFunction makeGetSupportFunction0(
     const ShapeBase* s0, const ShapeBase* s1, bool identity,
-    Eigen::Array<CoalScalar, 1, 2>& swept_sphere_radius,
-    ShapeSupportData data[2]) {
+    Eigen::Array<Scalar, 1, 2>& swept_sphere_radius, ShapeSupportData data[2]) {
   if (_SupportOptions == SupportOptions::WithSweptSphere) {
     // No need to store the information of swept sphere radius
     swept_sphere_radius[0] = 0;
