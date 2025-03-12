@@ -40,6 +40,8 @@
 #include "coal/data_types.h"
 #include "coal/shape/geometric_shapes_traits.h"
 
+#include "coal/tracy.hh"
+
 namespace coal {
 
 // ============================================================================
@@ -79,6 +81,7 @@ void ContactPatchSolver::computePatch(const ShapeType1& s1,
                                       const Transform3s& tf2,
                                       const Contact& contact,
                                       ContactPatch& contact_patch) const {
+  COAL_TRACY_ZONE_SCOPED_N("coal::ContactPatchSolver::computePatch");
   // Note: `ContactPatch` is an alias for `SupportSet`.
   // Step 1
   constructContactPatchFrameFromContact(contact, contact_patch);

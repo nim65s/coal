@@ -255,8 +255,8 @@ if(COAL_USE_FLOAT_PRECISION)
 endif()
 
 if(COAL_BUILD_WITH_TRACY)
-  target_compile_definitions(${LIBRARY_NAME} INTERFACE COAL_TRACY_ENABLE)
-  target_link_libraries(${LIBRARY_NAME} INTERFACE Tracy::TracyClient)
+  target_compile_definitions(${LIBRARY_NAME} PUBLIC COAL_TRACY_ENABLE)
+  target_link_libraries(${LIBRARY_NAME} PUBLIC Tracy::TracyClient)
 endif()
 
 if(WIN32)
