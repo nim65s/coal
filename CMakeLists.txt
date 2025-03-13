@@ -179,14 +179,6 @@ if(COAL_BUILD_WITH_TRACY)
     Tracy::TracyClient
     PROPERTIES POSITION_INDEPENDENT_CODE True
   )
-  if(${Tracy_FOUND})
-    message(STATUS "Tracy found on your system at ${Tracy_DIR}")
-  else()
-    message(
-      FATAL_ERROR
-      "Coal support for tracy is enabled, but tracy was not found on your system."
-    )
-  endif()
 endif(COAL_BUILD_WITH_TRACY)
 
 if(BUILD_PYTHON_INTERFACE)
