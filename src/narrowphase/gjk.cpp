@@ -43,6 +43,8 @@
 #include "coal/shape/geometric_shapes_traits.h"
 #include "coal/narrowphase/narrowphase_defaults.h"
 
+#include "coal/tracy.hh"
+
 namespace coal {
 
 namespace details {
@@ -185,6 +187,7 @@ void GJK::getWitnessPointsAndNormal(const MinkowskiDiff& shape, Vec3s& w0,
 
 GJK::Status GJK::evaluate(const MinkowskiDiff& shape_, const Vec3s& guess,
                           const support_func_guess_t& supportHint) {
+  COAL_TRACY_ZONE_SCOPED_N("coal::details::GJK::evaluate");
   Scalar alpha = 0;
   iterations = 0;
   const Scalar swept_sphere_radius = shape_.swept_sphere_radius.sum();
@@ -1153,6 +1156,7 @@ EPA::SimplexFace* EPA::findClosestFace() {
 }
 
 EPA::Status EPA::evaluate(GJK& gjk, const Vec3s& guess) {
+  COAL_TRACY_ZONE_SCOPED_N("coal::details::EPA::evaluate");
   GJK::Simplex& simplex = *gjk.getSimplex();
   support_hint = gjk.support_hint;
 

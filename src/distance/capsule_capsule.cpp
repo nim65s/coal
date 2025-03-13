@@ -35,6 +35,8 @@
 #include "coal/shape/geometric_shapes.h"
 #include "coal/internal/shape_shape_func.h"
 
+#include "coal/tracy.hh"
+
 // Note that partial specialization of template functions is not allowed.
 // Therefore, two implementations with the default narrow phase solvers are
 // provided. If another narrow phase solver were to be used, the default
@@ -81,6 +83,8 @@ Scalar ShapeShapeDistance<Capsule, Capsule>(
     const CollisionGeometry* o1, const Transform3s& tf1,
     const CollisionGeometry* o2, const Transform3s& tf2, const GJKSolver*,
     const bool, Vec3s& wp1, Vec3s& wp2, Vec3s& normal) {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::internal::ShapeShapeDistance<Capsule, Capsule>");
   const Capsule* capsule1 = static_cast<const Capsule*>(o1);
   const Capsule* capsule2 = static_cast<const Capsule*>(o2);
 

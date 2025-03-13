@@ -40,7 +40,7 @@
 #include "coal/distance_func_matrix.h"
 #include "coal/narrowphase/narrowphase.h"
 
-#include <iostream>
+#include "coal/tracy.hh"
 
 namespace coal {
 
@@ -59,6 +59,7 @@ Scalar distance(const CollisionObject* o1, const CollisionObject* o2,
 Scalar distance(const CollisionGeometry* o1, const Transform3s& tf1,
                 const CollisionGeometry* o2, const Transform3s& tf2,
                 const DistanceRequest& request, DistanceResult& result) {
+  COAL_TRACY_ZONE_SCOPED_N("coal::distance");
   GJKSolver solver(request);
 
   const DistanceFunctionMatrix& looktable = getDistanceFunctionLookTable();
@@ -138,6 +139,7 @@ ComputeDistance::ComputeDistance(const CollisionGeometry* o1,
 Scalar ComputeDistance::run(const Transform3s& tf1, const Transform3s& tf2,
                             const DistanceRequest& request,
                             DistanceResult& result) const {
+  COAL_TRACY_ZONE_SCOPED_N("coal::ComputeDistance::run");
   Scalar res;
 
   if (swap_geoms) {

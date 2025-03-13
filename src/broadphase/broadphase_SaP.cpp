@@ -36,6 +36,7 @@
 /** @author Jia Pan */
 
 #include "coal/broadphase/broadphase_SaP.h"
+#include "coal/tracy.hh"
 
 namespace coal {
 
@@ -575,6 +576,9 @@ void SaPCollisionManager::removeFromOverlapPairs(const SaPPair& p) {
 //==============================================================================
 void SaPCollisionManager::collide(CollisionObject* obj,
                                   CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::SaPCollisionManager::collide(CollisionObject*, "
+      "CollisionCallBackBase*)");
   callback->init();
   if (size() == 0) return;
 
@@ -676,6 +680,9 @@ bool SaPCollisionManager::distance_(CollisionObject* obj,
 //==============================================================================
 void SaPCollisionManager::distance(CollisionObject* obj,
                                    DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::SaPCollisionManager::distance(CollisionObject*, "
+      "DistanceCallBackBase*)");
   callback->init();
   if (size() == 0) return;
 
@@ -686,6 +693,8 @@ void SaPCollisionManager::distance(CollisionObject* obj,
 
 //==============================================================================
 void SaPCollisionManager::collide(CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::SaPCollisionManager::collide(CollisionCallBackBase*)");
   callback->init();
   if (size() == 0) return;
 
@@ -700,6 +709,8 @@ void SaPCollisionManager::collide(CollisionCallBackBase* callback) const {
 
 //==============================================================================
 void SaPCollisionManager::distance(DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::SaPCollisionManager::distance(DistanceCallBackBase*)");
   callback->init();
   if (size() == 0) return;
 
@@ -719,6 +730,9 @@ void SaPCollisionManager::distance(DistanceCallBackBase* callback) const {
 //==============================================================================
 void SaPCollisionManager::collide(BroadPhaseCollisionManager* other_manager_,
                                   CollisionCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::SaPCollisionManager::collide(BroadPhaseCollisionManager*, "
+      "CollisionCallBackBase*)");
   callback->init();
   SaPCollisionManager* other_manager =
       static_cast<SaPCollisionManager*>(other_manager_);
@@ -746,6 +760,9 @@ void SaPCollisionManager::collide(BroadPhaseCollisionManager* other_manager_,
 //==============================================================================
 void SaPCollisionManager::distance(BroadPhaseCollisionManager* other_manager_,
                                    DistanceCallBackBase* callback) const {
+  COAL_TRACY_ZONE_SCOPED_N(
+      "coal::SaPCollisionManager::distance(BroadPhaseCollisionManager*, "
+      "DistanceCallBackBase*)");
   callback->init();
   SaPCollisionManager* other_manager =
       static_cast<SaPCollisionManager*>(other_manager_);

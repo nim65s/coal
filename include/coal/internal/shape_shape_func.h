@@ -45,6 +45,8 @@
 #include "coal/narrowphase/narrowphase.h"
 #include "coal/shape/geometric_shapes_traits.h"
 
+#include "coal/tracy.hh"
+
 namespace coal {
 
 template <typename ShapeType1, typename ShapeType2>
@@ -93,6 +95,7 @@ Scalar ShapeShapeDistance(const CollisionGeometry* o1, const Transform3s& tf1,
                           const GJKSolver* nsolver,
                           const DistanceRequest& request,
                           DistanceResult& result) {
+  COAL_TRACY_ZONE_SCOPED_N("coal::ShapeShapeDistance");
   return ShapeShapeDistancer<ShapeType1, ShapeType2>::run(
       o1, tf1, o2, tf2, nsolver, request, result);
 }
@@ -169,6 +172,7 @@ std::size_t ShapeShapeCollide(const CollisionGeometry* o1,
                               const Transform3s& tf2, const GJKSolver* nsolver,
                               const CollisionRequest& request,
                               CollisionResult& result) {
+  COAL_TRACY_ZONE_SCOPED_N("coal::ShapeShapeCollide");
   return ShapeShapeCollider<ShapeType1, ShapeType2>::run(
       o1, tf1, o2, tf2, nsolver, request, result);
 }

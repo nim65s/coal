@@ -42,6 +42,8 @@
 #include "coal/internal/shape_shape_func.h"
 #include "../narrowphase/details.h"
 
+#include "coal/tracy.hh"
+
 namespace coal {
 struct GJKSolver;
 
@@ -53,6 +55,7 @@ Scalar ShapeShapeDistance<Box, Sphere>(const CollisionGeometry* o1,
                                        const Transform3s& tf2, const GJKSolver*,
                                        const bool, Vec3s& p1, Vec3s& p2,
                                        Vec3s& normal) {
+  COAL_TRACY_ZONE_SCOPED_N("coal::internal::ShapeShapeDistance<Box, Sphere>");
   const Box& s1 = static_cast<const Box&>(*o1);
   const Sphere& s2 = static_cast<const Sphere&>(*o2);
   return details::boxSphereDistance(s1, tf1, s2, tf2, p1, p2, normal);
@@ -65,6 +68,7 @@ Scalar ShapeShapeDistance<Sphere, Box>(const CollisionGeometry* o1,
                                        const Transform3s& tf2, const GJKSolver*,
                                        const bool, Vec3s& p1, Vec3s& p2,
                                        Vec3s& normal) {
+  COAL_TRACY_ZONE_SCOPED_N("coal::internal::ShapeShapeDistance<Sphere, Box>");
   const Sphere& s1 = static_cast<const Sphere&>(*o1);
   const Box& s2 = static_cast<const Box&>(*o2);
   const Scalar distance =

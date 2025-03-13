@@ -13,6 +13,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Add option to switch between (default) double precision and float precision
   - Changed all the uses of `double` to `Scalar` in Coal
   - Fixed all the compilation warnings when compiling the library using float precision
+- Tracy profiling ([#668](https://github.com/coal-library/coal/pull/668))
+  - added cmake option `COAL_BUILD_WITH_TRACY`
+  - put tracy scoped zones in broadphase and primitive shapes collision/distance queries
 
 ## [3.0.1] - 2025-02-12
 
