@@ -515,7 +515,6 @@ class HeightFieldShapeCollisionTraversalNode
     : public CollisionTraversalNodeBase {
  public:
   typedef CollisionTraversalNodeBase Base;
-  typedef Eigen::Array<Scalar, 1, 2> Array2d;
 
   enum {
     Options = _Options,
