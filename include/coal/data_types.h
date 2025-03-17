@@ -79,6 +79,9 @@ typedef Eigen::Matrix<Eigen::DenseIndex, Eigen::Dynamic, 3, Eigen::RowMajor>
 typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> MatrixXs;
 typedef Eigen::Vector2i support_func_guess_t;
 
+typedef double SolverScalar;
+typedef Eigen::Matrix<SolverScalar, 3, 1> Vec3ps;
+
 #ifdef COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL
 // We keep the FCL_REAL typedef and the Vec[..]f typedefs for backward
 // compatibility.

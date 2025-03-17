@@ -443,7 +443,8 @@ struct COAL_DLLAPI GJKSolver {
                        *(this->minkowski_difference.shapes[1]), guess,
                        support_hint);
 
-    this->gjk.evaluate(this->minkowski_difference, guess, support_hint);
+    this->gjk.evaluate(this->minkowski_difference, guess.cast<SolverScalar>(),
+                       support_hint);
 
     switch (this->gjk.status) {
       case details::GJK::DidNotRun:
@@ -515,7 +516,7 @@ struct COAL_DLLAPI GJKSolver {
 
           // TODO: understand why EPA's performance is so bad on cylinders and
           // cones.
-          this->epa.evaluate(this->gjk, -guess);
+          this->epa.evaluate(this->gjk, (-guess).cast<SolverScalar>());
 
           switch (epa.status) {
             //
@@ -592,10 +593,10 @@ struct COAL_DLLAPI GJKSolver {
                                                  Vec3s& normal) const {
     COAL_UNUSED_VARIABLE(tf1);
     // Cache gjk result for potential future call to this GJKSolver.
-    this->cached_guess = this->gjk.ray;
+    this->cached_guess = this->gjk.ray.cast<Scalar>();
     this->support_func_cached_guess = this->gjk.support_hint;
 
-    distance = this->gjk.distance;
+    distance = Scalar(this->gjk.distance);
     p1 = p2 = normal =
         Vec3s::Constant(std::numeric_limits<Scalar>::quiet_NaN());
     // If we absolutely want to return some witness points, we could use
@@ -621,13 +622,18 @@ struct COAL_DLLAPI GJKSolver {
                 "The norm of GJK's ray should be bigger than GJK's tolerance.",
                 std::logic_error);
     // Cache gjk result for potential future call to this GJKSolver.
-    this->cached_guess = this->gjk.ray;
+    this->cached_guess = this->gjk.ray.cast<Scalar>();
     this->support_func_cached_guess = this->gjk.support_hint;
 
-    distance = this->gjk.distance;
+    distance = Scalar(this->gjk.distance);
     // TODO: On degenerated case, the closest points may be non-unique.
     // (i.e. an object face normal is colinear to `gjk.ray`)
-    gjk.getWitnessPointsAndNormal(this->minkowski_difference, p1, p2, normal);
+    Vec3ps p1_, p2_, normal_;
+    gjk.getWitnessPointsAndNormal(this->minkowski_difference, p1_, p2_,
+                                  normal_);
+    p1 = p1_.cast<Scalar>();
+    p2 = p2_.cast<Scalar>();
+    normal = normal_.cast<Scalar>();
     Vec3s p = tf1.transform(0.5 * (p1 + p2));
     normal = tf1.getRotation() * normal;
     p1.noalias() = p - 0.5 * distance * normal;
@@ -649,7 +655,7 @@ struct COAL_DLLAPI GJKSolver {
     // this->cached_guess = this->gjk.ray;
     this->support_func_cached_guess = this->gjk.support_hint;
 
-    distance = this->gjk.distance;
+    distance = Scalar(this->gjk.distance);
     p1 = p2 = normal =
         Vec3s::Constant(std::numeric_limits<Scalar>::quiet_NaN());
   }
@@ -659,11 +665,15 @@ struct COAL_DLLAPI GJKSolver {
                                         Vec3s& normal) const {
     // Cache EPA result for potential future call to this GJKSolver.
     // This caching allows to warm-start the next GJK call.
-    this->cached_guess = -(this->epa.depth * this->epa.normal);
+    this->cached_guess = -(this->epa.depth * this->epa.normal).cast<Scalar>();
     this->support_func_cached_guess = this->epa.support_hint;
-    distance = (std::min)(Scalar(0), -this->epa.depth);
-    this->epa.getWitnessPointsAndNormal(this->minkowski_difference, p1, p2,
-                                        normal);
+    distance = (std::min)(Scalar(0), -Scalar(this->epa.depth));
+    Vec3ps p1_, p2_, normal_;
+    this->epa.getWitnessPointsAndNormal(this->minkowski_difference, p1_, p2_,
+                                        normal_);
+    p1 = p1_.cast<Scalar>();
+    p2 = p2_.cast<Scalar>();
+    normal = normal_.cast<Scalar>();
     // The following is very important to understand why EPA can sometimes
     // return a normal that is not colinear to the vector $p_1 - p_2$ when
     // working with tolerances like $\epsilon = 10^{-3}$.

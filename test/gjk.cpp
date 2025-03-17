@@ -363,7 +363,7 @@ void test_gjk_unit_sphere(Scalar center_distance, Vec3s ray,
   details::GJK gjk(2, Scalar(1e-6));
   if (use_gjk_nesterov_acceleration)
     gjk.gjk_variant = GJKVariant::NesterovAcceleration;
-  details::GJK::Status status = gjk.evaluate(shape, Vec3s(1, 0, 0));
+  details::GJK::Status status = gjk.evaluate(shape, Vec3ps(1, 0, 0));
 
   if (expect_collision) {
     BOOST_CHECK((status == details::GJK::Collision) ||
@@ -376,8 +376,11 @@ void test_gjk_unit_sphere(Scalar center_distance, Vec3s ray,
     BOOST_CHECK_EQUAL(status, details::GJK::NoCollision);
   }
 
-  Vec3s w0, w1, normal;
-  gjk.getWitnessPointsAndNormal(shape, w0, w1, normal);
+  Vec3ps w0_, w1_, normal_;
+  gjk.getWitnessPointsAndNormal(shape, w0_, w1_, normal_);
+  Vec3s w0 = w0_.cast<Scalar>();
+  Vec3s w1 = w1_.cast<Scalar>();
+  Vec3s normal = normal_.cast<Scalar>();
 
   Vec3s w0_expected(tf0.inverse().transform(tf0.getTranslation() + ray) +
                     swept_sphere_radius * normal);
@@ -438,10 +441,10 @@ void test_gjk_triangle_capsule(Vec3s T, bool expect_collision,
   BOOST_CHECK_EQUAL(shape.swept_sphere_radius[0], capsule.radius);
   BOOST_CHECK_EQUAL(shape.swept_sphere_radius[1], 0.);
 
-  details::GJK gjk(10, Scalar(1e-6));
+  details::GJK gjk(10, SolverScalar(1e-6));
   if (use_gjk_nesterov_acceleration)
     gjk.gjk_variant = GJKVariant::NesterovAcceleration;
-  details::GJK::Status status = gjk.evaluate(shape, Vec3s(1, 0, 0));
+  details::GJK::Status status = gjk.evaluate(shape, Vec3ps(1, 0, 0));
 
   if (expect_collision) {
     BOOST_CHECK((status == details::GJK::Collision) ||
@@ -450,22 +453,26 @@ void test_gjk_triangle_capsule(Vec3s T, bool expect_collision,
     BOOST_CHECK_EQUAL(status, details::GJK::NoCollision);
 
     // Check that guess works as expected
-    Vec3s guess = gjk.getGuessFromSimplex();
-    details::GJK gjk2(3, Scalar(1e-6));
+    Vec3ps guess = gjk.getGuessFromSimplex();
+    details::GJK gjk2(3, SolverScalar(1e-6));
     details::GJK::Status status2 = gjk2.evaluate(shape, guess);
     BOOST_CHECK_EQUAL(status2, details::GJK::NoCollision);
   }
 
-  Vec3s w0, w1, normal;
+  Vec3ps w0_, w1_, normal_;
   if (status == details::GJK::NoCollision ||
       status == details::GJK::CollisionWithPenetrationInformation) {
-    gjk.getWitnessPointsAndNormal(shape, w0, w1, normal);
+    gjk.getWitnessPointsAndNormal(shape, w0_, w1_, normal_);
   } else {
-    details::EPA epa(64, Scalar(1e-6));
-    details::EPA::Status epa_status = epa.evaluate(gjk, Vec3s(1, 0, 0));
+    details::EPA epa(64, SolverScalar(1e-6));
+    details::EPA::Status epa_status = epa.evaluate(gjk, Vec3ps(1, 0, 0));
     BOOST_CHECK_EQUAL(epa_status, details::EPA::AccuracyReached);
-    epa.getWitnessPointsAndNormal(shape, w0, w1, normal);
+    epa.getWitnessPointsAndNormal(shape, w0_, w1_, normal_);
   }
+  Vec3s w0 = w0_.cast<Scalar>();
+  Vec3s w1 = w1_.cast<Scalar>();
+  Vec3s normal = normal_.cast<Scalar>();
+  COAL_UNUSED_VARIABLE(normal);
 
   EIGEN_VECTOR_IS_APPROX(w0, w0_expected, Scalar(1e-10));
   EIGEN_VECTOR_IS_APPROX(w1 - T, w1_expected, Scalar(1e-10));

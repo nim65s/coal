@@ -53,9 +53,11 @@ using coal::GJKSolver;
 using coal::GJKVariant;
 using coal::Scalar;
 using coal::ShapeBase;
+using coal::SolverScalar;
 using coal::support_func_guess_t;
 using coal::Transform3s;
 using coal::Triangle;
+using coal::Vec3ps;
 using coal::Vec3s;
 using coal::details::GJK;
 using coal::details::MinkowskiDiff;
@@ -137,29 +139,30 @@ void test_accelerated_gjk(const ShapeBase& shape0, const ShapeBase& shape1) {
                                                  transforms[i]);
 
     // Evaluate both solvers twice, make sure they give the same solution
-    GJK::Status res_gjk_1 =
-        gjk.evaluate(mink_diff, init_guess, init_support_guess);
-    Vec3s ray_gjk = gjk.ray;
-    GJK::Status res_gjk_2 =
-        gjk.evaluate(mink_diff, init_guess, init_support_guess);
+    GJK::Status res_gjk_1 = gjk.evaluate(
+        mink_diff, init_guess.cast<SolverScalar>(), init_support_guess);
+    Vec3ps ray_gjk = gjk.ray;
+    GJK::Status res_gjk_2 = gjk.evaluate(
+        mink_diff, init_guess.cast<SolverScalar>(), init_support_guess);
     BOOST_CHECK(res_gjk_1 == res_gjk_2);
-    EIGEN_VECTOR_IS_APPROX(ray_gjk, gjk.ray, Scalar(1e-8));
+    EIGEN_VECTOR_IS_APPROX(ray_gjk, gjk.ray, SolverScalar(1e-8));
 
     // --------------
     // -- Nesterov --
     // --------------
-    GJK::Status res_nesterov_gjk_1 =
-        gjk_nesterov.evaluate(mink_diff, init_guess, init_support_guess);
-    Vec3s ray_nesterov = gjk_nesterov.ray;
-    GJK::Status res_nesterov_gjk_2 =
-        gjk_nesterov.evaluate(mink_diff, init_guess, init_support_guess);
+    GJK::Status res_nesterov_gjk_1 = gjk_nesterov.evaluate(
+        mink_diff, init_guess.cast<SolverScalar>(), init_support_guess);
+    Vec3ps ray_nesterov = gjk_nesterov.ray;
+    GJK::Status res_nesterov_gjk_2 = gjk_nesterov.evaluate(
+        mink_diff, init_guess.cast<SolverScalar>(), init_support_guess);
     BOOST_CHECK(res_nesterov_gjk_1 == res_nesterov_gjk_2);
-    EIGEN_VECTOR_IS_APPROX(ray_nesterov, gjk_nesterov.ray, Scalar(1e-8));
+    EIGEN_VECTOR_IS_APPROX(ray_nesterov, gjk_nesterov.ray, SolverScalar(1e-8));
 
     // Make sure GJK and Nesterov accelerated GJK find the same distance between
     // the shapes
     BOOST_CHECK(res_nesterov_gjk_1 == res_gjk_1);
-    BOOST_CHECK_SMALL(fabs(ray_gjk.norm() - ray_nesterov.norm()), Scalar(1e-4));
+    BOOST_CHECK_SMALL(fabs(ray_gjk.norm() - ray_nesterov.norm()),
+                      SolverScalar(1e-4));
 
     // Make sure GJK and Nesterov accelerated GJK converges in a reasonable
     // amount of iterations
@@ -169,18 +172,19 @@ void test_accelerated_gjk(const ShapeBase& shape0, const ShapeBase& shape1) {
     // ------------
     // -- Polyak --
     // ------------
-    GJK::Status res_polyak_gjk_1 =
-        gjk_polyak.evaluate(mink_diff, init_guess, init_support_guess);
-    Vec3s ray_polyak = gjk_polyak.ray;
-    GJK::Status res_polyak_gjk_2 =
-        gjk_polyak.evaluate(mink_diff, init_guess, init_support_guess);
+    GJK::Status res_polyak_gjk_1 = gjk_polyak.evaluate(
+        mink_diff, init_guess.cast<SolverScalar>(), init_support_guess);
+    Vec3ps ray_polyak = gjk_polyak.ray;
+    GJK::Status res_polyak_gjk_2 = gjk_polyak.evaluate(
+        mink_diff, init_guess.cast<SolverScalar>(), init_support_guess);
     BOOST_CHECK(res_polyak_gjk_1 == res_polyak_gjk_2);
-    EIGEN_VECTOR_IS_APPROX(ray_polyak, gjk_polyak.ray, Scalar(1e-8));
+    EIGEN_VECTOR_IS_APPROX(ray_polyak, gjk_polyak.ray, SolverScalar(1e-8));
 
     // Make sure GJK and Polyak accelerated GJK find the same distance between
     // the shapes
     BOOST_CHECK(res_polyak_gjk_1 == res_gjk_1);
-    BOOST_CHECK_SMALL(fabs(ray_gjk.norm() - ray_polyak.norm()), Scalar(1e-4));
+    BOOST_CHECK_SMALL(fabs(ray_gjk.norm() - ray_polyak.norm()),
+                      SolverScalar(1e-4));
 
     // Make sure GJK and Polyak accelerated GJK converges in a reasonable
     // amount of iterations
