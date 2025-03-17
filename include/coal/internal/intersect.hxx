@@ -111,7 +111,7 @@ inline typename Project<Scalar>::ProjectResult Project<Scalar>::projectTriangle(
     if (mindist < 0)  // the origin project is within the triangle
     {
       Scalar d = (a - p).dot(n);
-      Scalar s = sqrt(l);
+      Scalar s = std::sqrt(l);
       Vec3 p_to_project = n * (d / l);
       mindist = p_to_project.squaredNorm();
       res.encode = 7;  // m = 0x111
@@ -250,7 +250,7 @@ Project<Scalar>::projectTriangleOrigin(const Vec3& a, const Vec3& b,
     if (mindist < 0)  // the origin project is within the triangle
     {
       Scalar d = a.dot(n);
-      Scalar s = sqrt(l);
+      Scalar s = std::sqrt(l);
       Vec3 o_to_project = n * (d / l);
       mindist = o_to_project.squaredNorm();
       res.encode = 7;  // m = 0x111
