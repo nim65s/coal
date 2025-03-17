@@ -232,8 +232,8 @@ void buildConvexTriangles(const HFNode<BV>& node, const HeightField<BV>& model,
 
 inline Vec3s projectTriangle(const Vec3s& pointA, const Vec3s& pointB,
                              const Vec3s& pointC, const Vec3s& point) {
-  const Project::ProjectResult result =
-      Project::projectTriangle(pointA, pointB, pointC, point);
+  const Project<Scalar>::ProjectResult result =
+      Project<Scalar>::projectTriangle(pointA, pointB, pointC, point);
   Vec3s res = result.parameterization[0] * pointA +
               result.parameterization[1] * pointB +
               result.parameterization[2] * pointC;
@@ -244,8 +244,8 @@ inline Vec3s projectTriangle(const Vec3s& pointA, const Vec3s& pointB,
 inline Vec3s projectTetrahedra(const Vec3s& pointA, const Vec3s& pointB,
                                const Vec3s& pointC, const Vec3s& pointD,
                                const Vec3s& point) {
-  const Project::ProjectResult result =
-      Project::projectTetrahedra(pointA, pointB, pointC, pointD, point);
+  const Project<Scalar>::ProjectResult result =
+      Project<Scalar>::projectTetrahedra(pointA, pointB, pointC, pointD, point);
   Vec3s res = result.parameterization[0] * pointA +
               result.parameterization[1] * pointB +
               result.parameterization[2] * pointC +

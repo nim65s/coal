@@ -52,8 +52,12 @@ class COAL_DLLAPI Intersect {
 };  // class Intersect
 
 /// @brief Project functions
+template <typename _Scalar>
 class COAL_DLLAPI Project {
  public:
+  typedef _Scalar Scalar;
+  typedef Eigen::Matrix<Scalar, 3, 1> Vec3;
+
   struct COAL_DLLAPI ProjectResult {
     /// @brief Parameterization of the projected point (based on the simplex to
     /// be projected, use 2 or 3 or 4 of the array)
@@ -69,28 +73,27 @@ class COAL_DLLAPI Project {
   };
 
   /// @brief Project point p onto line a-b
-  static ProjectResult projectLine(const Vec3s& a, const Vec3s& b,
-                                   const Vec3s& p);
+  static ProjectResult projectLine(const Vec3& a, const Vec3& b, const Vec3& p);
 
   /// @brief Project point p onto triangle a-b-c
-  static ProjectResult projectTriangle(const Vec3s& a, const Vec3s& b,
-                                       const Vec3s& c, const Vec3s& p);
+  static ProjectResult projectTriangle(const Vec3& a, const Vec3& b,
+                                       const Vec3& c, const Vec3& p);
 
   /// @brief Project point p onto tetrahedra a-b-c-d
-  static ProjectResult projectTetrahedra(const Vec3s& a, const Vec3s& b,
-                                         const Vec3s& c, const Vec3s& d,
-                                         const Vec3s& p);
+  static ProjectResult projectTetrahedra(const Vec3& a, const Vec3& b,
+                                         const Vec3& c, const Vec3& d,
+                                         const Vec3& p);
 
   /// @brief Project origin (0) onto line a-b
-  static ProjectResult projectLineOrigin(const Vec3s& a, const Vec3s& b);
+  static ProjectResult projectLineOrigin(const Vec3& a, const Vec3& b);
 
   /// @brief Project origin (0) onto triangle a-b-c
-  static ProjectResult projectTriangleOrigin(const Vec3s& a, const Vec3s& b,
-                                             const Vec3s& c);
+  static ProjectResult projectTriangleOrigin(const Vec3& a, const Vec3& b,
+                                             const Vec3& c);
 
   /// @brief Project origin (0) onto tetrahedran a-b-c-d
-  static ProjectResult projectTetrahedraOrigin(const Vec3s& a, const Vec3s& b,
-                                               const Vec3s& c, const Vec3s& d);
+  static ProjectResult projectTetrahedraOrigin(const Vec3& a, const Vec3& b,
+                                               const Vec3& c, const Vec3& d);
 };
 
 /// @brief Triangle distance functions
@@ -183,5 +186,7 @@ class COAL_DLLAPI TriangleDistance {
 }  // namespace coal
 
 /// @endcond
+
+#include "coal/internal/intersect.hxx"
 
 #endif
