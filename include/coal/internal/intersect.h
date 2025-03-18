@@ -53,12 +53,12 @@ class COAL_DLLAPI Intersect {
 
 /// @brief Project functions
 template <typename _Scalar>
-class COAL_DLLAPI Project {
+class Project {
  public:
   typedef _Scalar Scalar;
   typedef Eigen::Matrix<Scalar, 3, 1> Vec3;
 
-  struct COAL_DLLAPI ProjectResult {
+  struct ProjectResult {
     /// @brief Parameterization of the projected point (based on the simplex to
     /// be projected, use 2 or 3 or 4 of the array)
     Scalar parameterization[4];
