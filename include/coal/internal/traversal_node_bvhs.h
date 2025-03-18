@@ -271,7 +271,7 @@ struct DistanceTraversalBVDistanceLowerBound_impl<OBB> {
       // TODO A penetration upper bound should be computed.
       return -1;
     }
-    return sqrt(sqrDistLowerBound);
+    return std::sqrt(sqrDistLowerBound);
   }
   static Scalar run(const Matrix3s& R, const Vec3s& T, const BVNode<OBB>& b1,
                     const BVNode<OBB>& b2) {
@@ -282,7 +282,7 @@ struct DistanceTraversalBVDistanceLowerBound_impl<OBB> {
       // TODO A penetration upper bound should be computed.
       return -1;
     }
-    return sqrt(sqrDistLowerBound);
+    return std::sqrt(sqrDistLowerBound);
   }
 };
 
@@ -296,7 +296,7 @@ struct DistanceTraversalBVDistanceLowerBound_impl<AABB> {
       // TODO A penetration upper bound should be computed.
       return -1;
     }
-    return sqrt(sqrDistLowerBound);
+    return std::sqrt(sqrDistLowerBound);
   }
   static Scalar run(const Matrix3s& R, const Vec3s& T, const BVNode<AABB>& b1,
                     const BVNode<AABB>& b2) {
@@ -307,7 +307,7 @@ struct DistanceTraversalBVDistanceLowerBound_impl<AABB> {
       // TODO A penetration upper bound should be computed.
       return -1;
     }
-    return sqrt(sqrDistLowerBound);
+    return std::sqrt(sqrDistLowerBound);
   }
 };
 }  // namespace details

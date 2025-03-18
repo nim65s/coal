@@ -16,6 +16,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Tracy profiling ([#668](https://github.com/coal-library/coal/pull/668))
   - added cmake option `COAL_BUILD_WITH_TRACY`
   - put tracy scoped zones in broadphase and primitive shapes collision/distance queries
+- Use double precision for GJK/EPA when coal is compiled in float ([#674](https://github.com/coal-library/coal/pull/674))
+  - Everything is in float in coal (including the support functions), except the computations inside GJK/EPA
+  - Allows GJK/EPA to avoid limitation of float precision
 
 ## [3.0.1] - 2025-02-12
 

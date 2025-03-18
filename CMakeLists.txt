@@ -351,6 +351,7 @@ set(
   include/coal/internal/shape_shape_func.h
   include/coal/internal/shape_shape_contact_patch_func.h
   include/coal/internal/intersect.h
+  include/coal/internal/intersect.hxx
   include/coal/internal/tools.h
   include/coal/internal/traversal_node_base.h
   include/coal/internal/traversal_node_bvh_shape.h
