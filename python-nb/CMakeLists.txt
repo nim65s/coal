@@ -33,7 +33,6 @@ target_compile_definitions(
 )
 
 set(MODULE_DIR ${PROJECT_NAME})
-string(REPLACE "/" "." MODULE_NAME ${MODULE_DIR})
 
 set_target_properties(
   ${PYTHON_LIB_NAME_V2}
@@ -53,7 +52,7 @@ endforeach(pyfile)
 
 nanobind_add_stub(
   ${PYTHON_LIB_NAME_V2}_stub
-  MODULE ${MODULE_NAME}.${PYTHON_LIB_NAME_V2}
+  MODULE ${PROJECT_NAME}.${PYTHON_LIB_NAME_V2}
   OUTPUT ${MODULE_DIR}/__init__.pyi
   DEPENDS ${PYTHON_LIB_NAME_V2}
 )
