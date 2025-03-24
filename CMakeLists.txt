@@ -162,19 +162,23 @@ APPLY_DEFAULT_APPLE_CONFIGURATION()
 
 option(BUILD_PYTHON_INTERFACE "Build the python bindings" ON)
 cmake_dependent_option(
-  GENERATE_PYTHON_STUBS
-  "Generate the Python stubs associated to the Python library"
-  OFF
-  BUILD_PYTHON_INTERFACE
-  OFF
-)
-cmake_dependent_option(
   COAL_PYTHON_NANOBIND
   "Build the nanobind-based bindings."
   OFF
   BUILD_PYTHON_INTERFACE
   OFF
 )
+# Stubs only optional for legacy Boost.Python bindings
+if(NOT COAL_PYTHON_NANOBIND)
+  cmake_dependent_option(
+    GENERATE_PYTHON_STUBS
+    "Generate the Python stubs for the Python bindings"
+    " (only for legacy Boost.Python bindings)"
+    OFF
+    BUILD_PYTHON_INTERFACE
+    OFF
+  )
+endif()
 
 ADD_PROJECT_DEPENDENCY(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.0")
 
@@ -510,9 +514,10 @@ endif(COAL_HAS_OCTOMAP)
 add_subdirectory(doc)
 add_subdirectory(src)
 if(BUILD_PYTHON_INTERFACE)
-  add_subdirectory(python)
   if(COAL_PYTHON_NANOBIND)
     add_subdirectory(python-nb)
+  else()
+    add_subdirectory(python)
   endif()
 endif()
 if(BUILD_TESTING)
