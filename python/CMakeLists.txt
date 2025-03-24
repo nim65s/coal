@@ -41,12 +41,6 @@ if(GENERATE_PYTHON_STUBS)
   include(${JRL_CMAKE_MODULES}/stubs.cmake)
 endif(GENERATE_PYTHON_STUBS)
 
-add_custom_target(${PROJECT_NAME}_python)
-set_target_properties(
-  ${PROJECT_NAME}_python
-  PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD True
-)
-
 # Name of the Python library
 set(PYTHON_LIB_NAME ${PROJECT_NAME}_pywrap)
 
