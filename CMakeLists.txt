@@ -164,7 +164,7 @@ option(BUILD_PYTHON_INTERFACE "Build the python bindings" ON)
 cmake_dependent_option(
   COAL_PYTHON_NANOBIND
   "Build the nanobind-based bindings."
-  OFF
+  ON
   BUILD_PYTHON_INTERFACE
   OFF
 )
