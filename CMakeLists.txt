@@ -543,6 +543,11 @@ endif(COAL_HAS_OCTOMAP)
 add_subdirectory(doc)
 add_subdirectory(src)
 if(BUILD_PYTHON_INTERFACE)
+  add_custom_target(${PROJECT_NAME}_python)
+  set_target_properties(
+    ${PROJECT_NAME}_python
+    PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD True
+  )
   if(COAL_PYTHON_NANOBIND)
     add_subdirectory(python-nb)
   else()

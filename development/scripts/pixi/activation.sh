@@ -34,4 +34,5 @@ export CMAKE_COLOR_DIAGNOSTICS=1
 # Set default build value only if not previously set
 export COAL_BUILD_TYPE=${COAL_BUILD_TYPE:=Release}
 export COAL_PYTHON_STUBS=${COAL_PYTHON_STUBS:=ON}
+export COAL_PYTHON_NANOBIND=${COAL_PYTHON_NANOBIND:=ON}
 export COAL_HAS_QHULL=${COAL_HAS_QHULL:=OFF}

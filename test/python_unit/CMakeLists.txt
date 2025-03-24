@@ -7,7 +7,7 @@ set(
   pickling
 )
 
-add_dependencies(build_tests ${PROJECT_NAME}_pywrap)
+add_dependencies(build_tests ${PROJECT_NAME}_python)
 foreach(TEST ${${PROJECT_NAME}_PYTHON_TESTS})
   ADD_PYTHON_UNIT_TEST(
     "${PROJECT_NAME}-py-${TEST}"
