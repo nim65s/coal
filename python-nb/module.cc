@@ -81,6 +81,8 @@ void exposeOctree(nb::module_ &m);
 void exposeBroadPhase(nb::module_ &m);
 
 NB_MODULE(COAL_PYTHON_LIBNAME, m) {
+  nb::module_::import_("nanoeigenpy");
+
   exposeVersion(m);
   exposeMaths(m);
   // this one goes first, exposes NODE_TYPE enum
