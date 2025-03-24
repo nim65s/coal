@@ -19,9 +19,9 @@ void exposeMaths(nb::module_ &m) {
   nb::class_<Transform3s>(m, "Transform3s")
       .def(nb::init<>())
       .def(nb::init<const Matrix3s &, Vec3s>(), "R"_a, "t"_a)
-      .def(nb::init<const Quatf &, Vec3s>(), "q"_a, "t"_a)
+      .def(nb::init<const Quats &, Vec3s>(), "q"_a, "t"_a)
       .def(nb::init<const Matrix3s &>(), "R"_a)
-      .def(nb::init<const Quatf &>(), "q"_a)
+      .def(nb::init<const Quats &>(), "q"_a)
       .def(nb::init<const Vec3s &>(), "t"_a)
       .def(nb::init<const Transform3s &>())
       .def("getQuatRotation", &Transform3s::getQuatRotation,
