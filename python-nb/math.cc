@@ -14,8 +14,6 @@ using namespace coal;
 using namespace nb::literals;
 
 void exposeMaths(nb::module_ &m) {
-  nb::module_::import_("nanoeigenpy");
-
   nb::class_<Transform3s>(m, "Transform3s")
       .def(nb::init<>())
       .def(nb::init<const Matrix3s &, Vec3s>(), "R"_a, "t"_a)
