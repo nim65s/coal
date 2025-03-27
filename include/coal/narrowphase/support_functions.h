@@ -69,7 +69,7 @@ enum SupportOptions {
 /// @param shape the shape.
 /// @param dir support direction.
 /// @param hint used to initialize the search when shape is a ConvexBase object.
-/// @tparam SupportOptions is a value of the SupportOptions enum. If set to
+/// @tparam _SupportOptions is a value of the SupportOptions enum. If set to
 /// `WithSweptSphere`, the support functions take into account the shapes' swept
 /// sphere radii. Please see `MinkowskiDiff::set(const ShapeBase*, const
 /// ShapeBase*)` for more details.
@@ -188,7 +188,7 @@ void getShapeSupport(const LargeConvex* convex, const Vec3s& dir,
 /// Otherwise said, if a point p of the shape is at a distance `tol` from the
 /// support plane, it is added to the set. Thus, `tol` can be seen as the
 /// "thickness" of the support plane.
-/// @tparam SupportOptions is a value of the SupportOptions enum. If set to
+/// @tparam _SupportOptions is a value of the SupportOptions enum. If set to
 /// `WithSweptSphere`, the support functions take into account the shapes' swept
 /// sphere radii.
 template <int _SupportOptions = SupportOptions::NoSweptSphere>
