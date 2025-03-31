@@ -24,7 +24,7 @@ numpy = ">=1.22.0"
 python = ">=3.9.0"
 eigenpy = ">=3.7.0"
 # XML generation seem to be broken in some doxygen version
-doxygen = "<1.9.8|>=1.11,<1.13"
+doxygen = ">=1.8"
 lxml = ">=5.3"
 pylatexenc = ">=2.10"
 
