@@ -29,7 +29,8 @@ void exposeBVHModels(nb::module_& m) {
   nb::class_<BVHModelBase, CollisionGeometry>(m, "BVHModelBase")
       .def("vertex",
            [](BVHModelBase& bvh, size_t i) -> Vec3s& {
-             if (i >= bvh.num_vertices) throw nb::index_error();
+             if (i >= bvh.num_vertices)
+               throw nb::index_error("Vertex index out of range.");
              return (*bvh.vertices)[i];
            })
       .def(
@@ -46,9 +47,9 @@ void exposeBVHModels(nb::module_& m) {
       .def(
           "tri_indices",
           [](const BVHModelBase& bvh, size_t i) {
-            if (i >= bvh.num_tris) {
-              nb::index_error("Triangle index out of range");
-            }
+            if (i >= bvh.num_tris)
+              nb::index_error("Triangle index out of range.");
+
             return (*bvh.tri_indices)[i];
           },
           "index"_a, "Retrieve the triangle given by its index.")

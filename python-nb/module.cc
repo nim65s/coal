@@ -89,4 +89,9 @@ NB_MODULE(COAL_PYTHON_LIBNAME, m) {
   exposeCollisionGeometries(m);
   exposeCollisionObject(m);
   exposeMeshLoader(m);
+  // exposeGJK(m);
+#ifdef COAL_HAS_OCTOMAP
+  // exposeOctree(m);
+#endif
+  // exposeBroadPhase(m);
 }

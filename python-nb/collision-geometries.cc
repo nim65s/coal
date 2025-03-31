@@ -75,9 +75,18 @@ void exposeCollisionGeometries(nb::module_& m) {
       .DEF_CLASS_FUNC(CollisionGeometry, computeVolume)
       .DEF_CLASS_FUNC(CollisionGeometry, computeMomentofInertiaRelatedToCOM)
 
+      .def_rw("aabb_radius", &CollisionGeometry::aabb_radius)
+      .def_rw("aabb_center", &CollisionGeometry::aabb_center)
+      .def_rw("aabb_local", &CollisionGeometry::aabb_local)
+
+      .def("isOccupied", &CollisionGeometry::isOccupied)
+      .def("isFree", &CollisionGeometry::isFree)
+      .def("isUncertain", &CollisionGeometry::isUncertain)
+
       .def(nb::self == nb::self)
       .def(nb::self != nb::self);
 
+  /// TODO: exposeShapes()
   exposeBVHModels(m);
 }
 
