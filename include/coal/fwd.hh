@@ -79,11 +79,15 @@
     }                                          \
   } while (0)
 #else
+#ifndef NDEBUG
 #define COAL_ASSERT(check, message, exception) \
   {                                            \
     COAL_UNUSED_VARIABLE(exception(message));  \
     assert((check) && message);                \
   }
+#else
+#define COAL_ASSERT(check, message, exception)
+#endif
 #endif
 
 #if (__cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600))
