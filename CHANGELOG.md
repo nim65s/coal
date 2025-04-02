@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Everything is in float in coal (including the support functions), except the computations inside GJK/EPA
   - Allows GJK/EPA to avoid limitation of float precision
 - Renamed PyPI package from coal-library to coal ([#675](https://github.com/coal-library/coal/pull/675))
+- Fixed malloc in COAL_ASSERT ([#687](https://github.com/coal-library/coal/pull/687))
 
 ### Fixed
 - Fix doc parsing via doxygen scripts ([#678](https://github.com/coal-library/coal/pull/678))
