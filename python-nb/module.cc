@@ -67,31 +67,32 @@ void exposeMeshLoader(nb::module_ &m) {
 }
 
 void exposeMaths(nb::module_ &m);
-
 void exposeCollisionGeometries(nb::module_ &m);
-
 void exposeCollisionObject(nb::module_ &m);
-
+void exposeCollisionAPI(nb::module_ &m);
+void exposeContactPatchAPI(nb::module_ &m);
+void exposeDistanceAPI(nb::module_ &m);
 void exposeGJK(nb::module_ &m);
-
 #ifdef COAL_HAS_OCTOMAP
 void exposeOctree(nb::module_ &m);
 #endif
-
 void exposeBroadPhase(nb::module_ &m);
 
 NB_MODULE(COAL_PYTHON_LIBNAME, m) {
-  nb::module_::import_("nanoeigenpy");
+  // nb::module_::import_("nanoeigenpy");
 
   exposeVersion(m);
   exposeMaths(m);
-  // this one goes first, exposes NODE_TYPE enum
   exposeCollisionGeometries(m);
   exposeCollisionObject(m);
+  exposeCollisionAPI(m);
+  exposeContactPatchAPI(m);
+  exposeDistanceAPI(m);
+  exposeGJK(m);
+  exposeOctree(m);
   exposeMeshLoader(m);
-  // exposeGJK(m);
 #ifdef COAL_HAS_OCTOMAP
   // exposeOctree(m);
 #endif
-  // exposeBroadPhase(m);
+  exposeBroadPhase(m);
 }

@@ -1,5 +1,6 @@
+/// Copyright 2025 INRIA
+
 #include "fwd.h"
-#include "serializable.hh"
 #include <nanobind/eigen/dense.h>
 #include <nanobind/operators.h>
 
@@ -7,14 +8,19 @@
 #include "coal/shape/geometric_shapes.h"
 #include "coal/shape/convex.h"
 #include "coal/hfield.h"
-
 #include "coal/serialization/memory.h"
+
+#include "pickle.hh"
+#include "serializable.hh"
 
 using namespace coal;
 using namespace nb::literals;
 using Triangles = std::vector<Triangle>;
 
+void exposeShapes(nb::module_& m);
 void exposeBVHModels(nb::module_& m);
+void exposeHeightFields(nb::module_& m);
+void exposeComputeMemoryFootprint(nb::module_& m);
 
 void exposeCollisionGeometries(nb::module_& m) {
   nb::enum_<BVHModelType>(m, "BVHModelType")
@@ -65,6 +71,106 @@ void exposeCollisionGeometries(nb::module_& m) {
       .value("HF_OBBRSS", HF_OBBRSS)
       .export_values();
 
+  nb::class_<AABB>(
+      m, "AABB",
+      "A class describing the AABB collision structure, which is a "
+      "box in 3D space determined by two diagonal points")
+      .def(nb::init<>())
+      .def(nb::init<AABB>(), "other"_a)
+      .def(nb::init<Vec3s>(), "v"_a)
+      .def(nb::init<Vec3s, Vec3s>(), "a"_a, "b"_a)
+      .def(nb::init<AABB, Vec3s>(), "core"_a, "delta"_a)
+      .def(nb::init<Vec3s, Vec3s, Vec3s>(), "a"_a, "b"_a, "c"_a)
+
+      .def(
+          "contain",
+          [](const AABB& self, const Vec3s& p) { return self.contain(p); },
+          "p"_a, "Check whether the AABB contains a point p.")
+      .def(
+          "contain",
+          [](const AABB& self, const AABB& other) {
+            return self.contain(other);
+          },
+          "other"_a, "Check whether the AABB contains another AABB.")
+      .def(
+          "overlap",
+          [](const AABB& self, const AABB& other) {
+            return self.overlap(other);
+          },
+          "other"_a, "Check whether two AABB overlap.")
+      .def(
+          "overlap",
+          [](const AABB& self, const AABB& other, AABB& overlapping_part) {
+            return self.overlap(other, overlapping_part);
+          },
+          "other"_a, "overlapping_part"_a,
+          "Check whether two AABB overlap and return the overlapping part if "
+          "true.")
+      .def(
+          "distance",
+          [](const AABB& self, const AABB& other) {
+            return self.distance(other);
+          },
+          "other"_a, "Distance between two AABBs.")
+
+      .def_prop_rw(
+          "min_", [](AABB& self) -> Vec3s& { return self.min_; },
+          [](AABB& self, const Vec3s& min_) { self.min_ = min_; },
+          "The min point in the AABB.")
+      .def_prop_rw(
+          "max_", [](AABB& self) -> Vec3s& { return self.max_; },
+          [](AABB& self, const Vec3s& max_) { self.max_ = max_; },
+          "The max point in the AABB.")
+
+      .def(nb::self == nb::self)
+      .def(nb::self != nb::self)
+      .def(nb::self + nb::self)
+      .def(nb::self += nb::self)
+      .def(nb::self += Vec3s())
+
+      .def("size", &AABB::volume)
+      .def("center", &AABB::center)
+      .def("width", &AABB::width)
+      .def("height", &AABB::height)
+      .def("depth", &AABB::depth)
+      .def("volume", &AABB::volume)
+
+      .def(
+          "expand",
+          [](AABB& self, const AABB& other, Scalar scalar) -> AABB& {
+            return self.expand(other, scalar);
+          },
+          nb::rv_policy::reference_internal)
+      .def(
+          "expand",
+          [](AABB& self, Scalar scalar) -> AABB& {
+            return self.expand(scalar);
+          },
+          nb::rv_policy::reference_internal)
+      .def(
+          "expand",
+          [](AABB& self, const Vec3s& vec) -> AABB& {
+            return self.expand(vec);
+          },
+          nb::rv_policy::reference_internal)
+
+      // .def(python::v2::PickleVisitor<AABB>())       // TODO: TOFIX
+      // .def(python::v2::SerializableVisitor<AABB>()) // TODO: TOFIX
+      // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
+      //       .def(eigenpy::IdVisitor<AABB>())
+      // #endif
+      ;
+
+  m.def(
+      "translate",
+      [](const AABB& aabb, const Vec3s& t) { return translate(aabb, t); },
+      "aabb"_a, "t"_a, "Translate the center of AABB by t");
+
+  m.def(
+      "rotate",
+      [](const AABB& aabb, const Matrix3s& R) { return rotate(aabb, R); },
+      "aabb"_a, "R"_a, "Rotate the AABB object by R");
+
   nb::class_<CollisionGeometry>(m, "CollisionGeometry")
       .DEF_CLASS_FUNC(CollisionGeometry, getObjectType)
       .DEF_CLASS_FUNC(CollisionGeometry, getNodeType)
@@ -83,11 +189,17 @@ void exposeCollisionGeometries(nb::module_& m) {
       .def("isFree", &CollisionGeometry::isFree)
       .def("isUncertain", &CollisionGeometry::isUncertain)
 
+      .def_rw("cost_density", &CollisionGeometry::cost_density)
+      .def_rw("threshold_occupied", &CollisionGeometry::threshold_occupied)
+      .def_rw("threshold_free", &CollisionGeometry::threshold_free)
+
       .def(nb::self == nb::self)
       .def(nb::self != nb::self);
 
-  /// TODO: exposeShapes()
+  exposeShapes(m);
   exposeBVHModels(m);
+  exposeHeightFields(m);
+  exposeComputeMemoryFootprint(m);
 }
 
 void exposeCollisionObject(nb::module_& m) {
