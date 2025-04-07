@@ -91,11 +91,11 @@ void exposeBroadPhase() {
       .DEF_CLASS_FUNC2(CollisionCallBackCollect, getCollisionPairs,
                        bp::return_value_policy<bp::copy_const_reference>())
       .def(dv::member_func(
-          "exist", (bool(CollisionCallBackCollect::*)(
+          "exist", (bool (CollisionCallBackCollect::*)(
                        const CollisionCallBackCollect::CollisionPair &) const) &
                        CollisionCallBackCollect::exist))
       .def(dv::member_func("exist",
-                           (bool(CollisionCallBackCollect::*)(
+                           (bool (CollisionCallBackCollect::*)(
                                CollisionObject *, CollisionObject *) const) &
                                CollisionCallBackCollect::exist));
 

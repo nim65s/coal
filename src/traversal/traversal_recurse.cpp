@@ -210,11 +210,11 @@ struct COAL_LOCAL BVT {
 };
 
 /** @brief Comparer between two BVT */
-struct COAL_LOCAL BVT_Comparer{bool operator()(const BVT& lhs, const BVT& rhs)
-                                   const {return lhs.d > rhs.d;
-}  // namespace coal
-}
-;
+struct COAL_LOCAL BVT_Comparer {
+  bool operator()(const BVT& lhs, const BVT& rhs) const {
+    return lhs.d > rhs.d;
+  }  // namespace coal
+};
 
 struct COAL_LOCAL BVTQ {
   BVTQ() : qsize(2) {}

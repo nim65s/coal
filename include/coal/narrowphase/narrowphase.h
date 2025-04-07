@@ -224,9 +224,9 @@ struct COAL_DLLAPI GJKSolver {
     this->gjk_max_iterations = request.gjk_max_iterations;
     // The distance upper bound should be at least greater to the requested
     // security margin. Otherwise, we will likely miss some collisions.
-    this->distance_upper_bound = (std::max)(
-        Scalar(0),
-        (std::max)(request.distance_upper_bound, request.security_margin));
+    this->distance_upper_bound =
+        (std::max)(Scalar(0), (std::max)(request.distance_upper_bound,
+                                         request.security_margin));
     this->gjk_variant = request.gjk_variant;
     this->gjk_convergence_criterion = request.gjk_convergence_criterion;
     this->gjk_convergence_criterion_type =
