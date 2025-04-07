@@ -4,10 +4,11 @@
 #include "pickle.hh"
 #include "serializable.hh"
 
-#include "coal/serialization/BVH_model.h"
-
 using namespace coal;
 using namespace nb::literals;
+
+typedef std::vector<Vec3s> Vec3ss;
+typedef std::vector<Triangle> Triangles;
 
 template <typename BV>
 void exposeBVHModel(nb::module_& m, const char* name) {
@@ -18,9 +19,9 @@ void exposeBVHModel(nb::module_& m, const char* name) {
       .DEF_CLASS_FUNC(BVHType, getNumBVs)
       .DEF_CLASS_FUNC(BVHType, makeParentRelative)
       .DEF_CLASS_FUNC(BVHType, memUsage)
-      .def("clone", &BVHType::clone, nb::rv_policy::take_ownership)
-      .def(python::v2::PickleVisitor<BVHType>())
-      .def(python::v2::SerializableVisitor<BVHType>());
+      .def("clone", &BVHType::clone, nb::rv_policy::take_ownership);
+  //.def(python::v2::PickleVisitor<BVHType>());        // TODO: TOFIX
+  // .def(python::v2::SerializableVisitor<BVHType>()); // TODO: TOFIX
 }
 
 void exposeBVHModels(nb::module_& m) {
@@ -68,7 +69,24 @@ void exposeBVHModels(nb::module_& m) {
       .DEF_CLASS_FUNC(BVHModelBase, addVertex)
       .DEF_CLASS_FUNC(BVHModelBase, addVertices)
       .DEF_CLASS_FUNC(BVHModelBase, addTriangle)
-      .DEF_CLASS_FUNC(BVHModelBase, addTriangles);
+      .DEF_CLASS_FUNC(BVHModelBase, addTriangles)
+      .def("addSubModel",
+           [](BVHModelBase& self, const Vec3ss& vec, const Triangles& tri) {
+             return self.addSubModel(vec, tri);
+           })
+      .def("addSubModel",
+           [](BVHModelBase& self, const Vec3ss& vec) {
+             return self.addSubModel(vec);
+           })
+      .DEF_CLASS_FUNC(BVHModelBase, endModel)
+      .DEF_CLASS_FUNC(BVHModelBase, beginReplaceModel)
+      .DEF_CLASS_FUNC(BVHModelBase, replaceVertex)
+      .DEF_CLASS_FUNC(BVHModelBase, replaceTriangle)
+      .DEF_CLASS_FUNC(BVHModelBase, replaceSubModel)
+      .DEF_CLASS_FUNC(BVHModelBase, endReplaceModel)
+      .DEF_CLASS_FUNC(BVHModelBase, getModelType)
+
+      ;
 
   exposeBVHModel<OBB>(m, "OBB");
   exposeBVHModel<OBBRSS>(m, "OBBRSS");

@@ -1,9 +1,12 @@
+# Copyright 2025 INRIA
+
 if(CMAKE_VERSION VERSION_LESS 3.18)
   set(DEV_MODULE Development)
 else()
   set(DEV_MODULE Development.Module)
 endif()
 
+# Python
 find_package(Python COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
 
 # Detect the installed nanobind package and import it into CMake
@@ -19,8 +22,39 @@ find_package(nanobind CONFIG REQUIRED)
 cmake_policy(POP)
 find_package(Boost REQUIRED COMPONENTS system)
 
+# Nanoeigenpy
+find_package(nanoeigenpy CONFIG REQUIRED)
+
 set(PYTHON_LIB_NAME_V2 ${PROJECT_NAME}_pywrap_nb)
-set(PYTHON_LIB_SOURCES bvh.cc collision-geometries.cc math.cc module.cc)
+
+# Headers
+set(
+  PYTHON_LIB_HEADERS
+  broadphase/broadphase_callbacks_collision_manager.hh
+  fwd.h
+  pickle.hh
+  serializable.hh
+)
+
+# Sources
+set(
+  PYTHON_LIB_SOURCES
+  broadphase/broadphase.cc
+  bvh.cc
+  collision-geometries.cc
+  collision.cc
+  contact_patch.cc
+  distance.cc
+  math.cc
+  gjk.cc
+  height_field.cc
+  memory-footprint.cc
+  shapes.cc
+  module.cc
+)
+if(COAL_HAS_OCTOMAP)
+  list(APPEND PYTHON_LIB_SOURCES octree.cc)
+endif(COAL_HAS_OCTOMAP)
 
 nanobind_add_module(${PYTHON_LIB_NAME_V2} NB_STATIC LTO NB_SUPPRESS_WARNINGS ${PYTHON_LIB_SOURCES})
 target_link_libraries(
