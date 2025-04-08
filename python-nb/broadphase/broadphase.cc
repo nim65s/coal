@@ -1,7 +1,6 @@
 /// Copyrigh 2025 INRIA
 
 #include "coal/fwd.hh"
-#include "../../python/utils/std-pair.hh"
 #include "../fwd.h"
 
 #include "coal/broadphase/broadphase_dynamic_AABB_tree.h"
@@ -14,6 +13,8 @@
 #include "coal/broadphase/default_broadphase_callbacks.h"
 
 #include "broadphase_callbacks_collision_manager.hh"
+
+#include <nanobind/stl/pair.h>
 
 using namespace coal;
 using namespace nb::literals;
@@ -51,8 +52,6 @@ void exposeBroadPhase(nb::module_ &m) {
       .def("exist",
            [](const CollisionCallBackCollect &self, CollisionObject *obj1,
               CollisionObject *obj2) { return self.exist(obj1, obj2); });
-
-  StdPairConverter<CollisionCallBackCollect::CollisionPair>::registration();
 
   nb::class_<CollisionData>(m, "CollisionData")
       .def(nb::init<>())
