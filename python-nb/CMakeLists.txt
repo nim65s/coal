@@ -42,14 +42,6 @@ set_target_properties(
 
 set(PYTHON_FILES __init__.py)
 
-foreach(pyfile ${PYTHON_FILES})
-  PYTHON_BUILD(${PROJECT_NAME} ${pyfile})
-  install(
-    FILES ${PROJECT_NAME}/${pyfile}
-    DESTINATION ${Python_SITELIB}/${PROJECT_NAME}
-  )
-endforeach(pyfile)
-
 nanobind_add_stub(
   ${PYTHON_LIB_NAME_V2}_stub
   MODULE ${PROJECT_NAME}.${PYTHON_LIB_NAME_V2}
@@ -58,3 +50,17 @@ nanobind_add_stub(
 )
 add_dependencies(${PROJECT_NAME}_python ${PYTHON_LIB_NAME_V2})
 ADD_SOURCE_GROUP(PYTHON_LIB_SOURCES)
+
+foreach(pyfile ${PYTHON_FILES})
+  PYTHON_BUILD(${PROJECT_NAME} ${pyfile})
+  install(
+    FILES ${PROJECT_NAME}/${pyfile}
+    DESTINATION ${Python_SITELIB}/${PROJECT_NAME}
+  )
+endforeach(pyfile)
+
+install(
+  TARGETS ${PYTHON_LIB_NAME_V2}
+  EXPORT ${TARGETS_EXPORT_NAME}
+  LIBRARY DESTINATION ${Python_SITELIB}/${PROJECT_NAME}
+)
