@@ -310,27 +310,28 @@ inline Scalar obbDisjoint_check_B_axis(const Matrix3s& B, const Vec3s& T,
 }
 
 template <int ib, int jb = (ib + 1) % 3, int kb = (ib + 2) % 3>
-struct COAL_LOCAL obbDisjoint_check_Ai_cross_Bi{static inline bool run(
-    int ia, int ja, int ka, const Matrix3s& B, const Vec3s& T, const Vec3s& a,
-    const Vec3s& b, const Matrix3s& Bf, const Scalar& breakDistance2,
-    Scalar& squaredLowerBoundDistance){Scalar sinus2 =
-                                           1 - Bf(ia, ib) * Bf(ia, ib);
-if (sinus2 < 1e-6) return false;
+struct COAL_LOCAL obbDisjoint_check_Ai_cross_Bi {
+  static inline bool run(int ia, int ja, int ka, const Matrix3s& B,
+                         const Vec3s& T, const Vec3s& a, const Vec3s& b,
+                         const Matrix3s& Bf, const Scalar& breakDistance2,
+                         Scalar& squaredLowerBoundDistance) {
+    Scalar sinus2 = 1 - Bf(ia, ib) * Bf(ia, ib);
+    if (sinus2 < 1e-6) return false;
 
-const Scalar s = T[ka] * B(ja, ib) - T[ja] * B(ka, ib);
+    const Scalar s = T[ka] * B(ja, ib) - T[ja] * B(ka, ib);
 
-const Scalar diff = fabs(s) - (a[ja] * Bf(ka, ib) + a[ka] * Bf(ja, ib) +
-                               b[jb] * Bf(ia, kb) + b[kb] * Bf(ia, jb));
-// We need to divide by the norm || Aia x Bib ||
-// As ||Aia|| = ||Bib|| = 1, (Aia | Bib)^2  = cosine^2
-if (diff > 0) {
-  squaredLowerBoundDistance = diff * diff / sinus2;
-  if (squaredLowerBoundDistance > breakDistance2) {
-    return true;
-  }
-}
-return false;
-}  // namespace internal
+    const Scalar diff = fabs(s) - (a[ja] * Bf(ka, ib) + a[ka] * Bf(ja, ib) +
+                                   b[jb] * Bf(ia, kb) + b[kb] * Bf(ia, jb));
+    // We need to divide by the norm || Aia x Bib ||
+    // As ||Aia|| = ||Bib|| = 1, (Aia | Bib)^2  = cosine^2
+    if (diff > 0) {
+      squaredLowerBoundDistance = diff * diff / sinus2;
+      if (squaredLowerBoundDistance > breakDistance2) {
+        return true;
+      }
+    }
+    return false;
+  }  // namespace internal
 };  // namespace coal
 }  // namespace internal
 
