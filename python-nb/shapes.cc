@@ -14,11 +14,8 @@
 #include "coal/serialization/geometric_shapes.h"
 #include "coal/serialization/convex.h"
 
-#include <boost/python/list.hpp>
-
 using namespace coal;
 using namespace nb::literals;
-using namespace boost::python;
 
 typedef std::vector<Vec3s> Vec3ss;
 typedef std::vector<Triangle> Triangles;
@@ -63,10 +60,10 @@ struct ConvexBaseWrapper {
     return MapVecXs(convex.offsets->data(), convex.num_normals_and_offsets, 1);
   }
 
-  static list neighbors(const ConvexBase& convex, unsigned int i) {
+  static nb::list neighbors(const ConvexBase& convex, unsigned int i) {
     if (i >= convex.num_points)
       throw std::out_of_range("index is out of range");
-    list n;
+    nb::list n;
     const std::vector<ConvexBase::Neighbors>& neighbors_ = *(convex.neighbors);
     for (unsigned char j = 0; j < neighbors_[i].count(); ++j)
       n.append(neighbors_[i][j]);
