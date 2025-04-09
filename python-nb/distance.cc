@@ -57,6 +57,24 @@ void exposeDistanceAPI(nb::module_& m) {
       .def("clear", &DistanceResult::clear);
   // .def(python::v2::SerializableVisitor<DistanceResult>());
 
+  m.def(
+      "distance",
+      [](const CollisionObject* o1, const CollisionObject* o2,
+         const DistanceRequest& request, DistanceResult& result) -> Scalar {
+        return distance(o1, o2, request, result);
+      },
+      "o1"_a, "o2"_a, "request"_a, "result"_a);
+
+  m.def(
+      "distance",
+      [](const CollisionGeometry* o1, const Transform3s& tf1,
+         const CollisionGeometry* o2, const Transform3s& tf2,
+         const DistanceRequest& request, DistanceResult& result) -> Scalar {
+        return distance(o1, tf1, o2, tf2, request, result);
+      },
+      "geom1"_a, "transform1"_a, "geom2"_a, "transform2"_a, "request"_a,
+      "result"_a);
+
   nb::class_<ComputeDistance>(m, "ComputeDistance")
       .def(nb::init<const CollisionGeometry*, const CollisionGeometry*>(),
            "o1"_a, "o2"_a)

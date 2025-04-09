@@ -20,16 +20,6 @@ def tetahedron():
     return coal.Convex(pts, tri)
 
 
-box = coal.Box(1.0, 2.0, 3.0)
-sphere = coal.Sphere(1.0)
-ellipsoid = coal.Ellipsoid(1.0, 2.0, 3.0)
-convex = tetahedron()
-capsule = coal.Capsule(1.0, 2.0)
-cylinder = coal.Cylinder(1.0, 2.0)
-plane = coal.Plane(np.array([0.0, 0.0, 1.0]), 2.0)
-half_space = coal.Halfspace(np.array([0.0, 0.0, 1.0]), 2.0)
-
-
 class TestGeometryPickling(TestCase):
     def pickling(self, obj):
         with open("save.p", "wb") as f:
