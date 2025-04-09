@@ -147,6 +147,26 @@ void exposeCollisionAPI(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(CollisionResult, distance_lower_bound);
   // .def(python::v2::SerializableVisitor<CollisionResult>());
 
+  m.def(
+      "collide",
+      [](const CollisionObject* o1, const CollisionObject* o2,
+         const CollisionRequest& request,
+         CollisionResult& result) -> std::size_t {
+        return collide(o1, o2, request, result);
+      },
+      "o1"_a, "o2"_a, "request"_a, "result"_a);
+
+  m.def(
+      "collide",
+      [](const CollisionGeometry* o1, const Transform3s& tf1,
+         const CollisionGeometry* o2, const Transform3s& tf2,
+         const CollisionRequest& request,
+         CollisionResult& result) -> std::size_t {
+        return collide(o1, tf1, o2, tf2, request, result);
+      },
+      "geom1"_a, "transform1"_a, "geom2"_a, "transform2"_a, "request"_a,
+      "result"_a);
+
   nb::class_<ComputeCollision>(m, "ComputeCollision")
       .def(nb::init<const CollisionGeometry*, const CollisionGeometry*>(),
            "o1"_a, "o2"_a)

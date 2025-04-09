@@ -1,6 +1,8 @@
 #include "fwd.h"
 #include "coal/BVH/BVH_model.h"
 
+#include <nanobind/eigen/dense.h>
+
 #include "pickle.hh"
 #include "serializable.hh"
 
@@ -20,7 +22,7 @@ void exposeBVHModel(nb::module_& m, const char* name) {
       .DEF_CLASS_FUNC(BVHType, makeParentRelative)
       .DEF_CLASS_FUNC(BVHType, memUsage)
       .def("clone", &BVHType::clone, nb::rv_policy::take_ownership);
-  //.def(python::v2::PickleVisitor<BVHType>());        // TODO: TOFIX
+  // .def(python::v2::PickleVisitor<BVHType>());        // TODO: TOFIX
   // .def(python::v2::SerializableVisitor<BVHType>()); // TODO: TOFIX
 }
 
@@ -88,6 +90,6 @@ void exposeBVHModels(nb::module_& m) {
 
       ;
 
-  exposeBVHModel<OBB>(m, "OBB");
-  exposeBVHModel<OBBRSS>(m, "OBBRSS");
+  exposeBVHModel<OBB>(m, "BVHModelOBB");
+  exposeBVHModel<OBBRSS>(m, "BVHModelOBBRSS");
 }

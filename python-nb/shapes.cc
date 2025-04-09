@@ -2,6 +2,7 @@
 
 #include "coal/shape/geometric_shapes.h"
 #include "fwd.h"
+#include <nanobind/eigen/dense.h>
 #include "coal/BVH/BVH_model.h"
 
 #include "pickle.hh"
@@ -178,7 +179,12 @@ void exposeShapes(nb::module_& m) {
 
   nb::class_<Convex<Triangle>, ConvexBase>(m, "Convex")
       .def(nb::init<>())
-      .def(nb::init<const Convex<Triangle>>(), "other_"_a)
+      .def("__init__",
+           [](Convex<Triangle>* self, const Vec3ss& pts, const Triangles& tri) {
+             new (self) Convex<Triangle>(
+                 *(ConvexWrapper<Triangle>::constructor(pts, tri)));
+           })
+      .def(nb::init<const Convex<Triangle>&>(), "other_"_a)
       .DEF_RO_CLASS_ATTRIB(Convex<Triangle>, num_polygons)
       .def("polygons", &ConvexWrapper<Triangle>::polygons)
       // .def(python::v2::PickleVisitor<Convex<Triangle>>())
