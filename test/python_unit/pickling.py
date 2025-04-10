@@ -23,7 +23,7 @@ def tetahedron():
 class TestGeometryPickling(TestCase):
     def pickling(self, obj):
         with open("save.p", "wb") as f:
-            pickle.dump(obj, f)  # pb here
+            pickle.dump(obj, f)                   
         with open("save.p", "rb") as f:
             obj2 = pickle.load(f)
 
