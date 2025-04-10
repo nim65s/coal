@@ -90,8 +90,8 @@ void exposeCollisionAPI(nb::module_& m) {
           })
       .DEF_RW_CLASS_ATTRIB(CollisionRequest, security_margin)
       .DEF_RW_CLASS_ATTRIB(CollisionRequest, break_distance)
-      .DEF_RW_CLASS_ATTRIB(CollisionRequest, distance_upper_bound);
-  // .def(python::v2::SerializableVisitor<CollisionRequest>());
+      .DEF_RW_CLASS_ATTRIB(CollisionRequest, distance_upper_bound)
+      .def(python::v2::SerializableVisitor<CollisionRequest>());
   COAL_COMPILER_DIAGNOSTIC_POP
 
   nb::class_<Contact>(m, "Contact")
@@ -144,8 +144,8 @@ void exposeCollisionAPI(nb::module_& m) {
             return self.getContacts();
           },
           nb::rv_policy::reference_internal)
-      .DEF_RW_CLASS_ATTRIB(CollisionResult, distance_lower_bound);
-  // .def(python::v2::SerializableVisitor<CollisionResult>());
+      .DEF_RW_CLASS_ATTRIB(CollisionResult, distance_lower_bound)
+      .def(python::v2::SerializableVisitor<CollisionResult>());
 
   m.def(
       "collide",

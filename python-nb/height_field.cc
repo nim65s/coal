@@ -1,5 +1,8 @@
 #include "fwd.h"
 
+#include "coal/serialization/hfield.h"
+#include "coal/serialization/geometric_shapes.h"
+
 #include "pickle.hh"
 #include "serializable.hh"
 
@@ -38,8 +41,8 @@ void exposeHeightField(nb::module_& m, const char* name) {
           },
           nanobind::rv_policy::reference_internal)
 
-      //     .def(python::v2::PickleVisitor<Geometry>())
-      //     .def(python::v2::SerializableVisitor<Geometry>())
+      .def(python::v2::PickleVisitor<Geometry>())
+      .def(python::v2::SerializableVisitor<Geometry>())
 
       .def(nanoeigenpy::IdVisitor());
 }

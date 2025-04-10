@@ -1,30 +1,33 @@
-# sphere = coal.Sphere(0.5)
-# sphere_obj = coal.CollisionObject(sphere)
+import coal
+import numpy as np
 
-# M_sphere = coal.Transform3s.Identity()
-# M_sphere.setTranslation(np.array([-0.6, 0.0, 0.0]))
-# sphere_obj.setTransform(M_sphere)
+sphere = coal.Sphere(0.5)
+sphere_obj = coal.CollisionObject(sphere)  # pb here
 
-# box = coal.Box(np.array([0.5, 0.5, 0.5]))
-# box_obj = coal.CollisionObject(box)
+M_sphere = coal.Transform3s.Identity()
+M_sphere.setTranslation(np.array([-0.6, 0.0, 0.0]))
+sphere_obj.setTransform(M_sphere)
 
-# M_box = coal.Transform3s.Identity()
-# M_box.setTranslation(np.array([-0.6, 0.0, 0.0]))
-# box_obj.setTransform(M_box)
+box = coal.Box(np.array([0.5, 0.5, 0.5]))
+box_obj = coal.CollisionObject(box)  # pb here
 
-# collision_manager = coal.DynamicAABBTreeCollisionManager()
-# collision_manager.registerObject(sphere_obj)
-# collision_manager.registerObject(box_obj)
+M_box = coal.Transform3s.Identity()
+M_box.setTranslation(np.array([-0.6, 0.0, 0.0]))
+box_obj.setTransform(M_box)
 
-# assert collision_manager.size() == 2
+collision_manager = coal.DynamicAABBTreeCollisionManager()
+collision_manager.registerObject(sphere_obj)
+collision_manager.registerObject(box_obj)
 
-# collision_manager.setup()
+assert collision_manager.size() == 2
 
-# # Perform collision detection
-# callback = coal.CollisionCallBackDefault()
-# collision_manager.collide(sphere_obj, callback)
+collision_manager.setup()
 
-# assert callback.data.result.numContacts() == 1
+# Perform collision detection
+callback = coal.CollisionCallBackDefault()
+collision_manager.collide(sphere_obj, callback)
+
+assert callback.data.result.numContacts() == 1
 
 """
 "sphere_obj = coal.CollisionObject(sphere)"

@@ -3,6 +3,8 @@
 #include "coal/fwd.hh"
 #include "coal/distance.h"
 
+#include "coal/serialization/collision_data.h"
+
 #include "fwd.h"
 #include "serializable.hh"
 
@@ -39,8 +41,8 @@ void exposeDistanceAPI(nb::module_& m) {
           })
       .DEF_RW_CLASS_ATTRIB(DistanceRequest, enable_signed_distance)
       .DEF_RW_CLASS_ATTRIB(DistanceRequest, rel_err)
-      .DEF_RW_CLASS_ATTRIB(DistanceRequest, abs_err);
-  // .def(python::v2::SerializableVisitor<DistanceRequest>());
+      .DEF_RW_CLASS_ATTRIB(DistanceRequest, abs_err)
+      .def(python::v2::SerializableVisitor<DistanceRequest>());
   COAL_COMPILER_DIAGNOSTIC_POP
 
   nb::class_<DistanceResult, QueryResult>(m, "DistanceResult")
@@ -54,8 +56,8 @@ void exposeDistanceAPI(nb::module_& m) {
       .DEF_RO_CLASS_ATTRIB(DistanceResult, o2)
       .DEF_RW_CLASS_ATTRIB(DistanceResult, b1)
       .DEF_RW_CLASS_ATTRIB(DistanceResult, b2)
-      .def("clear", &DistanceResult::clear);
-  // .def(python::v2::SerializableVisitor<DistanceResult>());
+      .def("clear", &DistanceResult::clear)
+      .def(python::v2::SerializableVisitor<DistanceResult>());
 
   m.def(
       "distance",
