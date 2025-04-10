@@ -1,19 +1,18 @@
 /// Copyright 2025 INRIA
 
-#include "coal/shape/geometric_shapes.h"
 #include "fwd.h"
 #include <nanobind/eigen/dense.h>
+
+#include "coal/fwd.hh"
+#include "coal/shape/geometric_shapes.h"
+#include "coal/shape/convex.h"
 #include "coal/BVH/BVH_model.h"
+
+#include "coal/serialization/geometric_shapes.h"
+#include "coal/serialization/convex.h"
 
 #include "pickle.hh"
 #include "serializable.hh"
-
-#include "coal/serialization/BVH_model.h"
-#include "coal/serialization/AABB.h"
-#include "coal/serialization/BVH_model.h"
-#include "coal/serialization/hfield.h"
-#include "coal/serialization/geometric_shapes.h"
-#include "coal/serialization/convex.h"
 
 using namespace coal;
 using namespace nb::literals;
@@ -119,8 +118,8 @@ void exposeShapes(nb::module_& m) {
       .def(nb::init<const Vec3s&>(), "side_"_a)
       .DEF_RW_CLASS_ATTRIB(Box, halfSide)
       .def("clone", &Box::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<Box>())
-      // .def(python::v2::SerializableVisitor<Box>())
+      .def(python::v2::PickleVisitor<Box>())
+      .def(python::v2::SerializableVisitor<Box>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Box>())
       // #endif
@@ -133,8 +132,8 @@ void exposeShapes(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(Capsule, radius)
       .DEF_RW_CLASS_ATTRIB(Capsule, halfLength)
       .def("clone", &Capsule::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<Capsule>())
-      // .def(python::v2::SerializableVisitor<Capsule>())
+      .def(python::v2::PickleVisitor<Capsule>())
+      .def(python::v2::SerializableVisitor<Capsule>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Capsule>())
       // #endif
@@ -147,8 +146,8 @@ void exposeShapes(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(Cone, radius)
       .DEF_RW_CLASS_ATTRIB(Cone, halfLength)
       .def("clone", &Cone::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<Cone>())
-      // .def(python::v2::SerializableVisitor<Cone>())
+      .def(python::v2::PickleVisitor<Cone>())
+      .def(python::v2::SerializableVisitor<Cone>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Cone>())
       // #endif
@@ -187,8 +186,8 @@ void exposeShapes(nb::module_& m) {
       .def(nb::init<const Convex<Triangle>&>(), "other_"_a)
       .DEF_RO_CLASS_ATTRIB(Convex<Triangle>, num_polygons)
       .def("polygons", &ConvexWrapper<Triangle>::polygons)
-      // .def(python::v2::PickleVisitor<Convex<Triangle>>())
-      // .def(python::v2::SerializableVisitor<Convex<Triangle>>())
+      .def(python::v2::PickleVisitor<Convex<Triangle>>())
+      .def(python::v2::SerializableVisitor<Convex<Triangle>>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Convex<Triangle>>())
       // #endif
@@ -201,8 +200,8 @@ void exposeShapes(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(Cylinder, radius)
       .DEF_RW_CLASS_ATTRIB(Cylinder, halfLength)
       .def("clone", &Cylinder::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<Cylinder>())
-      // .def(python::v2::SerializableVisitor<Cylinder>())
+      .def(python::v2::PickleVisitor<Cylinder>())
+      .def(python::v2::SerializableVisitor<Cylinder>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Cylinder>())
       // #endif
@@ -217,8 +216,8 @@ void exposeShapes(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(Halfspace, n)
       .DEF_RW_CLASS_ATTRIB(Halfspace, d)
       .def("clone", &Halfspace::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<Halfspace>())
-      // .def(python::v2::SerializableVisitor<Halfspace>())
+      .def(python::v2::PickleVisitor<Halfspace>())
+      .def(python::v2::SerializableVisitor<Halfspace>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Halfspace>())
       // #endif
@@ -233,8 +232,8 @@ void exposeShapes(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(Plane, n)
       .DEF_RW_CLASS_ATTRIB(Plane, d)
       .def("clone", &Plane::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<Plane>())
-      // .def(python::v2::SerializableVisitor<Plane>())
+      .def(python::v2::PickleVisitor<Plane>())
+      .def(python::v2::SerializableVisitor<Plane>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Plane>())
       // #endif
@@ -246,8 +245,8 @@ void exposeShapes(nb::module_& m) {
       .def(nb::init<const Sphere&>(), "other_"_a)
       .DEF_RW_CLASS_ATTRIB(Sphere, radius)
       .def("clone", &Sphere::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<Sphere>())
-      // .def(python::v2::SerializableVisitor<Sphere>())
+      .def(python::v2::PickleVisitor<Sphere>())
+      .def(python::v2::SerializableVisitor<Sphere>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Sphere>())
       // #endif
@@ -260,8 +259,8 @@ void exposeShapes(nb::module_& m) {
       .def(nb::init<const Ellipsoid&>(), "other_"_a)
       .DEF_RW_CLASS_ATTRIB(Ellipsoid, radii)
       .def("clone", &Ellipsoid::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<Ellipsoid>())
-      // .def(python::v2::SerializableVisitor<Ellipsoid>())
+      .def(python::v2::PickleVisitor<Ellipsoid>())
+      .def(python::v2::SerializableVisitor<Ellipsoid>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<Ellipsoid>())
       // #endif
@@ -276,8 +275,8 @@ void exposeShapes(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(TriangleP, b)
       .DEF_RW_CLASS_ATTRIB(TriangleP, c)
       .def("clone", &TriangleP::clone, nb::rv_policy::take_ownership)
-      // .def(python::v2::PickleVisitor<TriangleP>())
-      // .def(python::v2::SerializableVisitor<TriangleP>())
+      .def(python::v2::PickleVisitor<TriangleP>())
+      .def(python::v2::SerializableVisitor<TriangleP>())
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<TriangleP>())
       // #endif
