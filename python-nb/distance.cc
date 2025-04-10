@@ -11,19 +11,6 @@
 using namespace coal;
 using namespace nb::literals;
 
-// Copypasted from /python
-
-struct DistanceResultWrapper {
-  static Vec3s getNearestPoint1(const DistanceResult& res) {
-    return res.nearest_points[0];
-  }
-  static Vec3s getNearestPoint2(const DistanceResult& res) {
-    return res.nearest_points[1];
-  }
-};
-
-// End of Copypasted from /python
-
 void exposeDistanceAPI(nb::module_& m) {
   COAL_COMPILER_DIAGNOSTIC_PUSH
   COAL_COMPILER_DIAGNOSTIC_IGNORED_DEPRECECATED_DECLARATIONS
@@ -49,8 +36,14 @@ void exposeDistanceAPI(nb::module_& m) {
       .def(nb::init<>())
       .DEF_RW_CLASS_ATTRIB(DistanceResult, min_distance)
       .DEF_RW_CLASS_ATTRIB(DistanceResult, normal)
-      .def("getNearestPoint1", &DistanceResultWrapper::getNearestPoint1)
-      .def("getNearestPoint2", &DistanceResultWrapper::getNearestPoint2)
+      .def("getNearestPoint1",
+           [](const DistanceResult& res) -> Vec3s {
+             return res.nearest_points[0];
+           })
+      .def("getNearestPoint2",
+           [](const DistanceResult& res) -> Vec3s {
+             return res.nearest_points[1];
+           })
       .DEF_RO_CLASS_ATTRIB(DistanceResult, nearest_points)
       .DEF_RO_CLASS_ATTRIB(DistanceResult, o1)
       .DEF_RO_CLASS_ATTRIB(DistanceResult, o2)

@@ -15,24 +15,6 @@ COAL_COMPILER_DIAGNOSTIC_POP
 using namespace coal;
 using namespace nb::literals;
 
-// Copypasted from /python
-
-template <int index>
-const CollisionGeometry* geto(const Contact& c) {
-  return index == 1 ? c.o1 : c.o2;
-}
-
-struct ContactWrapper {
-  static Vec3s getNearestPoint1(const Contact& contact) {
-    return contact.nearest_points[0];
-  }
-  static Vec3s getNearestPoint2(const Contact& contact) {
-    return contact.nearest_points[1];
-  }
-};
-
-// End of Copypasted from /python
-
 void exposeCollisionAPI(nb::module_& m) {
   nb::enum_<CollisionRequestFlag>(m, "CollisionRequestFlag")
       .value("CONTACT", CONTACT)
@@ -105,14 +87,16 @@ void exposeCollisionAPI(nb::module_& m) {
            "depth_"_a)
       .def_prop_ro("o1",
                    [](Contact& self) -> CollisionGeometry* {
-                     return const_cast<CollisionGeometry*>(geto<1>(self));
+                     return const_cast<CollisionGeometry*>(self.o1);
                    })
       .def_prop_ro("o2",
                    [](Contact& self) -> CollisionGeometry* {
-                     return const_cast<CollisionGeometry*>(geto<2>(self));
+                     return const_cast<CollisionGeometry*>(self.o2);
                    })
-      .def("getNearestPoint1", &ContactWrapper::getNearestPoint1)
-      .def("getNearestPoint2", &ContactWrapper::getNearestPoint2)
+      .def("getNearestPoint1",
+           [](const Contact& self) -> Vec3s { return self.nearest_points[0]; })
+      .def("getNearestPoint2",
+           [](const Contact& self) -> Vec3s { return self.nearest_points[1]; })
       .DEF_RW_CLASS_ATTRIB(Contact, b1)
       .DEF_RW_CLASS_ATTRIB(Contact, b2)
       .DEF_RW_CLASS_ATTRIB(Contact, normal)

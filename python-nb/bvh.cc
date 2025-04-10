@@ -26,8 +26,8 @@ void exposeBVHModel(nb::module_& m, const char* name) {
       .DEF_CLASS_FUNC(BVHType, makeParentRelative)
       .DEF_CLASS_FUNC(BVHType, memUsage)
       .def("clone", &BVHType::clone, nb::rv_policy::take_ownership)
-      .def(python::v2::PickleVisitor<BVHType>())        
-      .def(python::v2::SerializableVisitor<BVHType>());  
+      .def(python::v2::PickleVisitor<BVHType>())
+      .def(python::v2::SerializableVisitor<BVHType>());
 }
 
 void exposeBVHModels(nb::module_& m) {
