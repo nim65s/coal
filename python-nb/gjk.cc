@@ -13,50 +13,6 @@ using coal::details::SupportOptions;
 
 using namespace nb::literals;
 
-// Copypasted
-
-struct MinkowskiDiffWrapper {
-  static void support0(MinkowskiDiff& self, const Vec3s& dir, int& hint,
-                       bool compute_swept_sphere_support = false) {
-    if (compute_swept_sphere_support) {
-      self.support0<SupportOptions::WithSweptSphere>(dir, hint);
-    } else {
-      self.support0<SupportOptions::NoSweptSphere>(dir, hint);
-    }
-  }
-
-  static void support1(MinkowskiDiff& self, const Vec3s& dir, int& hint,
-                       bool compute_swept_sphere_support = false) {
-    if (compute_swept_sphere_support) {
-      self.support1<SupportOptions::WithSweptSphere>(dir, hint);
-    } else {
-      self.support1<SupportOptions::NoSweptSphere>(dir, hint);
-    }
-  }
-
-  static void set(MinkowskiDiff& self, const ShapeBase* shape0,
-                  const ShapeBase* shape1,
-                  bool compute_swept_sphere_support = false) {
-    if (compute_swept_sphere_support) {
-      self.set<SupportOptions::WithSweptSphere>(shape0, shape1);
-    } else {
-      self.set<SupportOptions::NoSweptSphere>(shape0, shape1);
-    }
-  }
-
-  static void set(MinkowskiDiff& self, const ShapeBase* shape0,
-                  const ShapeBase* shape1, const Transform3s& tf0,
-                  const Transform3s& tf1,
-                  bool compute_swept_sphere_supports = false) {
-    if (compute_swept_sphere_supports) {
-      self.set<SupportOptions::WithSweptSphere>(shape0, shape1, tf0, tf1);
-    } else {
-      self.set<SupportOptions::NoSweptSphere>(shape0, shape1, tf0, tf1);
-    }
-  }
-};
-// End of copy pasted
-
 void exposeGJK(nb::module_& m) {
   nb::enum_<GJK::Status>(m, "GJKStatus")
       .value("Failed", GJK::Status::Failed)
@@ -73,17 +29,42 @@ void exposeGJK(nb::module_& m) {
       .def("set",
            [](MinkowskiDiff& diff, const ShapeBase* shape1,
               const ShapeBase* shape2, bool flag) {
-             MinkowskiDiffWrapper::set(diff, shape1, shape2, flag);
+             if (flag) {
+               diff.set<SupportOptions::WithSweptSphere>(shape1, shape2);
+             } else {
+               diff.set<SupportOptions::NoSweptSphere>(shape1, shape2);
+             }
            })
       .def("set",
            [](MinkowskiDiff& diff, const ShapeBase* shape1,
               const ShapeBase* shape2, const Transform3s& transform1,
               const Transform3s& transform2, bool flag) {
-             MinkowskiDiffWrapper::set(diff, shape1, shape2, transform1,
-                                       transform2, flag);
+             if (flag) {
+               diff.set<SupportOptions::WithSweptSphere>(
+                   shape1, shape2, transform1, transform2);
+             } else {
+               diff.set<SupportOptions::NoSweptSphere>(shape1, shape2,
+                                                       transform1, transform2);
+             }
            })
-      .def("support0", &MinkowskiDiffWrapper::support0)
-      .def("support1", &MinkowskiDiffWrapper::support1)
+      .def("support0",
+           [](MinkowskiDiff& self, const Vec3s& dir, int& hint,
+              bool compute_swept_sphere_support = false) {
+             if (compute_swept_sphere_support) {
+               self.support0<SupportOptions::WithSweptSphere>(dir, hint);
+             } else {
+               self.support0<SupportOptions::NoSweptSphere>(dir, hint);
+             }
+           })
+      .def("support1",
+           [](MinkowskiDiff& self, const Vec3s& dir, int& hint,
+              bool compute_swept_sphere_support = false) {
+             if (compute_swept_sphere_support) {
+               self.support1<SupportOptions::WithSweptSphere>(dir, hint);
+             } else {
+               self.support1<SupportOptions::NoSweptSphere>(dir, hint);
+             }
+           })
       .def("support", &MinkowskiDiff::support)
       .DEF_RW_CLASS_ATTRIB(MinkowskiDiff, swept_sphere_radius)
       .DEF_RW_CLASS_ATTRIB(MinkowskiDiff, normalize_support_direction);

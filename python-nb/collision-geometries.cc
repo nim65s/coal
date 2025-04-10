@@ -155,12 +155,9 @@ void exposeCollisionGeometries(nb::module_& m) {
           },
           nb::rv_policy::reference_internal)
 
-      .def(python::v2::PickleVisitor<AABB>())               
-      .def(python::v2::SerializableVisitor<AABB>()) 
-      // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
-      //       .def(eigenpy::IdVisitor<AABB>())
-      // #endif
-      ;
+      .def(python::v2::PickleVisitor<AABB>())
+      .def(python::v2::SerializableVisitor<AABB>())
+      .def(nanoeigenpy::IdVisitor());
 
   m.def(
       "translate",
