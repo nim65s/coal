@@ -1,3 +1,5 @@
+/// Copyright 2025 INRIA
+
 #include <nanobind/nanobind.h>
 #include <nanoeigenpy/fwd.hpp>
 

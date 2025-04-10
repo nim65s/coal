@@ -1,4 +1,5 @@
 /// Copyright 2025 INRIA
+
 #include "coal/math/transform.h"
 #include "coal/serialization/transform.h"
 

@@ -1,4 +1,5 @@
 /// Copyright 2025 INRIA
+
 #include "fwd.h"
 #include "coal/config.hh"
 #include "coal/mesh_loader/loader.h"

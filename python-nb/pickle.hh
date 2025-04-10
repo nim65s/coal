@@ -1,3 +1,5 @@
+/// Copyright 2025 INRIA
+
 #include "fwd.h"
 
 #include <boost/archive/text_oarchive.hpp>

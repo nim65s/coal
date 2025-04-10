@@ -155,8 +155,8 @@ void exposeCollisionGeometries(nb::module_& m) {
           },
           nb::rv_policy::reference_internal)
 
-      .def(python::v2::PickleVisitor<AABB>())        // TODO: TOFIX
-      .def(python::v2::SerializableVisitor<AABB>())  // TODO: TOFIX
+      .def(python::v2::PickleVisitor<AABB>())               
+      .def(python::v2::SerializableVisitor<AABB>()) 
       // #if EIGENPY_VERSION_AT_LEAST(3, 8, 0)
       //       .def(eigenpy::IdVisitor<AABB>())
       // #endif

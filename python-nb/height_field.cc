@@ -1,3 +1,5 @@
+/// Copyright 2025 INRIA
+
 #include "fwd.h"
 
 #include "coal/serialization/hfield.h"
