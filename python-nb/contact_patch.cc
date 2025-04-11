@@ -31,6 +31,8 @@ void exposeContactPatchAPI(nb::module_& m) {
       .DEF_CLASS_FUNC(ContactPatch, clear)
       .DEF_CLASS_FUNC(ContactPatch, isSame);
 
+  nb::bind_vector<std::vector<ContactPatch>>(m, "StdVec_ContactPatch");
+
   nb::class_<ContactPatchRequest>(m, "ContactPatchRequest")
       .def(nb::init<size_t, size_t, Scalar>(), "max_num_patch"_a = 1,
            "num_samples_curved_shapes"_a = 12,
@@ -44,6 +46,8 @@ void exposeContactPatchAPI(nb::module_& m) {
       .DEF_CLASS_FUNC(ContactPatchRequest, getPatchTolerance)
       .DEF_CLASS_FUNC(ContactPatchRequest, setPatchTolerance);
 
+  nb::bind_vector<std::vector<ContactPatchRequest>>(m, "StdVec_ContactPatchRequest");
+
   nb::class_<ContactPatchResult>(m, "ContactPatchResult")
       .def(nb::init<ContactPatchRequest>(), "request"_a = 12)
       .DEF_CLASS_FUNC(ContactPatchResult, numContactPatches)
@@ -53,6 +57,8 @@ void exposeContactPatchAPI(nb::module_& m) {
       .DEF_CLASS_FUNC(ContactPatchResult, clear)
       .DEF_CLASS_FUNC(ContactPatchResult, set)
       .DEF_CLASS_FUNC(ContactPatchResult, check);
+
+  nb::bind_vector<std::vector<ContactPatchResult>>(m, "StdVec_ContactPatchResult");
 
   nb::class_<ComputeContactPatch>(m, "ComputeContactPatch")
       .def(nb::init<const CollisionGeometry*, const CollisionGeometry*>(),

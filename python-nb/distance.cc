@@ -32,6 +32,8 @@ void exposeDistanceAPI(nb::module_& m) {
       .def(python::v2::SerializableVisitor<DistanceRequest>());
   COAL_COMPILER_DIAGNOSTIC_POP
 
+  nb::bind_vector<std::vector<DistanceRequest>>(m, "StdVec_DistanceRequest");
+
   nb::class_<DistanceResult, QueryResult>(m, "DistanceResult")
       .def(nb::init<>())
       .DEF_RW_CLASS_ATTRIB(DistanceResult, min_distance)
@@ -51,6 +53,8 @@ void exposeDistanceAPI(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(DistanceResult, b2)
       .def("clear", &DistanceResult::clear)
       .def(python::v2::SerializableVisitor<DistanceResult>());
+
+  nb::bind_vector<std::vector<DistanceResult>>(m, "StdVec_DistanceResult");
 
   m.def(
       "distance",
