@@ -1,8 +1,9 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
 #include "coal/fwd.hh"
 #include "coal/octree.h"
+
+#include "fwd.h"
 
 using namespace coal;
 using namespace nb::literals;

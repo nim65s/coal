@@ -4,8 +4,9 @@
 #include "coal/contact_patch.h"
 #include "coal/serialization/collision_data.h"
 
-#include "fwd.h"
 #include "serializable.hh"
+
+#include "fwd.h"
 
 using namespace coal;
 using namespace nb::literals;

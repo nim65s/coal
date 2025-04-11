@@ -1,11 +1,10 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
-
 #include "coal/shape/geometric_shapes.h"
 #include "coal/BVH/BVH_model.h"
-
 #include "coal/serialization/memory.h"
+
+#include "fwd.h"
 
 using namespace coal;
 

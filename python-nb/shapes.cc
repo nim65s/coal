@@ -1,8 +1,5 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
-#include <nanobind/eigen/dense.h>
-
 #include "coal/fwd.hh"
 #include "coal/shape/geometric_shapes.h"
 #include "coal/shape/convex.h"
@@ -13,6 +10,8 @@
 
 #include "pickle.hh"
 #include "serializable.hh"
+
+#include "fwd.h"
 
 using namespace coal;
 using namespace nb::literals;

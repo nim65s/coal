@@ -1,18 +1,15 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
-#include <nanobind/eigen/dense.h>
-#include <nanobind/operators.h>
-
 #include "coal/fwd.hh"
-#include "coal/shape/geometric_shapes.h"
-#include "coal/shape/convex.h"
+
 #include "coal/hfield.h"
-#include "coal/serialization/memory.h"
 #include "coal/serialization/AABB.h"
 
 #include "pickle.hh"
 #include "serializable.hh"
+
+#include "fwd.h"
+#include <nanobind/operators.h>
 
 using namespace coal;
 using namespace nb::literals;

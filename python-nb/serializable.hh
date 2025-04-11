@@ -1,8 +1,9 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
 #include "coal/serialization/archive.h"
 #include "coal/serialization/serializer.h"
+
+#include "fwd.h"
 
 namespace coal::python {
 namespace v2 {

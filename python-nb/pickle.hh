@@ -1,11 +1,10 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
-
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <sstream>
 
+#include "fwd.h"
 #include <nanobind/stl/string.h>
 
 namespace coal::python {

@@ -1,10 +1,9 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
 #include "coal/config.hh"
 #include "coal/mesh_loader/loader.h"
 
-#include <nanobind/eigen/dense.h>
+#include "fwd.h"
 
 using namespace nb::literals;
 

@@ -1,14 +1,12 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
 #include "coal/BVH/BVH_model.h"
-
-#include <nanobind/eigen/dense.h>
+#include "coal/serialization/BVH_model.h"
 
 #include "pickle.hh"
 #include "serializable.hh"
 
-#include "coal/serialization/BVH_model.h"
+#include "fwd.h"
 
 using namespace coal;
 using namespace nb::literals;

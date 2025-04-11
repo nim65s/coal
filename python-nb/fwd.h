@@ -1,6 +1,8 @@
 /// Copyright 2025 INRIA
 
 #include <nanobind/nanobind.h>
+#include <nanobind/eigen/dense.h>
+
 #include <nanoeigenpy/fwd.hpp>
 
 namespace nb = nanobind;

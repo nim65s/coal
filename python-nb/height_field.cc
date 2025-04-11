@@ -1,6 +1,7 @@
 /// Copyright 2025 INRIA
 
-#include "fwd.h"
+#include "coal/fwd.hh"
+#include "coal/hfield.h"
 
 #include "coal/serialization/hfield.h"
 #include "coal/serialization/geometric_shapes.h"
@@ -8,8 +9,7 @@
 #include "pickle.hh"
 #include "serializable.hh"
 
-#include "coal/fwd.hh"
-#include "coal/hfield.h"
+#include "fwd.h"
 
 using namespace coal;
 using namespace nb::literals;
