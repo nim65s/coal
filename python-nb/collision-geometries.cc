@@ -128,10 +128,12 @@ void exposeCollisionObject(nb::module_& m) {
 
       // properties
       .def_prop_rw("translation", &CollisionObject::getTranslation,
-                   &CollisionObject::setTranslation)
+                   &CollisionObject::setTranslation,
+                   nb::rv_policy::copy)
       .def_prop_rw("rotation", &CollisionObject::getRotation,
-                   &CollisionObject::setRotation)
-      .def("getTransform", &CollisionObject::getTransform)
+                   &CollisionObject::setRotation,
+                   nb::rv_policy::copy)
+      .def("getTransform", &CollisionObject::getTransform, nb::rv_policy::copy)
       .def("setTransform", [](CollisionObject& o,
                               const Transform3s& tf) { o.setTransform(tf); })
       .def("setTransform", [](CollisionObject& o, const Matrix3s& R,
@@ -149,5 +151,6 @@ void exposeCollisionObject(nb::module_& m) {
            "cgeom"_a, "compute_local_aabb"_a = true,
            nb::rv_policy::reference_internal)
       .def("collisionGeometry",
-           [](CollisionObject& o) { return o.collisionGeometry(); });
+           [](CollisionObject& o) { return o.collisionGeometry(); },
+           nb::rv_policy::copy);
 }
