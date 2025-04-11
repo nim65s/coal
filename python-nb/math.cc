@@ -7,7 +7,6 @@
 #include "pickle.hh"
 
 #include "fwd.h"
-#include <nanobind/stl/bind_vector.h>
 #include <nanobind/operators.h>
 #include <nanoeigenpy/geometry.hpp>
 

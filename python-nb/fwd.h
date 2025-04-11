@@ -2,6 +2,7 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
+#include <nanobind/stl/bind_vector.h>
 
 #include <nanoeigenpy/fwd.hpp>
 

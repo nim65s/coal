@@ -74,6 +74,8 @@ void exposeCollisionAPI(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(CollisionRequest, break_distance)
       .DEF_RW_CLASS_ATTRIB(CollisionRequest, distance_upper_bound)
       .def(python::v2::SerializableVisitor<CollisionRequest>());
+  
+  nb::bind_vector<std::vector<CollisionRequest>>(m, "StdVec_CollisionRequest");
   COAL_COMPILER_DIAGNOSTIC_POP
 
   nb::class_<Contact>(m, "Contact")
@@ -106,6 +108,8 @@ void exposeCollisionAPI(nb::module_& m) {
       .def(nb::self == nb::self)
       .def(nb::self != nb::self);
 
+  nb::bind_vector<std::vector<Contact>>(m, "StdVec_Contact");
+
   nb::class_<QueryResult>(m, "QueryResult")
       .DEF_RW_CLASS_ATTRIB(QueryResult, cached_gjk_guess)
       .DEF_RW_CLASS_ATTRIB(QueryResult, cached_support_func_guess)
@@ -130,6 +134,8 @@ void exposeCollisionAPI(nb::module_& m) {
           nb::rv_policy::reference_internal)
       .DEF_RW_CLASS_ATTRIB(CollisionResult, distance_lower_bound)
       .def(python::v2::SerializableVisitor<CollisionResult>());
+
+  nb::bind_vector<std::vector<CollisionResult>>(m, "StdVec_CollisionResult");
 
   m.def(
       "collide",
