@@ -155,16 +155,14 @@ void exposeShapes(nb::module_& m) {
       .def(nb::init<>())
       .def("__init__",
            [](Convex<Triangle>* self, const Vec3ss& pts, const Triangles& tri) {
-             std::shared_ptr<std::vector<Vec3s>> points(
-                 new std::vector<Vec3s>(pts.size()));
-             std::vector<Vec3s>& points_ = *points;
+             std::shared_ptr<Vec3ss> points(new Vec3ss(pts.size()));
+             Vec3ss& points_ = *points;
              for (std::size_t i = 0; i < pts.size(); ++i) {
                points_[i] = pts[i];
              }
 
-             std::shared_ptr<std::vector<Triangle>> tris(
-                 new std::vector<Triangle>(tri.size()));
-             std::vector<Triangle>& tris_ = *tris;
+             std::shared_ptr<Triangles> tris(new Triangles(tri.size()));
+             Triangles& tris_ = *tris;
              for (std::size_t i = 0; i < tri.size(); ++i) {
                tris_[i] = tri[i];
              }
