@@ -7,10 +7,10 @@ COAL_COMPILER_DIAGNOSTIC_IGNORED_DEPRECECATED_DECLARATIONS
 #include "coal/serialization/collision_data.h"
 COAL_COMPILER_DIAGNOSTIC_POP
 
-#include <nanobind/eigen/dense.h>
-#include <nanobind/operators.h>
-
 #include "serializable.hh"
+
+#include "fwd.h"
+#include <nanobind/operators.h>
 
 using namespace coal;
 using namespace nb::literals;

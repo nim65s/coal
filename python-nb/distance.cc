@@ -2,11 +2,11 @@
 
 #include "coal/fwd.hh"
 #include "coal/distance.h"
-
 #include "coal/serialization/collision_data.h"
 
-#include "fwd.h"
 #include "serializable.hh"
+
+#include "fwd.h"
 
 using namespace coal;
 using namespace nb::literals;

@@ -3,15 +3,13 @@
 #include "coal/math/transform.h"
 #include "coal/serialization/transform.h"
 
-#include <nanoeigenpy/geometry.hpp>
-
-#include "fwd.h"
 #include "serializable.hh"
 #include "pickle.hh"
 
-#include <nanobind/eigen/dense.h>
+#include "fwd.h"
 #include <nanobind/stl/bind_vector.h>
 #include <nanobind/operators.h>
+#include <nanoeigenpy/geometry.hpp>
 
 using namespace coal;
 using namespace nb::literals;

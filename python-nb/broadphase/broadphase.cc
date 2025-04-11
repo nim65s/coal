@@ -1,7 +1,6 @@
 /// Copyrigh 2025 INRIA
 
 #include "coal/fwd.hh"
-#include "../fwd.h"
 
 #include "coal/broadphase/broadphase_dynamic_AABB_tree.h"
 #include "coal/broadphase/broadphase_dynamic_AABB_tree_array.h"
@@ -14,6 +13,7 @@
 
 #include "broadphase_callbacks_collision_manager.hh"
 
+#include "../fwd.h"
 #include <nanobind/stl/pair.h>
 
 using namespace coal;
