@@ -146,7 +146,8 @@ void exposeCollisionObject(nb::module_& m) {
       .DEF_CLASS_FUNC(CollisionObject, computeAABB)
 
       .def("setCollisionGeometry", &CollisionObject::setCollisionGeometry,
-           "cgeom"_a, "compute_local_aabb"_a = true)
+           "cgeom"_a, "compute_local_aabb"_a = true,
+           nb::rv_policy::reference_internal)
       .def("collisionGeometry",
            [](CollisionObject& o) { return o.collisionGeometry(); });
 }
