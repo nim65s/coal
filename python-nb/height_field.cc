@@ -50,6 +50,6 @@ void exposeHeightField(nb::module_& m, const char* name) {
 }
 
 void exposeHeightFields(nb::module_& m) {
-  exposeHeightField<OBBRSS>(m, "OBBRSS");
-  exposeHeightField<AABB>(m, "AABB");
+  exposeHeightField<OBBRSS>(m, "HeightFieldOBBRSS");
+  exposeHeightField<AABB>(m, "HeightFieldAABB");
 }

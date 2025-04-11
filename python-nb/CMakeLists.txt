@@ -40,6 +40,7 @@ set(
 set(
   PYTHON_LIB_SOURCES
   broadphase/broadphase.cc
+  aabb.cc
   bvh.cc
   collision-geometries.cc
   collision.cc
