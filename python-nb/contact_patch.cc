@@ -46,7 +46,8 @@ void exposeContactPatchAPI(nb::module_& m) {
       .DEF_CLASS_FUNC(ContactPatchRequest, getPatchTolerance)
       .DEF_CLASS_FUNC(ContactPatchRequest, setPatchTolerance);
 
-  nb::bind_vector<std::vector<ContactPatchRequest>>(m, "StdVec_ContactPatchRequest");
+  nb::bind_vector<std::vector<ContactPatchRequest>>(
+      m, "StdVec_ContactPatchRequest");
 
   nb::class_<ContactPatchResult>(m, "ContactPatchResult")
       .def(nb::init<ContactPatchRequest>(), "request"_a = 12)
@@ -58,7 +59,8 @@ void exposeContactPatchAPI(nb::module_& m) {
       .DEF_CLASS_FUNC(ContactPatchResult, set)
       .DEF_CLASS_FUNC(ContactPatchResult, check);
 
-  nb::bind_vector<std::vector<ContactPatchResult>>(m, "StdVec_ContactPatchResult");
+  nb::bind_vector<std::vector<ContactPatchResult>>(m,
+                                                   "StdVec_ContactPatchResult");
 
   nb::class_<ComputeContactPatch>(m, "ComputeContactPatch")
       .def(nb::init<const CollisionGeometry*, const CollisionGeometry*>(),

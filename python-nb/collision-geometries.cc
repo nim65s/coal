@@ -128,7 +128,8 @@ void exposeCollisionObject(nb::module_& m) {
       .DEF_CLASS_FUNC(CollisionObject, getNodeType)
 
       // properties
-      .def("getTranslation", &CollisionObject::getTranslation, nb::rv_policy::copy)
+      .def("getTranslation", &CollisionObject::getTranslation,
+           nb::rv_policy::copy)
       .def("setTranslation", &CollisionObject::setTranslation)
       .def("getRotation", &CollisionObject::getRotation, nb::rv_policy::copy)
       .def("setRotation", &CollisionObject::setRotation)
@@ -149,7 +150,8 @@ void exposeCollisionObject(nb::module_& m) {
       .def("setCollisionGeometry", &CollisionObject::setCollisionGeometry,
            "cgeom"_a, "compute_local_aabb"_a = true,
            nb::rv_policy::reference_internal)
-      .def("collisionGeometry",
-           [](CollisionObject& o) { return o.collisionGeometry(); },
-           nb::rv_policy::copy);
+      .def(
+          "collisionGeometry",
+          [](CollisionObject& o) { return o.collisionGeometry(); },
+          nb::rv_policy::copy);
 }

@@ -15,7 +15,8 @@ using namespace coal;
 using namespace nb::literals;
 
 void exposeAABB(nb::module_& m) {
-  nb::class_<AABB>(m, "AABB", 
+  nb::class_<AABB>(
+      m, "AABB",
       "A class describing the AABB collision structure, which is a "
       "box in 3D space determined by two diagonal points")
       .def(nb::init<>())
