@@ -10,6 +10,7 @@
 
 #include "fwd.h"
 #include <nanobind/operators.h>
+#include <nanobind/stl/shared_ptr.h>
 
 using namespace coal;
 using namespace nb::literals;
@@ -127,12 +128,10 @@ void exposeCollisionObject(nb::module_& m) {
       .DEF_CLASS_FUNC(CollisionObject, getNodeType)
 
       // properties
-      .def_prop_rw("translation", &CollisionObject::getTranslation,
-                   &CollisionObject::setTranslation,
-                   nb::rv_policy::copy)
-      .def_prop_rw("rotation", &CollisionObject::getRotation,
-                   &CollisionObject::setRotation,
-                   nb::rv_policy::copy)
+      .def("getTranslation", &CollisionObject::getTranslation, nb::rv_policy::copy)
+      .def("setTranslation", &CollisionObject::setTranslation)
+      .def("getRotation", &CollisionObject::getRotation, nb::rv_policy::copy)
+      .def("setRotation", &CollisionObject::setRotation)
       .def("getTransform", &CollisionObject::getTransform, nb::rv_policy::copy)
       .def("setTransform", [](CollisionObject& o,
                               const Transform3s& tf) { o.setTransform(tf); })
