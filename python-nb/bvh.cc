@@ -48,8 +48,7 @@ void exposeBVHModels(nb::module_& m) {
               return MapRowMatrixX3{nullptr, 0, 3};
             }
           },
-          "Retrieve all vertices",
-          nb::rv_policy::reference_internal)
+          "Retrieve all vertices", nb::rv_policy::reference_internal)
       .def(
           "tri_indices",
           [](const BVHModelBase& bvh, size_t i) {

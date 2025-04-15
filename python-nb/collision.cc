@@ -74,7 +74,7 @@ void exposeCollisionAPI(nb::module_& m) {
       .DEF_RW_CLASS_ATTRIB(CollisionRequest, break_distance)
       .DEF_RW_CLASS_ATTRIB(CollisionRequest, distance_upper_bound)
       .def(python::v2::SerializableVisitor<CollisionRequest>());
-  
+
   nb::bind_vector<std::vector<CollisionRequest>>(m, "StdVec_CollisionRequest");
   COAL_COMPILER_DIAGNOSTIC_POP
 
