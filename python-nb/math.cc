@@ -28,10 +28,10 @@ void exposeMaths(nb::module_ &m) {
 
       .def("getQuatRotation", &Transform3s::getQuatRotation,
            nb::rv_policy::automatic_reference)
-      .def_prop_rw("translation", &Transform3s::getTranslation,
-                   [](Transform3s &t, Vec3s v) { t.setTranslation(v); })
-      .def_prop_rw("rotation", &Transform3s::getRotation,
-                   [](Transform3s &t, Matrix3s R) { t.setRotation(R); })
+      .def("getTranslation", &Transform3s::getTranslation, nb::rv_policy::copy)
+      .def("setTranslation", [](Transform3s &t, Vec3s v) { t.setTranslation(v); })
+      .def("getRotation", &Transform3s::getRotation, nb::rv_policy::copy)
+      .def("setRotation", [](Transform3s &t, Matrix3s R) { t.setRotation(R); })
       .def("isIdentity", &Transform3s::isIdentity)
 
       .def("setQuatRotation", &Transform3s::setQuatRotation)
