@@ -87,10 +87,9 @@ NB_MODULE(COAL_PYTHON_LIBNAME, m) {
   exposeContactPatchAPI(m);
   exposeDistanceAPI(m);
   exposeGJK(m);
-  exposeOctree(m);
   exposeMeshLoader(m);
 #ifdef COAL_HAS_OCTOMAP
-  // exposeOctree(m);
+  exposeOctree(m);
 #endif
   exposeBroadPhase(m);
 }
