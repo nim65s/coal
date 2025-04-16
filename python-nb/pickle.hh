@@ -20,11 +20,12 @@ struct PickleVisitor : nb::def_visitor<PickleVisitor<T>> {
         std::stringstream ss;
         boost::archive::text_oarchive oa(ss);
         oa & obj;
-        return ss.str();})
-    .def("__setstate__", [](T &obj, const std::string &state) {
-    std::istringstream is(state);
-    boost::archive::text_iarchive ia(is, boost::archive::no_codecvt);
-    ia >> obj;
+        return ss.str();
+      }).def("__setstate__", [](T &obj, const std::string &state) {
+      std::istringstream is(state);
+      boost::archive::text_iarchive ia(is, boost::archive::no_codecvt);
+      new (&obj) T();
+      ia >> obj;
     });
   }
 };
