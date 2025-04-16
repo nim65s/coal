@@ -46,6 +46,7 @@ configure = { cmd = [
   "build",
   "-S",
   ".",
+  "-DPython_EXECUTABLE=$(which python)",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$COAL_BUILD_TYPE",
   "-DGENERATE_PYTHON_STUBS=$COAL_PYTHON_STUBS",
