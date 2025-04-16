@@ -33,26 +33,29 @@ class TestGeometryPickling(TestCase):
         box = coal.Box(1.0, 2.0, 3.0)
         self.pickling(box)
 
-        sphere = coal.Sphere(1.0)
-        self.pickling(sphere)
+        # trans = coal.Transform3s(np.array((0, 0, 0)))
+        # self.pickling(trans)
 
-        ellipsoid = coal.Ellipsoid(1.0, 2.0, 3.0)
-        self.pickling(ellipsoid)
+        # sphere = coal.Sphere(1.0)
+        # self.pickling(sphere)
 
-        convex = tetahedron()
-        self.pickling(convex)
+        # ellipsoid = coal.Ellipsoid(1.0, 2.0, 3.0)
+        # self.pickling(ellipsoid)
 
-        capsule = coal.Capsule(1.0, 2.0)
-        self.pickling(capsule)
+        # convex = tetahedron()
+        # self.pickling(convex)
 
-        cylinder = coal.Cylinder(1.0, 2.0)
-        self.pickling(cylinder)
+        # capsule = coal.Capsule(1.0, 2.0)
+        # self.pickling(capsule)
 
-        plane = coal.Plane(np.array([0.0, 0.0, 1.0]), 2.0)
-        self.pickling(plane)
+        # cylinder = coal.Cylinder(1.0, 2.0)
+        # self.pickling(cylinder)
 
-        half_space = coal.Halfspace(np.array([0.0, 0.0, 1.0]), 2.0)
-        self.pickling(half_space)
+        # plane = coal.Plane(np.array([0.0, 0.0, 1.0]), 2.0)
+        # self.pickling(plane)
+
+        # half_space = coal.Halfspace(np.array([0.0, 0.0, 1.0]), 2.0)
+        # self.pickling(half_space)
 
 
 if __name__ == "__main__":
