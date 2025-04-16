@@ -93,7 +93,8 @@ void exposeShapes(nb::module_& m) {
             return MapRowMatrixX3((*(convex.points))[0].data(),
                                   convex.num_points, 3);
           },
-          "Retrieve all the points.", nb::rv_policy::reference_internal)
+          "Retrieve all the points.",
+          nb::rv_policy::reference_internal)
       .def(
           "normal",
           [](const ConvexBase& convex, unsigned int i) -> Vec3s& {
@@ -110,7 +111,8 @@ void exposeShapes(nb::module_& m) {
             return MapRowMatrixX3((*(convex.normals))[0].data(),
                                   convex.num_normals_and_offsets, 3);
           },
-          "Retrieve all the normals.", nb::rv_policy::reference_internal)
+          "Retrieve all the normals.",
+          nb::rv_policy::reference_internal)
       .def(
           "offset",
           [](const ConvexBase& convex, unsigned int i) -> Scalar {
@@ -126,7 +128,8 @@ void exposeShapes(nb::module_& m) {
             return MapVecXs(convex.offsets->data(),
                             convex.num_normals_and_offsets, 1);
           },
-          "Retrieve all the offsets.", nb::rv_policy::reference_internal)
+          "Retrieve all the offsets.",
+          nb::rv_policy::reference_internal)
       .def("neighbors",
            [](const ConvexBase& convex, unsigned int i) -> nb::list {
              if (i >= convex.num_points) {
@@ -141,19 +144,19 @@ void exposeShapes(nb::module_& m) {
              return n;
            })
       .def_static(
-          "convexHull",
-          [](const Vec3ss& points, bool keepTri,
-             nb::handle qhullCommand) -> ConvexBase* {
+        "convexHull",
+        [](const Vec3ss& points, bool keepTri, nb::handle qhullCommand) -> ConvexBase* {
             const char* qhullCommand_a = nullptr;
             if (!qhullCommand.is_none()) {
-              qhullCommand_a = nb::cast<std::string>(qhullCommand).c_str();
+                qhullCommand_a = nb::cast<std::string>(qhullCommand).c_str();
             }
             return ConvexBase::convexHull(points.data(),
-                                          (unsigned int)points.size(), keepTri,
+                                          (unsigned int)points.size(),
+                                          keepTri,
                                           qhullCommand_a);
-          },
-          "points"_a, "keepTri"_a, "qhullCommand"_a = nb::none(),
-          nb::rv_policy::take_ownership)
+        },
+        "points"_a, "keepTri"_a, "qhullCommand"_a = nb::none(),
+        nb::rv_policy::take_ownership)
       .def("clone", &ConvexBase::clone, nb::rv_policy::take_ownership);
 
   nb::class_<Convex<Triangle>, ConvexBase>(m, "Convex")
