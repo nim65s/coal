@@ -108,6 +108,7 @@ python = "3.13.*"
 
 [feature.python-oldest.dependencies]
 python = "3.9.*"
+typing_extensions = ">=4.13.2,<5"
 
 # Use clang-cl on Windows.
 # We must use scripts instead of env to setup CC and CXX
