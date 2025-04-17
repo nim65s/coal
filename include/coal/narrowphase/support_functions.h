@@ -289,12 +289,10 @@ void getShapeSupportSet(const LargeConvex<IndexType>* convex,
 /// @param[in] cloud data which contains the 2d points of the support set which
 /// convex-hull we want to compute.
 /// @param[out] 2d points of the the support set's convex-hull.
-void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
-                                 SupportSet::Polygon& cvx_hull);
+COAL_DLLAPI void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
+                                             SupportSet::Polygon& cvx_hull);
 
 }  // namespace details
 }  // namespace coal
-
-#include "coal/narrowphase/support_functions.hxx"
 
 #endif  // COAL_SUPPORT_FUNCTIONS_H

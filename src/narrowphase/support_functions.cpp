@@ -36,9 +36,6 @@
 
 /** \authors Jia Pan, Florent Lamiraux, Josef Mirabel, Louis Montaut */
 
-#ifndef COAL_SUPPORT_FUNCTIONS_HXX
-#define COAL_SUPPORT_FUNCTIONS_HXX
-
 #include "coal/narrowphase/support_functions.h"
 
 #include <algorithm>
@@ -94,6 +91,23 @@ Vec3s getSupport(const ShapeBase* shape, const Vec3s& dir, int& hint) {
 }
 #undef CALL_GET_SHAPE_SUPPORT
 
+// Explicit instantiation
+// clang-format off
+template COAL_DLLAPI Vec3s getSupport<SupportOptions::NoSweptSphere>(const ShapeBase*, const Vec3s&, int&);
+
+template COAL_DLLAPI Vec3s getSupport<SupportOptions::WithSweptSphere>(const ShapeBase*, const Vec3s&, int&);
+// clang-format on
+
+// ============================================================================
+#define getShapeSupportTplInstantiation(ShapeType)                            \
+  template COAL_DLLAPI void getShapeSupport<SupportOptions::NoSweptSphere>(   \
+      const ShapeType* shape_, const Vec3s& dir, Vec3s& support, int& hint,   \
+      ShapeSupportData& support_data);                                        \
+                                                                              \
+  template COAL_DLLAPI void getShapeSupport<SupportOptions::WithSweptSphere>( \
+      const ShapeType* shape_, const Vec3s& dir, Vec3s& support, int& hint,   \
+      ShapeSupportData& support_data);
+
 // ============================================================================
 template <int _SupportOptions>
 void getShapeSupport(const TriangleP* triangle, const Vec3s& dir,
@@ -120,6 +134,7 @@ void getShapeSupport(const TriangleP* triangle, const Vec3s& dir,
     support += triangle->getSweptSphereRadius() * dir.normalized();
   }
 }
+getShapeSupportTplInstantiation(TriangleP);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -140,6 +155,7 @@ void getShapeSupport(const Box* box, const Vec3s& dir, Vec3s& support,
     support += box->getSweptSphereRadius() * dir.normalized();
   }
 }
+getShapeSupportTplInstantiation(Box);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -155,6 +171,7 @@ void getShapeSupport(const Sphere* sphere, const Vec3s& dir, Vec3s& support,
   COAL_UNUSED_VARIABLE(sphere);
   COAL_UNUSED_VARIABLE(dir);
 }
+getShapeSupportTplInstantiation(Sphere);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -175,6 +192,7 @@ void getShapeSupport(const Ellipsoid* ellipsoid, const Vec3s& dir,
     support += ellipsoid->getSweptSphereRadius() * dir.normalized();
   }
 }
+getShapeSupportTplInstantiation(Ellipsoid);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -194,6 +212,7 @@ void getShapeSupport(const Capsule* capsule, const Vec3s& dir, Vec3s& support,
         (capsule->radius + capsule->getSweptSphereRadius()) * dir.normalized();
   }
 }
+getShapeSupportTplInstantiation(Capsule);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -243,6 +262,7 @@ void getShapeSupport(const Cone* cone, const Vec3s& dir, Vec3s& support,
     support += cone->getSweptSphereRadius() * dir.normalized();
   }
 }
+getShapeSupportTplInstantiation(Cone);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -282,6 +302,7 @@ void getShapeSupport(const Cylinder* cylinder, const Vec3s& dir, Vec3s& support,
     support += cylinder->getSweptSphereRadius() * dir.normalized();
   }
 }
+getShapeSupportTplInstantiation(Cylinder);
 
 // ============================================================================
 template <int _SupportOptions, typename IndexType>
@@ -403,6 +424,8 @@ void getShapeSupport(const ConvexBaseTpl<IndexType>* convex, const Vec3s& dir,
                                            support_data);
   }
 }
+getShapeSupportTplInstantiation(ConvexBaseTpl<Triangle16::IndexType>);
+getShapeSupportTplInstantiation(ConvexBaseTpl<Triangle32::IndexType>);
 
 // ============================================================================
 template <int _SupportOptions, typename IndexType>
@@ -413,6 +436,8 @@ void getShapeSupport(const SmallConvex<IndexType>* convex, const Vec3s& dir,
       reinterpret_cast<const ConvexBaseTpl<IndexType>*>(convex), dir, support,
       hint, support_data);
 }
+getShapeSupportTplInstantiation(SmallConvex<Triangle16::IndexType>);
+getShapeSupportTplInstantiation(SmallConvex<Triangle32::IndexType>);
 
 // ============================================================================
 template <int _SupportOptions, typename IndexType>
@@ -423,6 +448,8 @@ void getShapeSupport(const LargeConvex<IndexType>* convex, const Vec3s& dir,
       reinterpret_cast<const ConvexBaseTpl<IndexType>*>(convex), dir, support,
       hint, support_data);
 }
+getShapeSupportTplInstantiation(LargeConvex<Triangle16::IndexType>);
+getShapeSupportTplInstantiation(LargeConvex<Triangle32::IndexType>);
 
 // ============================================================================
 #define CALL_GET_SHAPE_SUPPORT_SET(ShapeType)                               \
@@ -469,6 +496,24 @@ void getSupportSet(const ShapeBase* shape, SupportSet& support_set, int& hint,
 }
 #undef CALL_GET_SHAPE_SUPPORT
 
+// Explicit instantiation
+// clang-format off
+template COAL_DLLAPI void getSupportSet<SupportOptions::NoSweptSphere>(const ShapeBase*, SupportSet&, int&, size_t, Scalar);
+
+template COAL_DLLAPI void getSupportSet<SupportOptions::WithSweptSphere>(const ShapeBase*, SupportSet&, int&, size_t, Scalar);
+// clang-format on
+
+// ============================================================================
+#define getShapeSupportSetTplInstantiation(ShapeType)                          \
+  template COAL_DLLAPI void getShapeSupportSet<SupportOptions::NoSweptSphere>( \
+      const ShapeType* shape_, SupportSet& support_set, int& hint,             \
+      ShapeSupportData& data, size_t num_sampled_supports, Scalar tol);        \
+                                                                               \
+  template COAL_DLLAPI void                                                    \
+  getShapeSupportSet<SupportOptions::WithSweptSphere>(                         \
+      const ShapeType* shape_, SupportSet& support_set, int& hint,             \
+      ShapeSupportData& data, size_t num_sampled_supports, Scalar tol);
+
 // ============================================================================
 template <int _SupportOptions>
 void getShapeSupportSet(const TriangleP* triangle, SupportSet& support_set,
@@ -514,6 +559,7 @@ void getShapeSupportSet(const TriangleP* triangle, SupportSet& support_set,
     }
   }
 }
+getShapeSupportSetTplInstantiation(TriangleP);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -555,6 +601,7 @@ void getShapeSupportSet(const Box* box, SupportSet& support_set,
   }
   computeSupportSetConvexHull(polygon, support_set.points());
 }
+getShapeSupportSetTplInstantiation(Box);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -570,6 +617,7 @@ void getShapeSupportSet(const Sphere* sphere, SupportSet& support_set,
                                    support_data);
   support_set.addPoint(support);
 }
+getShapeSupportSetTplInstantiation(Sphere);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -584,6 +632,7 @@ void getShapeSupportSet(const Ellipsoid* ellipsoid, SupportSet& support_set,
                                    support_data);
   support_set.addPoint(support);
 }
+getShapeSupportSetTplInstantiation(Ellipsoid);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -627,6 +676,7 @@ void getShapeSupportSet(const Capsule* capsule, SupportSet& support_set,
     }
   }
 }
+getShapeSupportSetTplInstantiation(Capsule);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -697,6 +747,7 @@ void getShapeSupportSet(const Cone* cone, SupportSet& support_set,
     }
   }
 }
+getShapeSupportSetTplInstantiation(Cone);
 
 // ============================================================================
 template <int _SupportOptions>
@@ -758,6 +809,7 @@ void getShapeSupportSet(const Cylinder* cylinder, SupportSet& support_set,
     }
   }
 }
+getShapeSupportSetTplInstantiation(Cylinder);
 
 // ============================================================================
 template <int _SupportOptions, typename IndexType>
@@ -882,6 +934,8 @@ void getShapeSupportSet(const ConvexBaseTpl<IndexType>* convex,
         convex, support_set, hint, support_data, num_sampled_supports, tol);
   }
 }
+getShapeSupportSetTplInstantiation(ConvexBaseTpl<Triangle16::IndexType>);
+getShapeSupportSetTplInstantiation(ConvexBaseTpl<Triangle32::IndexType>);
 
 // ============================================================================
 template <int _SupportOptions, typename IndexType>
@@ -893,6 +947,8 @@ void getShapeSupportSet(const SmallConvex<IndexType>* convex,
       reinterpret_cast<const ConvexBaseTpl<IndexType>*>(convex), support_set,
       hint, support_data, num_sampled_supports, tol);
 }
+getShapeSupportSetTplInstantiation(SmallConvex<Triangle16::IndexType>);
+getShapeSupportSetTplInstantiation(SmallConvex<Triangle32::IndexType>);
 
 // ============================================================================
 template <int _SupportOptions, typename IndexType>
@@ -904,10 +960,12 @@ void getShapeSupportSet(const LargeConvex<IndexType>* convex,
       reinterpret_cast<const ConvexBaseTpl<IndexType>*>(convex), support_set,
       hint, support_data, num_sampled_supports, tol);
 }
+getShapeSupportSetTplInstantiation(LargeConvex<Triangle16::IndexType>);
+getShapeSupportSetTplInstantiation(LargeConvex<Triangle32::IndexType>);
 
 // ============================================================================
-inline void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
-                                        SupportSet::Polygon& cvx_hull) {
+COAL_DLLAPI void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
+                                             SupportSet::Polygon& cvx_hull) {
   cvx_hull.clear();
 
   if (cloud.size() <= 2) {
@@ -1026,5 +1084,3 @@ inline void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
 
 }  // namespace details
 }  // namespace coal
-
-#endif  // COAL_SUPPORT_FUNCTIONS_HXX

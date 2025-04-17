@@ -317,7 +317,6 @@ set(
   include/coal/narrowphase/minkowski_difference.h
   include/coal/narrowphase/support_data.h
   include/coal/narrowphase/support_functions.h
-  include/coal/narrowphase/support_functions.hxx
   include/coal/shape/convex.h
   include/coal/shape/convex.hxx
   include/coal/shape/geometric_shape_to_BVH_model.h
