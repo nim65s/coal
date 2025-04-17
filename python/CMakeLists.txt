@@ -57,12 +57,21 @@ set(
   serializable.hh
 )
 
-set(
-  ENABLE_PYTHON_DOXYGEN_AUTODOC
-  TRUE
-  CACHE BOOL
-  "Enable automatic documentation of Python bindings from Doxygen documentation"
-)
+if(NOT WIN32)
+  set(
+    ENABLE_PYTHON_DOXYGEN_AUTODOC
+    TRUE
+    CACHE BOOL
+    "Enable automatic documentation of Python bindings from Doxygen documentation"
+  )
+else()
+  set(
+    ENABLE_PYTHON_DOXYGEN_AUTODOC
+    FALSE
+    CACHE BOOL
+    "Enable automatic documentation of Python bindings from Doxygen documentation"
+  )
+endif()
 
 if(NOT ENABLE_PYTHON_DOXYGEN_AUTODOC OR NOT DOXYGEN_FOUND)
   set(ENABLE_DOXYGEN_AUTODOC FALSE)

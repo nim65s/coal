@@ -17,14 +17,15 @@ namespace boost {
 namespace serialization {
 
 namespace internal {
-struct ConvexBaseAccessor : coal::ConvexBase {
-  typedef coal::ConvexBase Base;
+template <typename IndexType>
+struct ConvexBaseAccessor : coal::ConvexBaseTpl<IndexType> {
+  typedef coal::ConvexBaseTpl<IndexType> Base;
 };
 
 }  // namespace internal
 
-template <class Archive>
-void serialize(Archive& ar, coal::ConvexBase& convex_base,
+template <class Archive, typename IndexType>
+void serialize(Archive& ar, coal::ConvexBaseTpl<IndexType>& convex_base,
                const unsigned int /*version*/) {
   using namespace coal;
 
@@ -115,21 +116,22 @@ void serialize(Archive& ar, coal::ConvexBase& convex_base,
 
 namespace internal {
 template <typename PolygonT>
-struct ConvexAccessor : coal::Convex<PolygonT> {
-  typedef coal::Convex<PolygonT> Base;
+struct ConvexAccessor : coal::ConvexTpl<PolygonT> {
+  typedef coal::ConvexTpl<PolygonT> Base;
   using Base::fillNeighbors;
 };
 
 }  // namespace internal
 
 template <class Archive, typename PolygonT>
-void serialize(Archive& ar, coal::Convex<PolygonT>& convex_,
+void serialize(Archive& ar, coal::ConvexTpl<PolygonT>& convex_,
                const unsigned int /*version*/) {
   using namespace coal;
   typedef internal::ConvexAccessor<PolygonT> Accessor;
+  typedef ConvexBaseTpl<typename PolygonT::IndexType> Base;
 
   Accessor& convex = reinterpret_cast<Accessor&>(convex_);
-  ar& make_nvp("base", boost::serialization::base_object<ConvexBase>(convex_));
+  ar& make_nvp("base", boost::serialization::base_object<Base>(convex_));
 
   const unsigned int num_polygons_previous = convex.num_polygons;
   ar& make_nvp("num_polygons", convex.num_polygons);
@@ -148,8 +150,10 @@ void serialize(Archive& ar, coal::Convex<PolygonT>& convex_,
 }  // namespace serialization
 }  // namespace boost
 
-COAL_SERIALIZATION_DECLARE_EXPORT(coal::Convex<coal::Triangle>)
-COAL_SERIALIZATION_DECLARE_EXPORT(coal::Convex<coal::Quadrilateral>)
+COAL_SERIALIZATION_DECLARE_EXPORT(coal::ConvexTpl<coal::Triangle16>)
+COAL_SERIALIZATION_DECLARE_EXPORT(coal::ConvexTpl<coal::Triangle32>)
+COAL_SERIALIZATION_DECLARE_EXPORT(coal::ConvexTpl<coal::Quadrilateral16>)
+COAL_SERIALIZATION_DECLARE_EXPORT(coal::ConvexTpl<coal::Quadrilateral32>)
 
 namespace coal {
 

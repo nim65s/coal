@@ -53,7 +53,8 @@ namespace coal {
 /// @addtogroup Construction_Of_BVH
 /// @{
 
-class ConvexBase;
+template <typename _IndexType>
+class ConvexBaseTpl;
 
 template <typename BV>
 class BVFitter;
@@ -64,11 +65,14 @@ class BVSplitter;
 /// point cloud model (which is viewed as a degraded version of mesh)
 class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
  public:
+  typedef typename Triangle32::IndexType IndexType;
+  typedef ConvexBaseTpl<IndexType> ConvexType;
+
   /// @brief Geometry point data
   std::shared_ptr<std::vector<Vec3s>> vertices;
 
   /// @brief Geometry triangle index data, will be NULL for point clouds
-  std::shared_ptr<std::vector<Triangle>> tri_indices;
+  std::shared_ptr<std::vector<Triangle32>> tri_indices;
 
   /// @brief Geometry point data in previous frame
   std::shared_ptr<std::vector<Vec3s>> prev_vertices;
@@ -83,7 +87,8 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
   BVHBuildState build_state;
 
   /// @brief Convex<Triangle> representation of this object
-  shared_ptr<ConvexBase> convex;
+  // TODO: deprecated
+  shared_ptr<ConvexType> convex;
 
   /// @brief Model type described by the instance
   BVHModelType getModelType() const {
@@ -127,7 +132,7 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
 
   /// @brief Add a set of triangles in the new BVH model
   int addSubModel(const std::vector<Vec3s>& ps,
-                  const std::vector<Triangle>& ts);
+                  const std::vector<Triangle32>& ts);
 
   /// @brief Add a set of points in the new BVH model
   int addSubModel(const std::vector<Vec3s>& ps);
@@ -214,10 +219,10 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
                 << std::endl;
       return com;
     }
-    const std::vector<Triangle>& tri_indices_ = *tri_indices;
+    const std::vector<Triangle32>& tri_indices_ = *tri_indices;
 
     for (unsigned int i = 0; i < num_tris; ++i) {
-      const Triangle& tri = tri_indices_[i];
+      const Triangle32& tri = tri_indices_[i];
       Scalar d_six_vol =
           (vertices_[tri[0]].cross(vertices_[tri[1]])).dot(vertices_[tri[2]]);
       vol += d_six_vol;
@@ -243,9 +248,9 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
                 << std::endl;
       return vol;
     }
-    const std::vector<Triangle>& tri_indices_ = *tri_indices;
+    const std::vector<Triangle32>& tri_indices_ = *tri_indices;
     for (unsigned int i = 0; i < num_tris; ++i) {
-      const Triangle& tri = tri_indices_[i];
+      const Triangle32& tri = tri_indices_[i];
       Scalar d_six_vol =
           (vertices_[tri[0]].cross(vertices_[tri[1]])).dot(vertices_[tri[2]]);
       vol += d_six_vol;
@@ -281,9 +286,9 @@ class COAL_DLLAPI BVHModelBase : public CollisionGeometry {
                 << std::endl;
       return C;
     }
-    const std::vector<Triangle>& tri_indices_ = *tri_indices;
+    const std::vector<Triangle32>& tri_indices_ = *tri_indices;
     for (unsigned int i = 0; i < num_tris; ++i) {
-      const Triangle& tri = tri_indices_[i];
+      const Triangle32& tri = tri_indices_[i];
       const Vec3s& v1 = vertices_[tri[0]];
       const Vec3s& v2 = vertices_[tri[1]];
       const Vec3s& v3 = vertices_[tri[2]];

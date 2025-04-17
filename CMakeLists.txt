@@ -315,11 +315,13 @@ set(
   include/coal/narrowphase/gjk.h
   include/coal/narrowphase/narrowphase_defaults.h
   include/coal/narrowphase/minkowski_difference.h
+  include/coal/narrowphase/support_data.h
   include/coal/narrowphase/support_functions.h
   include/coal/shape/convex.h
-  include/coal/shape/details/convex.hxx
+  include/coal/shape/convex.hxx
   include/coal/shape/geometric_shape_to_BVH_model.h
   include/coal/shape/geometric_shapes.h
+  include/coal/shape/geometric_shapes.hxx
   include/coal/shape/geometric_shapes_traits.h
   include/coal/shape/geometric_shapes_utility.h
   include/coal/distance_func_matrix.h
@@ -481,7 +483,9 @@ if(COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
     include/hpp/fcl/narrowphase/minkowski_difference.h
     include/hpp/fcl/narrowphase/narrowphase_defaults.h
     include/hpp/fcl/narrowphase/narrowphase.h
+    include/hpp/fcl/narrowphase/support_data.h
     include/hpp/fcl/narrowphase/support_functions.h
+    include/hpp/fcl/narrowphase/support_functions.hxx
     include/hpp/fcl/octree.h
     include/hpp/fcl/serialization/AABB.h
     include/hpp/fcl/serialization/archive.h
@@ -508,8 +512,9 @@ if(COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
     include/hpp/fcl/serialization/transform.h
     include/hpp/fcl/serialization/triangle.h
     include/hpp/fcl/shape/convex.h
-    include/hpp/fcl/shape/details/convex.hxx
+    include/hpp/fcl/shape/convex.hxx
     include/hpp/fcl/shape/geometric_shapes.h
+    include/hpp/fcl/shape/geometric_shapes.hxx
     include/hpp/fcl/shape/geometric_shapes_traits.h
     include/hpp/fcl/shape/geometric_shapes_utility.h
     include/hpp/fcl/shape/geometric_shape_to_BVH_model.h

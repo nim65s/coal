@@ -47,6 +47,7 @@ namespace details {
 #define CALL_GET_SHAPE_SUPPORT(ShapeType)                                     \
   getShapeSupport<_SupportOptions>(static_cast<const ShapeType*>(shape), dir, \
                                    support, hint, support_data)
+
 template <int _SupportOptions>
 Vec3s getSupport(const ShapeBase* shape, const Vec3s& dir, int& hint) {
   Vec3s support;
@@ -73,8 +74,11 @@ Vec3s getSupport(const ShapeBase* shape, const Vec3s& dir, int& hint) {
     case GEOM_CYLINDER:
       CALL_GET_SHAPE_SUPPORT(Cylinder);
       break;
-    case GEOM_CONVEX:
-      CALL_GET_SHAPE_SUPPORT(ConvexBase);
+    case GEOM_CONVEX16:
+      CALL_GET_SHAPE_SUPPORT(ConvexBaseTpl<Triangle16::IndexType>);
+      break;
+    case GEOM_CONVEX32:
+      CALL_GET_SHAPE_SUPPORT(ConvexBaseTpl<Triangle32::IndexType>);
       break;
     case GEOM_PLANE:
     case GEOM_HALFSPACE:
@@ -134,8 +138,8 @@ getShapeSupportTplInstantiation(TriangleP);
 
 // ============================================================================
 template <int _SupportOptions>
-inline void getShapeSupport(const Box* box, const Vec3s& dir, Vec3s& support,
-                            int& /*unused*/, ShapeSupportData& /*unused*/) {
+void getShapeSupport(const Box* box, const Vec3s& dir, Vec3s& support,
+                     int& /*unused*/, ShapeSupportData& /*unused*/) {
   // The inflate value is simply to make the specialized functions with box
   // have a preferred side for edge cases.
   static const Scalar inflate =
@@ -155,9 +159,8 @@ getShapeSupportTplInstantiation(Box);
 
 // ============================================================================
 template <int _SupportOptions>
-inline void getShapeSupport(const Sphere* sphere, const Vec3s& dir,
-                            Vec3s& support, int& /*unused*/,
-                            ShapeSupportData& /*unused*/) {
+void getShapeSupport(const Sphere* sphere, const Vec3s& dir, Vec3s& support,
+                     int& /*unused*/, ShapeSupportData& /*unused*/) {
   if (_SupportOptions == SupportOptions::WithSweptSphere) {
     support.noalias() =
         (sphere->radius + sphere->getSweptSphereRadius()) * dir.normalized();
@@ -172,9 +175,9 @@ getShapeSupportTplInstantiation(Sphere);
 
 // ============================================================================
 template <int _SupportOptions>
-inline void getShapeSupport(const Ellipsoid* ellipsoid, const Vec3s& dir,
-                            Vec3s& support, int& /*unused*/,
-                            ShapeSupportData& /*unused*/) {
+void getShapeSupport(const Ellipsoid* ellipsoid, const Vec3s& dir,
+                     Vec3s& support, int& /*unused*/,
+                     ShapeSupportData& /*unused*/) {
   Scalar a2 = ellipsoid->radii[0] * ellipsoid->radii[0];
   Scalar b2 = ellipsoid->radii[1] * ellipsoid->radii[1];
   Scalar c2 = ellipsoid->radii[2] * ellipsoid->radii[2];
@@ -193,9 +196,8 @@ getShapeSupportTplInstantiation(Ellipsoid);
 
 // ============================================================================
 template <int _SupportOptions>
-inline void getShapeSupport(const Capsule* capsule, const Vec3s& dir,
-                            Vec3s& support, int& /*unused*/,
-                            ShapeSupportData& /*unused*/) {
+void getShapeSupport(const Capsule* capsule, const Vec3s& dir, Vec3s& support,
+                     int& /*unused*/, ShapeSupportData& /*unused*/) {
   static const Scalar dummy_precision =
       Eigen::NumTraits<Scalar>::dummy_precision();
   support.setZero();
@@ -303,9 +305,9 @@ void getShapeSupport(const Cylinder* cylinder, const Vec3s& dir, Vec3s& support,
 getShapeSupportTplInstantiation(Cylinder);
 
 // ============================================================================
-template <int _SupportOptions>
-void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
-                        Vec3s& support, int& hint,
+template <int _SupportOptions, typename IndexType>
+void getShapeSupportLog(const ConvexBaseTpl<IndexType>* convex,
+                        const Vec3s& dir, Vec3s& support, int& hint,
                         ShapeSupportData& support_data) {
   assert(convex->neighbors != nullptr && "Convex has no neighbors.");
 
@@ -318,19 +320,20 @@ void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
       support_data.last_dir.dot(dir_normalized) < use_warm_start_threshold) {
     // Change hint if last dir is too far from current dir.
     Scalar maxdot = convex->support_warm_starts.points[0].dot(dir);
-    hint = convex->support_warm_starts.indices[0];
+    hint = int(convex->support_warm_starts.indices[0]);
     for (size_t i = 1; i < convex->support_warm_starts.points.size(); ++i) {
       Scalar dot = convex->support_warm_starts.points[i].dot(dir);
       if (dot > maxdot) {
         maxdot = dot;
-        hint = convex->support_warm_starts.indices[i];
+        hint = int(convex->support_warm_starts.indices[i]);
       }
     }
   }
   support_data.last_dir = dir_normalized;
 
   const std::vector<Vec3s>& pts = *(convex->points);
-  const std::vector<ConvexBase::Neighbors>& nn = *(convex->neighbors);
+  typedef typename ConvexBaseTpl<IndexType>::Neighbors Neighbors;
+  const std::vector<Neighbors>& nn = *(convex->neighbors);
 
   if (hint < 0 || hint >= (int)convex->num_points) {
     hint = 0;
@@ -351,10 +354,11 @@ void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
   bool found = true;
   bool loose_check = true;
   while (found) {
-    const ConvexBase::Neighbors& n = nn[static_cast<size_t>(hint)];
+    const Neighbors& n = nn[static_cast<size_t>(hint)];
     found = false;
-    for (int in = 0; in < n.count(); ++in) {
-      const unsigned int ip = n[in];
+    IndexType current_vertex_idx = IndexType(hint);
+    for (IndexType in = 0; in < n.count; ++in) {
+      const IndexType ip = convex->neighbor(current_vertex_idx, in);
       if (visited[ip]) continue;
       visited[ip] = true;
       const Scalar dot = pts[ip].dot(dir);
@@ -380,9 +384,9 @@ void getShapeSupportLog(const ConvexBase* convex, const Vec3s& dir,
 }
 
 // ============================================================================
-template <int _SupportOptions>
-void getShapeSupportLinear(const ConvexBase* convex, const Vec3s& dir,
-                           Vec3s& support, int& hint,
+template <int _SupportOptions, typename IndexType>
+void getShapeSupportLinear(const ConvexBaseTpl<IndexType>* convex,
+                           const Vec3s& dir, Vec3s& support, int& hint,
                            ShapeSupportData& /*unused*/) {
   const std::vector<Vec3s>& pts = *(convex->points);
 
@@ -404,12 +408,14 @@ void getShapeSupportLinear(const ConvexBase* convex, const Vec3s& dir,
 }
 
 // ============================================================================
-template <int _SupportOptions>
-void getShapeSupport(const ConvexBase* convex, const Vec3s& dir, Vec3s& support,
-                     int& hint, ShapeSupportData& support_data) {
+template <int _SupportOptions, typename IndexType>
+void getShapeSupport(const ConvexBaseTpl<IndexType>* convex, const Vec3s& dir,
+                     Vec3s& support, int& hint,
+                     ShapeSupportData& support_data) {
   // TODO add benchmark to set a proper value for switching between linear and
   // logarithmic.
-  if (convex->num_points > ConvexBase::num_vertices_large_convex_threshold &&
+  if (convex->num_points >
+          ConvexBaseTpl<IndexType>::num_vertices_large_convex_threshold &&
       convex->neighbors != nullptr) {
     getShapeSupportLog<_SupportOptions>(convex, dir, support, hint,
                                         support_data);
@@ -418,35 +424,39 @@ void getShapeSupport(const ConvexBase* convex, const Vec3s& dir, Vec3s& support,
                                            support_data);
   }
 }
-getShapeSupportTplInstantiation(ConvexBase);
+getShapeSupportTplInstantiation(ConvexBaseTpl<Triangle16::IndexType>);
+getShapeSupportTplInstantiation(ConvexBaseTpl<Triangle32::IndexType>);
 
 // ============================================================================
-template <int _SupportOptions>
-inline void getShapeSupport(const SmallConvex* convex, const Vec3s& dir,
-                            Vec3s& support, int& hint,
-                            ShapeSupportData& support_data) {
+template <int _SupportOptions, typename IndexType>
+void getShapeSupport(const SmallConvex<IndexType>* convex, const Vec3s& dir,
+                     Vec3s& support, int& hint,
+                     ShapeSupportData& support_data) {
   getShapeSupportLinear<_SupportOptions>(
-      reinterpret_cast<const ConvexBase*>(convex), dir, support, hint,
-      support_data);
+      reinterpret_cast<const ConvexBaseTpl<IndexType>*>(convex), dir, support,
+      hint, support_data);
 }
-getShapeSupportTplInstantiation(SmallConvex);
+getShapeSupportTplInstantiation(SmallConvex<Triangle16::IndexType>);
+getShapeSupportTplInstantiation(SmallConvex<Triangle32::IndexType>);
 
 // ============================================================================
-template <int _SupportOptions>
-inline void getShapeSupport(const LargeConvex* convex, const Vec3s& dir,
-                            Vec3s& support, int& hint,
-                            ShapeSupportData& support_data) {
+template <int _SupportOptions, typename IndexType>
+void getShapeSupport(const LargeConvex<IndexType>* convex, const Vec3s& dir,
+                     Vec3s& support, int& hint,
+                     ShapeSupportData& support_data) {
   getShapeSupportLog<_SupportOptions>(
-      reinterpret_cast<const ConvexBase*>(convex), dir, support, hint,
-      support_data);
+      reinterpret_cast<const ConvexBaseTpl<IndexType>*>(convex), dir, support,
+      hint, support_data);
 }
-getShapeSupportTplInstantiation(LargeConvex);
+getShapeSupportTplInstantiation(LargeConvex<Triangle16::IndexType>);
+getShapeSupportTplInstantiation(LargeConvex<Triangle32::IndexType>);
 
 // ============================================================================
 #define CALL_GET_SHAPE_SUPPORT_SET(ShapeType)                               \
   getShapeSupportSet<_SupportOptions>(static_cast<const ShapeType*>(shape), \
                                       support_set, hint, support_data,      \
                                       max_num_supports, tol)
+
 template <int _SupportOptions>
 void getSupportSet(const ShapeBase* shape, SupportSet& support_set, int& hint,
                    size_t max_num_supports, Scalar tol) {
@@ -473,8 +483,11 @@ void getSupportSet(const ShapeBase* shape, SupportSet& support_set, int& hint,
     case GEOM_CYLINDER:
       CALL_GET_SHAPE_SUPPORT_SET(Cylinder);
       break;
-    case GEOM_CONVEX:
-      CALL_GET_SHAPE_SUPPORT_SET(ConvexBase);
+    case GEOM_CONVEX16:
+      CALL_GET_SHAPE_SUPPORT_SET(ConvexBaseTpl<Triangle16::IndexType>);
+      break;
+    case GEOM_CONVEX32:
+      CALL_GET_SHAPE_SUPPORT_SET(ConvexBaseTpl<Triangle32::IndexType>);
       break;
     case GEOM_PLANE:
     case GEOM_HALFSPACE:
@@ -799,9 +812,9 @@ void getShapeSupportSet(const Cylinder* cylinder, SupportSet& support_set,
 getShapeSupportSetTplInstantiation(Cylinder);
 
 // ============================================================================
-template <int _SupportOptions>
-void getShapeSupportSetLinear(const ConvexBase* convex, SupportSet& support_set,
-                              int& hint /*unused*/,
+template <int _SupportOptions, typename IndexType>
+void getShapeSupportSetLinear(const ConvexBaseTpl<IndexType>* convex,
+                              SupportSet& support_set, int& hint /*unused*/,
                               ShapeSupportData& support_data, size_t /*unused*/,
                               Scalar tol) {
   assert(tol > 0);
@@ -835,22 +848,21 @@ void getShapeSupportSetLinear(const ConvexBase* convex, SupportSet& support_set,
 }
 
 // ============================================================================
-template <int _SupportOptions>
-void convexSupportSetRecurse(
-    const std::vector<Vec3s>& points,
-    const std::vector<ConvexBase::Neighbors>& neighbors,
-    const Scalar swept_sphere_radius, const size_t vertex_idx,
-    const Vec3s& support_dir, const Scalar support_value, const Transform3s& tf,
-    std::vector<int8_t>& visited, SupportSet::Polygon& polygon, Scalar tol) {
-  COAL_UNUSED_VARIABLE(swept_sphere_radius);
-
+template <int _SupportOptions, typename IndexType>
+void convexSupportSetRecurse(const ConvexBaseTpl<IndexType>* convex,
+                             const size_t vertex_idx, const Vec3s& support_dir,
+                             const Scalar support_value, const Transform3s& tf,
+                             std::vector<int8_t>& visited,
+                             SupportSet::Polygon& polygon, Scalar tol) {
   if (visited[vertex_idx]) {
     return;
   }
 
   visited[vertex_idx] = true;
+  const std::vector<Vec3s>& points = *(convex->points);
   const Vec3s& point = points[vertex_idx];
   const Scalar val = point.dot(support_dir);
+  Scalar swept_sphere_radius = convex->getSweptSphereRadius();
   if (support_value - val <= tol) {
     if (_SupportOptions == SupportOptions::WithSweptSphere) {
       const Vec2s p =
@@ -863,21 +875,25 @@ void convexSupportSetRecurse(
       polygon.emplace_back(p);
     }
 
-    const ConvexBase::Neighbors& point_neighbors = neighbors[vertex_idx];
-    for (int i = 0; i < point_neighbors.count(); ++i) {
-      const size_t neighbor_index = (size_t)(point_neighbors[i]);
-      convexSupportSetRecurse<_SupportOptions>(
-          points, neighbors, swept_sphere_radius, neighbor_index, support_dir,
-          support_value, tf, visited, polygon, tol);
+    typedef typename ConvexBaseTpl<IndexType>::Neighbors Neighbors;
+    const std::vector<Neighbors>& neighbors = *(convex->neighbors);
+    const Neighbors& point_neighbors = neighbors[vertex_idx];
+    for (IndexType i = 0; i < point_neighbors.count; ++i) {
+      const IndexType neighbor_index =
+          convex->neighbor(IndexType(vertex_idx), i);
+      convexSupportSetRecurse<_SupportOptions, IndexType>(
+          convex, neighbor_index, support_dir, support_value, tf, visited,
+          polygon, tol);
     }
   }
 }
 
 // ============================================================================
-template <int _SupportOptions>
-void getShapeSupportSetLog(const ConvexBase* convex, SupportSet& support_set,
-                           int& hint, ShapeSupportData& support_data,
-                           size_t /*unused*/, Scalar tol) {
+template <int _SupportOptions, typename IndexType>
+void getShapeSupportSetLog(const ConvexBaseTpl<IndexType>* convex,
+                           SupportSet& support_set, int& hint,
+                           ShapeSupportData& support_data, size_t /*unused*/,
+                           Scalar tol) {
   assert(tol > 0);
   Vec3s support;
   const Vec3s& support_dir = support_set.getNormal();
@@ -885,9 +901,6 @@ void getShapeSupportSetLog(const ConvexBase* convex, SupportSet& support_set,
       convex, support_dir, support, hint, support_data);
   const Scalar support_value = support.dot(support_dir);
 
-  const std::vector<Vec3s>& points = *(convex->points);
-  const std::vector<ConvexBase::Neighbors>& neighbors = *(convex->neighbors);
-  const Scalar swept_sphere_radius = convex->getSweptSphereRadius();
   std::vector<int8_t>& visited = support_data.visited;
   // `visited` is guaranteed to be of right size due to previous call to convex
   // log support function.
@@ -898,19 +911,21 @@ void getShapeSupportSetLog(const ConvexBase* convex, SupportSet& support_set,
   const Transform3s& tf = support_set.tf;
 
   const size_t vertex_idx = (size_t)(hint);
-  convexSupportSetRecurse<_SupportOptions>(
-      points, neighbors, swept_sphere_radius, vertex_idx, support_dir,
-      support_value, tf, visited, polygon, tol);
+  convexSupportSetRecurse<_SupportOptions, IndexType>(
+      convex, vertex_idx, support_dir, support_value, tf, visited, polygon,
+      tol);
 
   computeSupportSetConvexHull(polygon, support_set.points());
 }
 
 // ============================================================================
-template <int _SupportOptions>
-void getShapeSupportSet(const ConvexBase* convex, SupportSet& support_set,
-                        int& hint, ShapeSupportData& support_data,
+template <int _SupportOptions, typename IndexType>
+void getShapeSupportSet(const ConvexBaseTpl<IndexType>* convex,
+                        SupportSet& support_set, int& hint,
+                        ShapeSupportData& support_data,
                         size_t num_sampled_supports /*unused*/, Scalar tol) {
-  if (convex->num_points > ConvexBase::num_vertices_large_convex_threshold &&
+  if (convex->num_points >
+          ConvexBaseTpl<IndexType>::num_vertices_large_convex_threshold &&
       convex->neighbors != nullptr) {
     getShapeSupportSetLog<_SupportOptions>(
         convex, support_set, hint, support_data, num_sampled_supports, tol);
@@ -919,35 +934,38 @@ void getShapeSupportSet(const ConvexBase* convex, SupportSet& support_set,
         convex, support_set, hint, support_data, num_sampled_supports, tol);
   }
 }
-getShapeSupportSetTplInstantiation(ConvexBase);
+getShapeSupportSetTplInstantiation(ConvexBaseTpl<Triangle16::IndexType>);
+getShapeSupportSetTplInstantiation(ConvexBaseTpl<Triangle32::IndexType>);
 
 // ============================================================================
-template <int _SupportOptions>
-void getShapeSupportSet(const SmallConvex* convex, SupportSet& support_set,
-                        int& hint /*unused*/,
+template <int _SupportOptions, typename IndexType>
+void getShapeSupportSet(const SmallConvex<IndexType>* convex,
+                        SupportSet& support_set, int& hint /*unused*/,
                         ShapeSupportData& support_data /*unused*/,
                         size_t num_sampled_supports /*unused*/, Scalar tol) {
   getShapeSupportSetLinear<_SupportOptions>(
-      reinterpret_cast<const ConvexBase*>(convex), support_set, hint,
-      support_data, num_sampled_supports, tol);
+      reinterpret_cast<const ConvexBaseTpl<IndexType>*>(convex), support_set,
+      hint, support_data, num_sampled_supports, tol);
 }
-getShapeSupportSetTplInstantiation(SmallConvex);
+getShapeSupportSetTplInstantiation(SmallConvex<Triangle16::IndexType>);
+getShapeSupportSetTplInstantiation(SmallConvex<Triangle32::IndexType>);
 
 // ============================================================================
-template <int _SupportOptions>
-void getShapeSupportSet(const LargeConvex* convex, SupportSet& support_set,
-                        int& hint, ShapeSupportData& support_data,
+template <int _SupportOptions, typename IndexType>
+void getShapeSupportSet(const LargeConvex<IndexType>* convex,
+                        SupportSet& support_set, int& hint,
+                        ShapeSupportData& support_data,
                         size_t num_sampled_supports /*unused*/, Scalar tol) {
   getShapeSupportSetLog<_SupportOptions>(
-      reinterpret_cast<const ConvexBase*>(convex), support_set, hint,
-      support_data, num_sampled_supports, tol);
+      reinterpret_cast<const ConvexBaseTpl<IndexType>*>(convex), support_set,
+      hint, support_data, num_sampled_supports, tol);
 }
-getShapeSupportSetTplInstantiation(LargeConvex);
+getShapeSupportSetTplInstantiation(LargeConvex<Triangle16::IndexType>);
+getShapeSupportSetTplInstantiation(LargeConvex<Triangle32::IndexType>);
 
 // ============================================================================
-COAL_DLLAPI
-void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
-                                 SupportSet::Polygon& cvx_hull) {
+COAL_DLLAPI void computeSupportSetConvexHull(SupportSet::Polygon& cloud,
+                                             SupportSet::Polygon& cvx_hull) {
   cvx_hull.clear();
 
   if (cloud.size() <= 2) {

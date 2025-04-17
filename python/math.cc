@@ -53,18 +53,41 @@ using namespace coal::python;
 
 namespace dv = doxygen::visitor;
 
+template <typename Integer>
 struct TriangleWrapper {
-  static Triangle::index_type getitem(const Triangle& t, int i) {
+  static typename TriangleTpl<Integer>::IndexType getitem(
+      const TriangleTpl<Integer>& t, int i) {
     if (i >= 3 || i <= -3)
       PyErr_SetString(PyExc_IndexError, "Index out of range");
-    return t[static_cast<coal::Triangle::index_type>(i % 3)];
+    return t[static_cast<typename coal::TriangleTpl<Integer>::IndexType>(i %
+                                                                         3)];
   }
-  static void setitem(Triangle& t, int i, Triangle::index_type v) {
+  static void setitem(TriangleTpl<Integer>& t, int i,
+                      typename TriangleTpl<Integer>::IndexType v) {
     if (i >= 3 || i <= -3)
       PyErr_SetString(PyExc_IndexError, "Index out of range");
-    t[static_cast<coal::Triangle::index_type>(i % 3)] = v;
+    t[static_cast<typename coal::TriangleTpl<Integer>::IndexType>(i % 3)] = v;
   }
 };
+
+template <typename IndexType>
+void exposeTriangle(const std::string& classname) {
+  typedef TriangleTpl<IndexType> TriangleType;
+
+  class_<TriangleType>(classname.c_str(), no_init)
+      .def(dv::init<TriangleType>())
+      .def(dv::init<TriangleType, typename TriangleType::IndexType,
+                    typename TriangleType::IndexType,
+                    typename TriangleType::IndexType>())
+      .def("__getitem__",
+           &TriangleWrapper<typename TriangleType::IndexType>::getitem)
+      .def("__setitem__",
+           &TriangleWrapper<typename TriangleType::IndexType>::setitem)
+      .def(dv::member_func("set", &TriangleType::set))
+      .def(dv::member_func("size", &TriangleType::size))
+      .staticmethod("size")
+      .def(self == self);
+}
 
 void exposeMaths() {
   eigenpy::enableEigenPy();
@@ -129,16 +152,9 @@ void exposeMaths() {
       .def_pickle(PickleObject<Transform3s>())
       .def(SerializableVisitor<Transform3s>());
 
-  class_<Triangle>("Triangle", no_init)
-      .def(dv::init<Triangle>())
-      .def(dv::init<Triangle, Triangle::index_type, Triangle::index_type,
-                    Triangle::index_type>())
-      .def("__getitem__", &TriangleWrapper::getitem)
-      .def("__setitem__", &TriangleWrapper::setitem)
-      .def(dv::member_func("set", &Triangle::set))
-      .def(dv::member_func("size", &Triangle::size))
-      .staticmethod("size")
-      .def(self == self);
+  exposeTriangle<Triangle32::IndexType>("Triangle32");
+  bp::scope().attr("Triangle") = bp::scope().attr("Triangle32");
+  exposeTriangle<Triangle16::IndexType>("Triangle16");
 
   if (!eigenpy::register_symbolic_link_to_registered_type<
           std::vector<Vec3s> >()) {
@@ -146,8 +162,14 @@ void exposeMaths() {
         .def(vector_indexing_suite<std::vector<Vec3s> >());
   }
   if (!eigenpy::register_symbolic_link_to_registered_type<
-          std::vector<Triangle> >()) {
-    class_<std::vector<Triangle> >("StdVec_Triangle")
-        .def(vector_indexing_suite<std::vector<Triangle> >());
+          std::vector<Triangle32> >()) {
+    class_<std::vector<Triangle32> >("StdVec_Triangle32")
+        .def(vector_indexing_suite<std::vector<Triangle32> >());
+    bp::scope().attr("StdVec_Triangle") = bp::scope().attr("StdVec_Triangle32");
+  }
+  if (!eigenpy::register_symbolic_link_to_registered_type<
+          std::vector<Triangle16> >()) {
+    class_<std::vector<Triangle16> >("StdVec_Triangle16")
+        .def(vector_indexing_suite<std::vector<Triangle16> >());
   }
 }
