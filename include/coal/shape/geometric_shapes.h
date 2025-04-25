@@ -822,7 +822,6 @@ class ConvexBaseTpl : public ShapeBase {
   /// @brief Initialize the points of the convex shape
   /// This also initializes the ConvexBase::center.
   ///
-  /// \param ownStorage weither the ConvexBase owns the data.
   /// \param points_ list of 3D points  ///
   /// \param num_points_ number of 3D points
   void initialize(std::shared_ptr<std::vector<Vec3s>> points_,
@@ -830,7 +829,6 @@ class ConvexBaseTpl : public ShapeBase {
 
   /// @brief Set the points of the convex shape.
   ///
-  /// \param ownStorage weither the ConvexBase owns the data.
   /// \param points_ list of 3D points  ///
   /// \param num_points_ number of 3D points
   void set(std::shared_ptr<std::vector<Vec3s>> points_,
