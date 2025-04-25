@@ -63,9 +63,7 @@ class ConvexTpl : public ConvexBaseTpl<typename PolygonT::IndexType> {
   ~ConvexTpl() {}
 
   /// @brief Constructing a convex, providing normal and offset of each polytype
-  /// surface, and the points and shape topology information \param ownStorage
-  /// whether this class owns the pointers of points and
-  ///                    polygons. If owned, they are deleted upon destruction.
+  /// surface, and the points and shape topology information
   /// \param points_ list of 3D points
   /// \param num_points_ number of 3D points
   /// \param polygons_ \copydoc Convex::polygons
@@ -125,8 +123,6 @@ class ConvexTpl : public ConvexBaseTpl<typename PolygonT::IndexType> {
   ///
   /// @brief Set the current Convex from a list of points and polygons.
   ///
-  /// \param ownStorage whether this class owns the pointers of points and
-  ///                    polygons. If owned, they are deleted upon destruction.
   /// \param points list of 3D points
   /// \param num_points number of 3D points
   /// \param polygons \copydoc Convex::polygons
