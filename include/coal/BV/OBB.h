@@ -124,6 +124,8 @@ struct COAL_DLLAPI OBB {
   inline Scalar volume() const { return width() * height() * depth(); }
 };
 
+/** @} */  // end of Bounding_Volume
+
 /// @brief Translate the OBB bv
 COAL_DLLAPI OBB translate(const OBB& bv, const Vec3s& t);
 

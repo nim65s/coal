@@ -167,6 +167,8 @@ class COAL_DLLAPI KDOP {
   bool inside(const Vec3s& p) const;
 };
 
+/** @} */  // end of Bounding_Volume
+
 template <short N>
 bool overlap(const Matrix3s& /*R0*/, const Vec3s& /*T0*/, const KDOP<N>& /*b1*/,
              const KDOP<N>& /*b2*/) {

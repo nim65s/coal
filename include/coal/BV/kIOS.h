@@ -165,6 +165,8 @@ class COAL_DLLAPI kIOS {
   Scalar volume() const;
 };
 
+/** @} */  // end of Bounding_Volume
+
 /// @brief Translate the kIOS BV
 COAL_DLLAPI kIOS translate(const kIOS& bv, const Vec3s& t);
 

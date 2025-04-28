@@ -229,6 +229,8 @@ class COAL_DLLAPI AABB {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
+/** @} */  // end of Bounding_Volume
+
 /// @brief translate the center of AABB by t
 static inline AABB translate(const AABB& aabb, const Vec3s& t) {
   AABB res(aabb);

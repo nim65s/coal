@@ -1113,6 +1113,8 @@ class COAL_DLLAPI Plane : public ShapeBase {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
+/** @} */  // end of Geometric_Shapes
+
 }  // namespace coal
 
 #include "coal/shape/geometric_shapes.hxx"
