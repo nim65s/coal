@@ -94,8 +94,6 @@ class COAL_DLLAPI KDOP {
   Eigen::Array<Scalar, N, 1> dist_;
 
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
   /// @brief Creating kDOP containing nothing
   KDOP();
 
@@ -165,6 +163,9 @@ class COAL_DLLAPI KDOP {
 
   //// @brief Check whether one point is inside the KDOP
   bool inside(const Vec3s& p) const;
+
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 /** @} */  // end of Bounding_Volume
