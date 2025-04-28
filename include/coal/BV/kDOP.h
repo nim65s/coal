@@ -114,26 +114,26 @@ class COAL_DLLAPI KDOP {
   }
 
   /// @brief Check whether two KDOPs overlap.
-  bool overlap(const KDOP<N>& other) const;
+  bool overlap(const KDOP& other) const;
 
   /// @brief Check whether two KDOPs overlap.
   /// @return true if collision happens.
   /// @retval sqrDistLowerBound squared lower bound on distance between boxes if
   ///         they do not overlap.
-  bool overlap(const KDOP<N>& other, const CollisionRequest& request,
+  bool overlap(const KDOP& other, const CollisionRequest& request,
                Scalar& sqrDistLowerBound) const;
 
-  /// @brief The distance between two KDOP<N>. Not implemented.
-  Scalar distance(const KDOP<N>& other, Vec3s* P = NULL, Vec3s* Q = NULL) const;
+  /// @brief The distance between two KDOP, Not implemented.
+  Scalar distance(const KDOP& other, Vec3s* P = NULL, Vec3s* Q = NULL) const;
 
   /// @brief Merge the point and the KDOP
-  KDOP<N>& operator+=(const Vec3s& p);
+  KDOP& operator+=(const Vec3s& p);
 
   /// @brief Merge two KDOPs
-  KDOP<N>& operator+=(const KDOP<N>& other);
+  KDOP& operator+=(const KDOP& other);
 
   /// @brief Create a KDOP by mergin two KDOPs
-  KDOP<N> operator+(const KDOP<N>& other) const;
+  KDOP<N> operator+(const KDOP& other) const;
 
   /// @brief Size of the kDOP (used in BV_Splitter to order two kDOPs)
   inline Scalar size() const {
