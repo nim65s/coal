@@ -9,22 +9,18 @@ on:
     paths-ignore:
       - .gitlab-ci.yml
       - .gitignore
-      - '*.md'
+      - '**.md'
       - CITATION.*
       - LICENSE
       - .pre-commit-config.yaml
-      - CHANGELOG.md
-      - development/*.md
   pull_request:
     paths-ignore:
       - .gitlab-ci.yml
       - .gitignore
-      - '*.md'
+      - '**.md'
       - CITATION.*
       - LICENSE
       - .pre-commit-config.yaml
-      - CHANGELOG.md
-      - development/*.md
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
