@@ -93,8 +93,6 @@ class COAL_DLLAPI kIOS {
   }
 
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
   /// @brief Equality operator
   bool operator==(const kIOS& other) const {
     bool res = obb == other.obb && num_spheres == other.num_spheres;
@@ -163,7 +161,12 @@ class COAL_DLLAPI kIOS {
 
   /// @brief Volume of the kIOS
   Scalar volume() const;
+
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
+
+/** @} */  // end of Bounding_Volume
 
 /// @brief Translate the kIOS BV
 COAL_DLLAPI kIOS translate(const kIOS& bv, const Vec3s& t);

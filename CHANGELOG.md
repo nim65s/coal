@@ -29,7 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Along with #665, this allows to divide by two the memory footprint of `Convex`.
 
 ### Fixed
-- Fix doc parsing via doxygen scripts ([#678](https://github.com/coal-library/coal/pull/678))
+- Fix doc parsing via doxygen scripts ([#678](https://github.com/coal-library/coal/pull/678) [#699](https://github.com/coal-library/coal/pull/699))
 
 ## [3.0.1] - 2025-02-12
 

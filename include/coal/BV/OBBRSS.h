@@ -127,6 +127,8 @@ struct COAL_DLLAPI OBBRSS {
   inline Scalar volume() const { return obb.volume(); }
 };
 
+/** @} */  // end of Bounding_Volume
+
 /// @brief Check collision between two OBBRSS, b1 is in configuration (R0, T0)
 /// and b2 is in indentity
 inline bool overlap(const Matrix3s& R0, const Vec3s& T0, const OBBRSS& b1,

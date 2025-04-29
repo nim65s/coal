@@ -148,6 +148,8 @@ struct COAL_DLLAPI RSS {
   }
 };
 
+/** @} */  // end of Bounding_Volume
+
 /// @brief distance between two RSS bounding volumes
 /// P and Q (optional return values) are the closest points in the rectangles,
 /// not the RSS. But the direction P - Q is the correct direction for cloest

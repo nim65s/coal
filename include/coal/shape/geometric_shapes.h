@@ -634,6 +634,56 @@ class COAL_DLLAPI Cylinder : public ShapeBase {
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
+template <typename _IndexType>
+struct ConvexBaseTplNeighbors {
+  typedef _IndexType IndexType;
+
+  unsigned char count;
+  IndexType begin_id;
+
+  bool operator==(const ConvexBaseTplNeighbors& other) const {
+    if (count != other.count) return false;
+    if (begin_id != other.begin_id) return false;
+
+    return true;
+  }
+
+  bool operator!=(const ConvexBaseTplNeighbors& other) const {
+    return !(*this == other);
+  }
+};
+
+// The support warm start polytope contains certain points of `this`
+// which are support points in specific directions of space.
+// This struct is used to warm start the support function computation for
+// large meshes (`num_points` > 32).
+template <typename _IndexType>
+struct ConvexBaseTplSupportWarmStartPolytope {
+  typedef _IndexType IndexType;
+
+  // Array of support points to warm start the support function
+  // computation.
+  std::vector<Vec3s> points;
+
+  // Indices of the support points warm starts.
+  // These are the indices of the real convex, not the indices of points in
+  // the warm start polytope.
+  std::vector<IndexType> indices;
+
+  // Cast to a different index type.
+  template <typename OtherIndexType>
+  ConvexBaseTplSupportWarmStartPolytope<OtherIndexType> cast() const {
+    typedef ConvexBaseTplSupportWarmStartPolytope<OtherIndexType> ResType;
+    ResType res;
+    res.points = this->points;
+    res.indices.clear();
+    for (size_t i = 0; i < this->indices.size(); ++i) {
+      res.indices.push_back(OtherIndexType(this->indices[i]));
+    }
+    return res;
+  }
+};
+
 /// @brief Base for convex polytope.
 /// @tparam _IndexType type of vertices indexes.
 /// @note Inherited classes are responsible for filling ConvexBase::neighbors;
@@ -723,19 +773,7 @@ class ConvexBaseTpl : public ShapeBase {
   void COAL_DLLAPI buildDoubleDescription();
 #endif
 
-  struct Neighbors {
-    unsigned char count;
-    IndexType begin_id;
-
-    bool operator==(const Neighbors& other) const {
-      if (count != other.count) return false;
-      if (begin_id != other.begin_id) return false;
-
-      return true;
-    }
-
-    bool operator!=(const Neighbors& other) const { return !(*this == other); }
-  };
+  using Neighbors = coal::ConvexBaseTplNeighbors<IndexType>;
 
   /// @brief Get the index of the j-th neighbor of the i-th vertex.
   IndexType neighbor(IndexType i, IndexType j) const {
@@ -774,35 +812,8 @@ class ConvexBaseTpl : public ShapeBase {
   /// is guaranteed in the internal of the polytope (as it is convex)
   Vec3s center;
 
-  // The support warm start polytope contains certain points of `this`
-  // which are support points in specific directions of space.
-  // This struct is used to warm start the support function computation for
-  // large meshes (`num_points` > 32).
-  struct SupportWarmStartPolytope {
-    // Array of support points to warm start the support function
-    // computation.
-    std::vector<Vec3s> points;
-
-    // Indices of the support points warm starts.
-    // These are the indices of the real convex, not the indices of points in
-    // the warm start polytope.
-    std::vector<IndexType> indices;
-
-    // Cast to a different index type.
-    template <typename OtherIndexType>
-    typename ConvexBaseTpl<OtherIndexType>::SupportWarmStartPolytope cast()
-        const {
-      typedef typename ConvexBaseTpl<OtherIndexType>::SupportWarmStartPolytope
-          ResType;
-      ResType res;
-      res.points = this->points;
-      res.indices.clear();
-      for (size_t i = 0; i < this->indices.size(); ++i) {
-        res.indices.push_back(OtherIndexType(this->indices[i]));
-      }
-      return res;
-    }
-  };
+  using SupportWarmStartPolytope =
+      ConvexBaseTplSupportWarmStartPolytope<IndexType>;
 
   /// @brief Number of support warm starts.
   static constexpr size_t num_support_warm_starts = 14;
@@ -1112,6 +1123,8 @@ class COAL_DLLAPI Plane : public ShapeBase {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
+
+/** @} */  // end of Geometric_Shapes
 
 }  // namespace coal
 
