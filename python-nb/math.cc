@@ -17,7 +17,7 @@ using namespace nb::literals;
 template <typename IndexType>
 void exposeTriangle(nb::module_ &m, const std::string &classname) {
   typedef TriangleTpl<IndexType> TriangleType;
-  using Integer = TriangleType::IndexType;
+  using Integer = typename TriangleType::IndexType;
 
   nb::class_<TriangleType>(m, classname.c_str())
       .def(nb::init<>())
@@ -27,8 +27,7 @@ void exposeTriangle(nb::module_ &m, const std::string &classname) {
              if (i >= 3 || i <= -3) {
                throw nb::index_error("Index out of range");
              }
-             return m[static_cast<typename TriangleTpl<Integer>::IndexType>(i %
-                                                                            3)];
+             return m[static_cast<TriangleTpl<Integer>::IndexType>(i % 3)];
            })
       .def("__setitem__",
            [](TriangleTpl<Integer> &m, Py_ssize_t i,
@@ -36,8 +35,7 @@ void exposeTriangle(nb::module_ &m, const std::string &classname) {
              if (i >= 3 || i <= -3) {
                throw nb::index_error("Index out of range");
              }
-             m[static_cast<typename TriangleTpl<Integer>::IndexType>(i % 3)] =
-                 v;
+             m[static_cast<TriangleTpl<Integer>::IndexType>(i % 3)] = v;
            })
       .def("set", &TriangleType::set)
       .def_static("size", &TriangleType::size)
