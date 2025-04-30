@@ -8,6 +8,11 @@
 using namespace coal;
 using namespace nb::literals;
 
+nb::bytes tobytes(const OcTree &self) {
+  std::vector<uint8_t> bytes = self.tobytes();
+  return nb::bytes(reinterpret_cast<const char *>(bytes.data()), bytes.size());
+}
+
 void exposeOctree(nb::module_ &m) {
   nb::class_<OcTree, CollisionGeometry>(m, "OcTree")
       .def(nb::init<Scalar>(), "resolution"_a)
@@ -22,6 +27,6 @@ void exposeOctree(nb::module_ &m) {
       .def("setOccupancyThres", &OcTree::setOccupancyThres)
       .def("setFreeThres", &OcTree::setFreeThres)
       .def("getRootBV", &OcTree::getRootBV)
-      .def("toBoxes", &OcTree::toBoxes);
-  // .def("tobytes", tobytes); from boost python
+      .def("toBoxes", &OcTree::toBoxes)
+      .def("tobytes", &tobytes);
 }
