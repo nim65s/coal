@@ -1,5 +1,6 @@
 /// Copyright 2025 INRIA
 
+#include "coal/data_types.h"
 #include "coal/math/transform.h"
 #include "coal/serialization/transform.h"
 
@@ -66,17 +67,22 @@ void exposeMaths(nb::module_ &m) {
       .def("isIdentity", &Transform3s::isIdentity)
 
       .def("setQuatRotation", &Transform3s::setQuatRotation)
-      // .def("setTransform", &Transform3s::setTransform<Matrix3s, Vec3s>) //
-      // TODO: TOFIX .def("setTransform", [](Transform3s &self, const Quats
-      // &quat, const Vec3s &vec)  // TODO: TOFIX
-      //                                 { self.setTransform(quat, vec); })
+      .def("setTransform",
+           [](Transform3s &self, const Matrix3s &R, const Vec3s &t) {
+             self.setTransform<Matrix3s, Vec3s>(R, t);
+           })
+      .def("setTransform",
+           [](Transform3s &self, const Quats &quat, const Vec3s &vec) {
+             self.setTransform(quat, vec);
+           })
       .def("setIdentity", &Transform3s::setIdentity)
       .def_static("Identity", &Transform3s::Identity)
 
       .def("setRandom", &Transform3s::setRandom)
       .def_static("Random", &Transform3s::Random)
 
-      // .def("transform", &Transform3s::transform<Vec3s>) // TODO: TOFIX
+      .def("transform", [](const Transform3s &self,
+                           const Vec3s &v) { return self.transform<Vec3s>(v); })
       .def("inverseInPlace", &Transform3s::inverseInPlace,
            nb::rv_policy::automatic_reference)
       .def("inverse", &Transform3s::inverse)
