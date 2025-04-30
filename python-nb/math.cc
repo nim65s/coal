@@ -13,6 +13,36 @@
 using namespace coal;
 using namespace nb::literals;
 
+template <typename IndexType>
+void exposeTriangle(nb::module_ &m, const std::string &classname) {
+  typedef TriangleTpl<IndexType> TriangleType;
+  using Integer = TriangleType::IndexType;
+
+  nb::class_<TriangleType>(m, classname.c_str())
+      .def(nb::init<>())
+      .def(nb::init<Integer, Integer, Integer>(), "p1"_a, "p2"_a, "p3"_a)
+      .def("__getitem__",
+           [](TriangleTpl<Integer> &m, Py_ssize_t i) {
+             if (i >= 3 || i <= -3) {
+               throw nb::index_error("Index out of range");
+             }
+             return m[static_cast<typename TriangleTpl<Integer>::IndexType>(i %
+                                                                            3)];
+           })
+      .def("__setitem__",
+           [](TriangleTpl<Integer> &m, Py_ssize_t i,
+              TriangleTpl<Integer>::IndexType v) {
+             if (i >= 3 || i <= -3) {
+               throw nb::index_error("Index out of range");
+             }
+             m[static_cast<typename TriangleTpl<Integer>::IndexType>(i % 3)] =
+                 v;
+           })
+      .def("set", &TriangleType::set)
+      .def_static("size", &TriangleType::size)
+      .def(nb::self == nb::self);
+}
+
 void exposeMaths(nb::module_ &m) {
   nanoeigenpy::exposeQuaternion<Scalar>(m, "Quaternion");
   nanoeigenpy::exposeAngleAxis<Scalar>(m, "AngleAxis");
@@ -60,31 +90,13 @@ void exposeMaths(nb::module_ &m) {
       .def(python::v2::PickleVisitor<Transform3s>())
       .def(python::v2::SerializableVisitor<Transform3s>());
 
-  ;
+  exposeTriangle<Triangle32::IndexType>(m, "Triangle32");
+  m.attr("Triangle") = m.attr("Triangle32");
+  exposeTriangle<Triangle16::IndexType>(m, "Triangle16");
 
-  nb::class_<Triangle>(m, "Triangle")
-      .def(nb::init<>())
-      .def(nb::init<Triangle::index_type, Triangle::index_type,
-                    Triangle::index_type>(),
-           "p1"_a, "p2"_a, "p3"_a)
-      .def("__getitem__",
-           [](Triangle &m, Py_ssize_t i) {
-             if (i >= 3 || i <= -3) {
-               throw nb::index_error("Index out of range");
-             }
-             return m[static_cast<Triangle::index_type>(i % 3)];
-           })
-      .def("__setitem__",
-           [](Triangle &m, Py_ssize_t i, Triangle::index_type v) {
-             if (i >= 3 || i <= -3) {
-               throw nb::index_error("Index out of range");
-             }
-             m[static_cast<Triangle::index_type>(i % 3)] = v;
-           })
-      .def("set", &Triangle::set)
-      .def_static("size", &Triangle::size)
-      .def(nb::self == nb::self);
+  nb::bind_vector<std::vector<Triangle32>>(m, "StdVec_Triangle32");
+  m.attr("StdVec_Triangle") = m.attr("StdVec_Triangle32");
+  nb::bind_vector<std::vector<Triangle16>>(m, "StdVec_Triangle16");
 
-  nb::bind_vector<std::vector<Triangle>>(m, "StdVec_Triangle");
   nb::bind_vector<std::vector<Vec3s>>(m, "StdVec_Vec3s");
 }

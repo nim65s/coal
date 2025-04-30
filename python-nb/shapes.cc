@@ -17,13 +17,154 @@ using namespace coal;
 using namespace nb::literals;
 
 typedef std::vector<Vec3s> Vec3ss;
-typedef std::vector<Triangle> Triangles;
 
 typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 3, Eigen::RowMajor> RowMatrixX3;
 typedef Eigen::Map<RowMatrixX3> MapRowMatrixX3;
 typedef Eigen::Ref<RowMatrixX3> RefRowMatrixX3;
 typedef Eigen::Map<VecXs> MapVecXs;
 typedef Eigen::Ref<VecXs> RefVecXs;
+
+template <typename IndexType>
+void exposeConvexBase(nb::module_& m, const std::string& classname) {
+  typedef ConvexBaseTpl<IndexType> ConvexBaseType;
+
+  nb::class_<ConvexBaseType, ShapeBase>(m, classname.c_str())
+      .DEF_RO_CLASS_ATTRIB(ConvexBaseType, center)
+      .DEF_RO_CLASS_ATTRIB(ConvexBaseType, num_points)
+      .DEF_RO_CLASS_ATTRIB(ConvexBaseType, num_normals_and_offsets)
+      .def(
+          "point",
+          [](const ConvexBaseType& convex, unsigned int i) -> Vec3s& {
+            if (i >= convex.num_points) {
+              throw std::out_of_range("index is out of range");
+            }
+            return (*(convex.points))[i];
+          },
+          "index"_a, "Retrieve the point given by its index.",
+          nb::rv_policy::reference_internal)
+      .def(
+          "points",
+          [](const ConvexBaseType& convex, unsigned int i) -> Vec3s& {
+            if (i >= convex.num_points) {
+              throw std::out_of_range("index is out of range");
+            }
+            return (*(convex.points))[i];
+          },
+          "index"_a, "Retrieve the point given by its index.",
+          nb::rv_policy::reference_internal)
+      .def(
+          "points",
+          [](const ConvexBaseType& convex) -> RefRowMatrixX3 {
+            return MapRowMatrixX3((*(convex.points))[0].data(),
+                                  convex.num_points, 3);
+          },
+          "Retrieve all the points.", nb::rv_policy::reference_internal)
+      .def(
+          "normal",
+          [](const ConvexBaseType& convex, unsigned int i) -> Vec3s& {
+            if (i >= convex.num_normals_and_offsets) {
+              throw std::out_of_range("index is out of range");
+            }
+            return (*(convex.normals))[i];
+          },
+          "index"_a, "Retrieve the normal given by its index.",
+          nb::rv_policy::reference_internal)
+      .def(
+          "normals",
+          [](const ConvexBaseType& convex) -> RefRowMatrixX3 {
+            return MapRowMatrixX3((*(convex.normals))[0].data(),
+                                  convex.num_normals_and_offsets, 3);
+          },
+          "Retrieve all the normals.", nb::rv_policy::reference_internal)
+      .def(
+          "offset",
+          [](const ConvexBaseType& convex, unsigned int i) -> Scalar {
+            if (i >= convex.num_normals_and_offsets) {
+              throw std::out_of_range("index is out of range");
+            }
+            return (*(convex.offsets))[i];
+          },
+          "index"_a, "Retrieve the offset given by its index.")
+      .def(
+          "offsets",
+          [](const ConvexBaseType& convex) -> RefVecXs {
+            return MapVecXs(convex.offsets->data(),
+                            convex.num_normals_and_offsets, 1);
+          },
+          "Retrieve all the offsets.", nb::rv_policy::reference_internal)
+      .def("neighbors",
+           [](const ConvexBaseType& convex, unsigned int i) -> nb::list {
+             if (i >= convex.num_points) {
+               throw std::out_of_range("index is out of range");
+             }
+             nb::list n;
+             const std::vector<typename ConvexBaseType::Neighbors>& neighbors_ =
+                 *(convex.neighbors);
+             for (unsigned char j = 0; j < neighbors_[i].count; ++j) {
+               n.append(convex.neighbor(IndexType(i), j));
+             }
+             return n;
+           })
+      .def_static(
+          "convexHull",
+          [](const Vec3ss& points, bool keepTri,
+             nb::handle qhullCommand) -> ConvexBaseType* {
+            const char* qhullCommand_a = nullptr;
+            if (!qhullCommand.is_none()) {
+              qhullCommand_a = nb::cast<std::string>(qhullCommand).c_str();
+            }
+            return ConvexBaseType::convexHull(points.data(),
+                                              (unsigned int)points.size(),
+                                              keepTri, qhullCommand_a);
+          },
+          "points"_a, "keepTri"_a, "qhullCommand"_a = nb::none(),
+          nb::rv_policy::take_ownership)
+      .def("clone", &ConvexBaseType::clone, nb::rv_policy::take_ownership);
+}
+
+template <typename PolygonT>
+void exposeConvex(nb::module_& m, const std::string& classname) {
+  typedef ConvexTpl<PolygonT> ConvexType;
+  typedef ConvexBaseTpl<typename PolygonT::IndexType> ConvexBaseType;
+  typedef typename PolygonT::IndexType IndexType;
+  typedef TriangleTpl<IndexType> TriangleType;
+
+  nb::class_<ConvexType, ConvexBaseType>(m, classname.c_str())
+      .def(nb::init<>())
+      .def("__init__",
+           [](ConvexType* self, const Vec3ss& pts,
+              const std::vector<TriangleType>& tri) {
+             std::shared_ptr<Vec3ss> points(new Vec3ss(pts.size()));
+             Vec3ss& points_ = *points;
+             for (std::size_t i = 0; i < pts.size(); ++i) {
+               points_[i] = pts[i];
+             }
+
+             std::shared_ptr<std::vector<TriangleType>> tris(
+                 new std::vector<TriangleType>(tri.size()));
+             std::vector<TriangleType>& tris_ = *tris;
+             for (std::size_t i = 0; i < tri.size(); ++i) {
+               tris_[i] = tri[i];
+             }
+             new (self) ConvexType(*(shared_ptr<ConvexType>(
+                 new ConvexType(points, (unsigned int)pts.size(), tris,
+                                (unsigned int)tri.size()))));
+           })
+      .def(nb::init<const ConvexType&>(), "other_"_a)
+      .DEF_RO_CLASS_ATTRIB(ConvexType, num_polygons)
+      .def(
+          "polygons",
+          [](const ConvexType& convex, unsigned int i) -> Triangle {
+            if (i >= convex.num_polygons) {
+              throw std::out_of_range("index is out of range");
+            }
+            return (*convex.polygons)[i];
+          },
+          "index"_a, "Retrieve the polygon given by its index.")
+      .def(python::v2::PickleVisitor<ConvexType>())
+      .def(python::v2::SerializableVisitor<ConvexType>())
+      .def(nanoeigenpy::IdVisitor());
+}
 
 void exposeShapes(nb::module_& m) {
   nb::class_<ShapeBase, CollisionGeometry>(m, "ShapeBase")
@@ -61,133 +202,6 @@ void exposeShapes(nb::module_& m) {
       .def("clone", &Cone::clone, nb::rv_policy::take_ownership)
       .def(python::v2::PickleVisitor<Cone>())
       .def(python::v2::SerializableVisitor<Cone>())
-      .def(nanoeigenpy::IdVisitor());
-
-  nb::class_<ConvexBase, ShapeBase>(m, "ConvexBase")
-      .DEF_RO_CLASS_ATTRIB(ConvexBase, center)
-      .DEF_RO_CLASS_ATTRIB(ConvexBase, num_points)
-      .DEF_RO_CLASS_ATTRIB(ConvexBase, num_normals_and_offsets)
-      .def(
-          "point",
-          [](const ConvexBase& convex, unsigned int i) -> Vec3s& {
-            if (i >= convex.num_points) {
-              throw std::out_of_range("index is out of range");
-            }
-            return (*(convex.points))[i];
-          },
-          "index"_a, "Retrieve the point given by its index.",
-          nb::rv_policy::reference_internal)
-      .def(
-          "points",
-          [](const ConvexBase& convex, unsigned int i) -> Vec3s& {
-            if (i >= convex.num_points) {
-              throw std::out_of_range("index is out of range");
-            }
-            return (*(convex.points))[i];
-          },
-          "index"_a, "Retrieve the point given by its index.",
-          nb::rv_policy::reference_internal)
-      .def(
-          "points",
-          [](const ConvexBase& convex) -> RefRowMatrixX3 {
-            return MapRowMatrixX3((*(convex.points))[0].data(),
-                                  convex.num_points, 3);
-          },
-          "Retrieve all the points.", nb::rv_policy::reference_internal)
-      .def(
-          "normal",
-          [](const ConvexBase& convex, unsigned int i) -> Vec3s& {
-            if (i >= convex.num_normals_and_offsets) {
-              throw std::out_of_range("index is out of range");
-            }
-            return (*(convex.normals))[i];
-          },
-          "index"_a, "Retrieve the normal given by its index.",
-          nb::rv_policy::reference_internal)
-      .def(
-          "normals",
-          [](const ConvexBase& convex) -> RefRowMatrixX3 {
-            return MapRowMatrixX3((*(convex.normals))[0].data(),
-                                  convex.num_normals_and_offsets, 3);
-          },
-          "Retrieve all the normals.", nb::rv_policy::reference_internal)
-      .def(
-          "offset",
-          [](const ConvexBase& convex, unsigned int i) -> Scalar {
-            if (i >= convex.num_normals_and_offsets) {
-              throw std::out_of_range("index is out of range");
-            }
-            return (*(convex.offsets))[i];
-          },
-          "index"_a, "Retrieve the offset given by its index.")
-      .def(
-          "offsets",
-          [](const ConvexBase& convex) -> RefVecXs {
-            return MapVecXs(convex.offsets->data(),
-                            convex.num_normals_and_offsets, 1);
-          },
-          "Retrieve all the offsets.", nb::rv_policy::reference_internal)
-      .def("neighbors",
-           [](const ConvexBase& convex, unsigned int i) -> nb::list {
-             if (i >= convex.num_points) {
-               throw std::out_of_range("index is out of range");
-             }
-             nb::list n;
-             const std::vector<ConvexBase::Neighbors>& neighbors_ =
-                 *(convex.neighbors);
-             for (unsigned char j = 0; j < neighbors_[i].count(); ++j) {
-               n.append(neighbors_[i][j]);
-             }
-             return n;
-           })
-      .def_static(
-          "convexHull",
-          [](const Vec3ss& points, bool keepTri,
-             nb::handle qhullCommand) -> ConvexBase* {
-            const char* qhullCommand_a = nullptr;
-            if (!qhullCommand.is_none()) {
-              qhullCommand_a = nb::cast<std::string>(qhullCommand).c_str();
-            }
-            return ConvexBase::convexHull(points.data(),
-                                          (unsigned int)points.size(), keepTri,
-                                          qhullCommand_a);
-          },
-          "points"_a, "keepTri"_a, "qhullCommand"_a = nb::none(),
-          nb::rv_policy::take_ownership)
-      .def("clone", &ConvexBase::clone, nb::rv_policy::take_ownership);
-
-  nb::class_<Convex<Triangle>, ConvexBase>(m, "Convex")
-      .def(nb::init<>())
-      .def("__init__",
-           [](Convex<Triangle>* self, const Vec3ss& pts, const Triangles& tri) {
-             std::shared_ptr<Vec3ss> points(new Vec3ss(pts.size()));
-             Vec3ss& points_ = *points;
-             for (std::size_t i = 0; i < pts.size(); ++i) {
-               points_[i] = pts[i];
-             }
-
-             std::shared_ptr<Triangles> tris(new Triangles(tri.size()));
-             Triangles& tris_ = *tris;
-             for (std::size_t i = 0; i < tri.size(); ++i) {
-               tris_[i] = tri[i];
-             }
-             new (self) Convex<Triangle>(*(shared_ptr<Convex<Triangle>>(
-                 new Convex<Triangle>(points, (unsigned int)pts.size(), tris,
-                                      (unsigned int)tri.size()))));
-           })
-      .def(nb::init<const Convex<Triangle>&>(), "other_"_a)
-      .DEF_RO_CLASS_ATTRIB(Convex<Triangle>, num_polygons)
-      .def(
-          "polygons",
-          [](const Convex<Triangle>& convex, unsigned int i) -> Triangle {
-            if (i >= convex.num_polygons) {
-              throw std::out_of_range("index is out of range");
-            }
-            return (*convex.polygons)[i];
-          },
-          "index"_a, "Retrieve the polygon given by its index.")
-      .def(python::v2::PickleVisitor<Convex<Triangle>>())
-      .def(python::v2::SerializableVisitor<Convex<Triangle>>())
       .def(nanoeigenpy::IdVisitor());
 
   nb::class_<Cylinder, ShapeBase>(m, "Cylinder")
@@ -260,4 +274,10 @@ void exposeShapes(nb::module_& m) {
       .def(python::v2::PickleVisitor<TriangleP>())
       .def(python::v2::SerializableVisitor<TriangleP>())
       .def(nanoeigenpy::IdVisitor());
+
+  exposeConvexBase<Triangle16::IndexType>(m, "ConvexBase16");
+  exposeConvexBase<Triangle32::IndexType>(m, "ConvexBase32");
+  exposeConvex<Triangle16>(m, "Convex16");
+  exposeConvex<Triangle32>(m, "Convex32");
+  m.attr("Convex") = m.attr("Convex32");
 }
