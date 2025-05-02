@@ -154,7 +154,7 @@ void exposeConvex(nb::module_& m, const std::string& classname) {
       .DEF_RO_CLASS_ATTRIB(ConvexType, num_polygons)
       .def(
           "polygons",
-          [](const ConvexType& convex, unsigned int i) -> Triangle {
+          [](const ConvexType& convex, unsigned int i) -> TriangleType {
             if (i >= convex.num_polygons) {
               throw std::out_of_range("index is out of range");
             }
