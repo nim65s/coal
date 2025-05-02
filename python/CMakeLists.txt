@@ -238,5 +238,3 @@ if(COAL_BACKWARD_COMPATIBILITY_WITH_HPP_FCL)
   PYTHON_INSTALL_ON_SITE(hppfcl __init__.py COMPONENT hpp-fcl-compatibility)
   PYTHON_INSTALL_ON_SITE(hppfcl viewer.py COMPONENT hpp-fcl-compatibility)
 endif()
-
-message(STATUS "Python extension suffix: ${PYTHON_EXT_SUFFIX}")
