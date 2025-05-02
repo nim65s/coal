@@ -8,6 +8,7 @@ endif()
 
 # Python
 find_package(Python COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
+# Required for jrl-cmakemodules to work
 
 # Detect the installed nanobind package and import it into CMake
 execute_process(
@@ -75,7 +76,6 @@ set_target_properties(
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${MODULE_DIR}"
 )
 
-set(PYTHON_FILES ${MODULE_DIR}/__init__.py)
 set(PYTHON_LIB_STUB_FILE ${MODULE_DIR}/${PYTHON_LIB_NAME_V2}.pyi)
 
 nanobind_add_stub(
@@ -89,9 +89,14 @@ nanobind_add_stub(
 add_dependencies(${PROJECT_NAME}_python ${PYTHON_LIB_NAME_V2})
 ADD_SOURCE_GROUP(PYTHON_LIB_SOURCES)
 
+set(PYTHON_FILES __init__.py)
 foreach(pyfile ${PYTHON_FILES})
-  PYTHON_BUILD(${PROJECT_NAME} ${pyfile})
-  install(FILES ${pyfile} DESTINATION ${Python_SITELIB}/${MODULE_DIR})
+  message(STATUS "Building python file ${pyfile}")
+  PYTHON_BUILD(${MODULE_DIR} ${pyfile})
+  install(
+    FILES ${MODULE_DIR}/${pyfile}
+    DESTINATION ${Python_SITELIB}/${MODULE_DIR}
+  )
 endforeach(pyfile)
 
 install(
