@@ -555,9 +555,13 @@ if(BUILD_PYTHON_INTERFACE)
       set(DEV_MODULE Development.Module)
     endif()
     find_package(Python REQUIRED COMPONENTS Interpreter ${DEV_MODULE})
+    # jrl-cmakemodules use PYTHON_EXECUTABLE defined in FINDPYTHON macro.
+    # Since we doesn't call it in this branch, we must redefine it.
+    set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
     add_subdirectory(python-nb)
   else()
     set(PYTHON_COMPONENTS Interpreter Development NumPy)
+    FINDPYTHON(REQUIRED)
     ADD_PROJECT_PRIVATE_DEPENDENCY(eigenpy 2.9.2 REQUIRED)
     add_subdirectory(python)
   endif()
