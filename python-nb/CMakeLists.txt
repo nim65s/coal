@@ -71,7 +71,7 @@ set(PYTHON_LIB_STUB_FILE ${MODULE_DIR}/${PYTHON_LIB_NAME_V2}.pyi)
 nanobind_add_stub(
   ${PYTHON_LIB_NAME_V2}_stub
   VERBOSE
-  MODULE ${PYTHON_LIB_NAME_V2}
+  MODULE ${PROJECT_NAME}
   OUTPUT ${PYTHON_LIB_STUB_FILE}
   DEPENDS ${PYTHON_LIB_NAME_V2}
   PYTHON_PATH ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_DIR}
@@ -79,7 +79,7 @@ nanobind_add_stub(
 add_dependencies(${PROJECT_NAME}_python ${PYTHON_LIB_NAME_V2})
 ADD_SOURCE_GROUP(PYTHON_LIB_SOURCES)
 
-set(PYTHON_FILES __init__.py)
+set(PYTHON_FILES __init__.py windows_dll_manager.py)
 foreach(pyfile ${PYTHON_FILES})
   message(STATUS "Building python file ${pyfile}")
   PYTHON_BUILD(${MODULE_DIR} ${pyfile})
