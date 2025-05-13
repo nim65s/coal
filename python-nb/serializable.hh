@@ -1,4 +1,8 @@
 /// Copyright 2025 INRIA
+
+#ifndef COAL_PYTHON_NB_SERIALIZABLE_HH
+#define COAL_PYTHON_NB_SERIALIZABLE_HH
+
 #include "fwd.h"
 
 #include "coal/serialization/archive.h"
@@ -42,3 +46,5 @@ struct SerializableVisitor : nb::def_visitor<SerializableVisitor<Derived>> {
 
 }  // namespace v2
 }  // namespace coal::python
+
+#endif  // ifndef COAL_PYTHON_NB_SERIALIZABLE_HH

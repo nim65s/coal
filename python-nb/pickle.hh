@@ -1,5 +1,8 @@
 /// Copyright 2025 INRIA
 
+#ifndef COAL_PYTHON_NB_PICKLE_HH
+#define COAL_PYTHON_NB_PICKLE_HH
+
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <sstream>
@@ -32,3 +35,5 @@ struct PickleVisitor : nb::def_visitor<PickleVisitor<T>> {
 
 }  // namespace v2
 }  // namespace coal::python
+
+#endif  // ifndef COAL_PYTHON_NB_PICKLE_HH
