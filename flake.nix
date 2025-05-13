@@ -3,9 +3,7 @@
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
-    # TODO: switch back to nixos-unstable after
-    # https://github.com/NixOS/nixpkgs/pull/357705
-    nixpkgs.url = "github:NixOS/nixpkgs/refs/pull/357705/head";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs =
