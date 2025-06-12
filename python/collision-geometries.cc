@@ -402,6 +402,7 @@ void exposeShapes() {
 
   exposeConvexBase<Triangle16::IndexType>("ConvexBase16");
   exposeConvexBase<Triangle32::IndexType>("ConvexBase32");
+  bp::scope().attr("ConvexBase") = bp::scope().attr("ConvexBase32");
   exposeConvex<Triangle16>("ConvexTriangle16");
   exposeConvex<Triangle32>("ConvexTriangle32");
   bp::scope().attr("Convex") = bp::scope().attr("ConvexTriangle32");
