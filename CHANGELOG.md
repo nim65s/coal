@@ -29,7 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Allows GJK/EPA to avoid limitation of float precision
 - Renamed PyPI package from coal-library to coal ([#675](https://github.com/coal-library/coal/pull/675))
 - Fixed malloc in COAL_ASSERT ([#687](https://github.com/coal-library/coal/pull/687))
-- Introducing `Convex16` and `Convex32` to store neighbors and polygons indices as `uint16` or `uint32` ([#682](https://github.com/coal-library/coal/pull/682)).
+- Introducing `Convex16` and `Convex32` to store neighbors and polygons indices as `uint16` or `uint32` ([#682](https://github.com/coal-library/coal/pull/682), [#716](https://github.com/coal-library/coal/pull/716)).
   - Along with #665, this allows to divide by two the memory footprint of `Convex`.
 
 ### Fixed
