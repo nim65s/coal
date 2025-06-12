@@ -151,8 +151,8 @@ class ConvexTpl : public ConvexBaseTpl<typename PolygonT::IndexType> {
   using Base::nneighbors_;
 };
 
-typedef ConvexTpl<Triangle16> Convex16;
-typedef ConvexTpl<Triangle32> Convex32;
+template <typename PolygonT>
+using Convex = ConvexTpl<PolygonT>;
 
 }  // namespace coal
 
