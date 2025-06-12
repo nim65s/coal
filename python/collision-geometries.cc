@@ -402,9 +402,9 @@ void exposeShapes() {
 
   exposeConvexBase<Triangle16::IndexType>("ConvexBase16");
   exposeConvexBase<Triangle32::IndexType>("ConvexBase32");
-  exposeConvex<Triangle16>("Convex16");
-  exposeConvex<Triangle32>("Convex32");
-  bp::scope().attr("Convex") = bp::scope().attr("Convex32");
+  exposeConvex<Triangle16>("ConvexTriangle16");
+  exposeConvex<Triangle32>("ConvexTriangle32");
+  bp::scope().attr("Convex") = bp::scope().attr("ConvexTriangle32");
 
   class_<Cylinder, bases<ShapeBase>, shared_ptr<Cylinder>>(
       "Cylinder", doxygen::class_doc<Cylinder>(), no_init)
