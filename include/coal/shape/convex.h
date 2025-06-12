@@ -153,6 +153,8 @@ class ConvexTpl : public ConvexBaseTpl<typename PolygonT::IndexType> {
 
 typedef ConvexTpl<Triangle16> Convex16;
 typedef ConvexTpl<Triangle32> Convex32;
+COAL_DEPRECATED_MESSAGE(Use Convex32 instead.)
+typedef Convex32 Convex;
 
 }  // namespace coal
 

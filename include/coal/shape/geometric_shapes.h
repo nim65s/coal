@@ -947,7 +947,8 @@ class ConvexBaseTpl : public ShapeBase {
 
 typedef ConvexBaseTpl<Triangle16::IndexType> ConvexBase16;
 typedef ConvexBaseTpl<Triangle32::IndexType> ConvexBase32;
-// typedef ConvexBase32 ConvexBase;
+COAL_DEPRECATED_MESSAGE(Use ConvexBase32 instead.)
+typedef ConvexBase32 ConvexBase;
 
 template <typename PolygonT>
 class ConvexTpl;
