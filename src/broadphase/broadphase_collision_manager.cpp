@@ -39,6 +39,21 @@
 
 namespace coal {
 
+namespace detail {
+struct CollisionCallBackFunctorWrapper : CollisionCallBackBase {
+  CollisionCallBackFunctorWrapper(const CollisionCallBackFunctor& functor)
+      : m_functor(&functor) {}
+
+  void init() override {}
+
+  bool collide(CollisionObject* o1, CollisionObject* o2) override {
+    return (*m_functor)(o1, o2);
+  }
+
+  CollisionCallBackFunctor const* m_functor;
+};
+}  // namespace detail
+
 //==============================================================================
 BroadPhaseCollisionManager::BroadPhaseCollisionManager()
     : enable_tested_set_(false) {
@@ -61,6 +76,28 @@ void BroadPhaseCollisionManager::update(CollisionObject* updated_obj) {
   COAL_UNUSED_VARIABLE(updated_obj);
 
   update();
+}
+
+//==============================================================================
+void BroadPhaseCollisionManager::collide(
+    CollisionObject* obj, const CollisionCallBackFunctor& fn) const {
+  detail::CollisionCallBackFunctorWrapper wrapper{fn};
+  this->collide(obj, &wrapper);
+}
+
+//==============================================================================
+void BroadPhaseCollisionManager::collide(
+    const CollisionCallBackFunctor& fn) const {
+  detail::CollisionCallBackFunctorWrapper wrapper{fn};
+  this->collide(&wrapper);
+}
+
+//==============================================================================
+void BroadPhaseCollisionManager::collide(
+    BroadPhaseCollisionManager* other_manager,
+    const CollisionCallBackFunctor& fn) const {
+  detail::CollisionCallBackFunctorWrapper wrapper{fn};
+  this->collide(other_manager, &wrapper);
 }
 
 //==============================================================================

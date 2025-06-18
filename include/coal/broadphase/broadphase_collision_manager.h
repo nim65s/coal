@@ -41,11 +41,15 @@
 #include <set>
 #include <vector>
 #include <boost/function.hpp>
+#include <functional>
 
 #include "coal/collision_object.h"
 #include "coal/broadphase/broadphase_callbacks.h"
 
 namespace coal {
+
+using CollisionCallBackFunctor =
+    std::function<bool(CollisionObject*, CollisionObject*)>;
 
 /// @brief Base class for broad phase collision. It helps to accelerate the
 /// collision/distance between N objects. Also support self collision, self
@@ -95,6 +99,9 @@ class COAL_DLLAPI BroadPhaseCollisionManager {
   virtual void collide(CollisionObject* obj,
                        CollisionCallBackBase* callback) const = 0;
 
+  /// @copybrief collide(CollisionObject*, CollisionCallBackBase*)
+  void collide(CollisionObject* obj, const CollisionCallBackFunctor& fn) const;
+
   /// @brief perform distance computation between one object and all the objects
   /// belonging to the manager
   virtual void distance(CollisionObject* obj,
@@ -104,6 +111,9 @@ class COAL_DLLAPI BroadPhaseCollisionManager {
   /// (i.e., N^2 self collision)
   virtual void collide(CollisionCallBackBase* callback) const = 0;
 
+  /// @copybrief collide(CollisionCallBackBase*)
+  void collide(const CollisionCallBackFunctor& fn) const;
+
   /// @brief perform distance test for the objects belonging to the manager
   /// (i.e., N^2 self distance)
   virtual void distance(DistanceCallBackBase* callback) const = 0;
@@ -111,6 +121,10 @@ class COAL_DLLAPI BroadPhaseCollisionManager {
   /// @brief perform collision test with objects belonging to another manager
   virtual void collide(BroadPhaseCollisionManager* other_manager,
                        CollisionCallBackBase* callback) const = 0;
+
+  /// @copybrief collide(BroadPhaseCollisionManager*, CollisionCallBackBase*)
+  void collide(BroadPhaseCollisionManager* other_manager,
+               const CollisionCallBackFunctor& fn) const;
 
   /// @brief perform distance test with objects belonging to another manager
   virtual void distance(BroadPhaseCollisionManager* other_manager,
