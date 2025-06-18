@@ -52,6 +52,20 @@ struct CollisionCallBackFunctorWrapper : CollisionCallBackBase {
 
   CollisionCallBackFunctor const* m_functor;
 };
+
+struct DistanceCallBackFunctorWrapper : DistanceCallBackBase {
+  DistanceCallBackFunctorWrapper(const DistanceCallBackFunctor& functor)
+      : m_functor(&functor) {}
+
+  void init() override {}
+
+  bool distance(CollisionObject* o1, CollisionObject* o2,
+                Scalar& dist) override {
+    return (*m_functor)(o1, o2, dist);
+  }
+
+  DistanceCallBackFunctor const* m_functor;
+};
 }  // namespace detail
 
 //==============================================================================
@@ -98,6 +112,28 @@ void BroadPhaseCollisionManager::collide(
     const CollisionCallBackFunctor& fn) const {
   detail::CollisionCallBackFunctorWrapper wrapper{fn};
   this->collide(other_manager, &wrapper);
+}
+
+//==============================================================================
+void BroadPhaseCollisionManager::distance(
+    CollisionObject* obj, const DistanceCallBackFunctor& fn) const {
+  detail::DistanceCallBackFunctorWrapper wrapper{fn};
+  this->distance(obj, &wrapper);
+}
+
+//==============================================================================
+void BroadPhaseCollisionManager::distance(
+    const DistanceCallBackFunctor& fn) const {
+  detail::DistanceCallBackFunctorWrapper wrapper{fn};
+  this->distance(&wrapper);
+}
+
+//==============================================================================
+void BroadPhaseCollisionManager::distance(
+    BroadPhaseCollisionManager* other_manager,
+    const DistanceCallBackFunctor& fn) const {
+  detail::DistanceCallBackFunctorWrapper wrapper{fn};
+  this->distance(other_manager, &wrapper);
 }
 
 //==============================================================================
