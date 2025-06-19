@@ -40,7 +40,6 @@
 
 #include <set>
 #include <vector>
-#include <boost/function.hpp>
 #include <functional>
 
 #include "coal/collision_object.h"
