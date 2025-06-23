@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - CMake: add COAL_DISABLE_HPP_FCL_WARNINGS option ([#709](https://github.com/coal-library/coal/pull/709))
+- broadphase: add functional API for collision and distance callbacks ([#724](https://github.com/coal-library/coal/pull/724))
 
 ### Removed
 - Remove constraints on supported doxygen version to generate the python documentation ([#681](https://github.com/coal-library/coal/pull/681))
