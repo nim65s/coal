@@ -26,6 +26,7 @@ python = ">=3.9.0"
 doxygen = ">=1.8"
 lxml = ">=5.3"
 pylatexenc = ">=2.10"
+nanoeigenpy = ">=0.3.0"
 
 [activation]
 scripts = ["development/scripts/pixi/activation.sh"]
