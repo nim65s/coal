@@ -18,6 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu, macos]
+        backend: [bp, nano]
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
@@ -25,7 +26,7 @@ jobs:
         with:
           name: gepetto
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix build -L
+      - run: nix build -L .#coal-full-${{ matrix.backend }}
 
   nix-split:
     runs-on: "${{ matrix.os }}-latest"
@@ -40,7 +41,8 @@ jobs:
           name: gepetto
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - run: nix build -L .#coal-cpp
-      - run: nix build -L .#coal-py
+      - run: nix build -L .#coal-bp
+      - run: nix build -L .#coal-nano
 
   check:
     if: always()
